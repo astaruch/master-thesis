@@ -1,0 +1,10 @@
+Phishing-detection application
+
+Preliminary description:
+
+The goal of this master's thesis is to develop and implement an application,
+which will recognize potential risk for a given URL from web traffic based on
+extendable series of individual tests. The result of weighted tests is
+'phishing score' and one of three actions for an URL: bypass, warn and block.
+The source for  tests should be this following work:
+https://is.muni.cz/auth/th/dyi2v/Diplomova_prace.pdf
