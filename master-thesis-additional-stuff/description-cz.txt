@@ -1,0 +1,10 @@
+Aplikace pro detekci phishing útoků (TNS)
+
+Předběžné zadání:
+
+Cílem práce je navrhnout a implementovat aplikaci, která vyhodnotí rizikovost
+pro zadanou URL z webového provozu na základě rozšířitelné sérií
+specializovaných testů. Výsledkem vážených testů je číslo „phishing skóre!“
+a/nebo akce (blokovat, upozornit, povolit). Zdrojem specializovaných testů
+by mala být převážné následující práce:
+https://is.muni.cz/auth/th/dyi2v/Diplomova_prace.pdf
