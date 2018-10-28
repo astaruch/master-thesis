@@ -1,3 +1,6 @@
 [submodule "master-thesis"]
 	path = master-thesis
 	url = git@github.com:astaruch/master-thesis.git
+[submodule "master-thesis-phishtank-data"]
+	path = master-thesis-phishtank-data
+	url = git@github.com:astaruch/master-thesis-phishtank-data.git
