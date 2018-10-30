@@ -1,3 +1,4 @@
+https://sendgrid.com/blog/blacklisted-check-7-popular-blacklists-keep-reputation-intact/
 
 - all.s5h.net
 - b.barracudacentral.org

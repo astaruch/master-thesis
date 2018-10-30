@@ -1,0 +1,53 @@
+A Phishing-detection application
+
+In today's world, the threat of a cyber attack can't be ignored. There are a plethora of companies that try to protect their customers from potential damage, such as getting infected by a virus, getting ransomware or malware, protect their business intelligence and so on.
+
+This thesis is concerned with another part of the cybercrime called phishing. Phishing is a social engineering attack to obtain sensitive information such as usernames, passwords, credit card details, bank account credentials for malicious reasons. Because of a large attack vector, there isn't a reliable way/tool to prevent such an attack.
+
+This thesis will review several ways to detect a phishing attack, implement some of them and test them in the production environment with an association with a Trusted Network Solutions company. The final software could be easily used with another proxy or tool.
+
+ Possible ways of detecting a phishing attack are:
+A: detection approaches:
+- user training approaches
+- software classification approaches
+B: offensive defense approaches:
+- BogusBiter (browser toolbar which submits fake information in HTML forms)
+- Humboldt - similar to BogusBiter
+C: correction approaches - after detection, an action is taken by service providers:
+- websites
+- e-mail
+- social networks
+- a public switched telephone network/VoIP
+D: prevention approaches
+- Law Enforcement Agencies
+
+Phishing detection by blacklists:
+- Google Safe Browsing API
+- DNS-Based blacklist
+- PhisNet: Predictive Blacklisting
+- Automated Individual White-List
+https://openphish.com/
+
+Phishing detection by Heuristics:
+- SpoofGuard
+- Collaborative Intrusion Detection
+- PhishGuard: A browser Plug-In
+- PhishWish: A Stateless Phishing Filter Using Minimal Rules
+- CANTINA: A content-Based approach
+- A phishing sites blacklist generator
+
+Phishing detection by visual similarity:
+- Classification with discriminative keypoint features
+- visual similarity-based detection without victim site information
+
+Phishing detection by data mining:
+- Automatic Detection of Phishing Target from Phishing webpage
+- Detecting DNS-poisoning-based phishing attacks from their network performance characteristics
+- Textual and Visual Content-Based Anti-Phishing: A Bayesian Approach
+- Detecting Phishing Emails Using Hybrid Features
+- Large-Scale Automatic Classification of Pages
+
+Previous thesis (https://is.muni.cz/auth/th/dyi2v/Diplomova_prace.pdf) mention another rule-based heuristics:
+- analysis of an URL
+
+https://ieeexplore.ieee.org/document/6497928?reload=true
