@@ -1,3 +1,0 @@
-/mnt/c/Users/andrej.staruch/Documents/code/repos/master-thesis-everything/code/phishing-app/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/mnt/c/Users/andrej.staruch/Documents/code/repos/master-thesis-everything/code/phishing-app/cmake-build-debug/CMakeFiles/phishing_app.dir
-/mnt/c/Users/andrej.staruch/Documents/code/repos/master-thesis-everything/code/phishing-app/cmake-build-debug/CMakeFiles/edit_cache.dir
