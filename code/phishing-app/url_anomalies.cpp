@@ -13,7 +13,7 @@ int url_anomalies::check_length(size_t allowed_length) const {
     // TODO: find out what is an optimal value to return
     bool anomaly = m_url.length() > allowed_length;
     if (anomaly) {
-        std::cout << "check_length test failed\n";
+        std::cout << "|length|";
         return 1;
     }
     return 0;
@@ -27,7 +27,7 @@ int url_anomalies::check_depth(size_t allowed_dots) const {
     // TODO: find out what is an optimal value to return
     bool anomaly = dots >= allowed_dots;
     if (anomaly) {
-        std::cout << "check_depth test failed\n";
+        std::cout << "|depth|";
         return 1;
     }
     return 0;
@@ -36,7 +36,7 @@ int url_anomalies::check_depth(size_t allowed_dots) const {
 int url_anomalies::check_keywords() const {
     for (const auto& keyword: keywords) {
         if (m_url.find(keyword) != std::string::npos) {
-            std::cout << "check_keywords test failed\n";
+            std::cout << "|keywords|";
             return 1; // TODO: find out what is an optimal value to return
         }
     }
