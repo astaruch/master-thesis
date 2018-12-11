@@ -26,6 +26,8 @@ add_executable(
         ${PHISHING_APP}
 
         main.cpp
+        url_anomalies.h
+        url_anomalies.cpp
 )
 
 add_dependencies(
