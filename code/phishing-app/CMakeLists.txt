@@ -28,6 +28,8 @@ add_executable(
         main.cpp
         url_anomalies.h
         url_anomalies.cpp
+        third-party/lurlparser/LUrlParser.h
+        third-party/lurlparser/LUrlParser.cpp
 )
 
 add_dependencies(
