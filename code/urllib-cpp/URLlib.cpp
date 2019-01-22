@@ -91,7 +91,7 @@ URLlib::URL::ParseRequestURI(const std::string &raw_url)
 {
     if (auto[url, err] = Parse(raw_url, true); !err.empty())
     {
-        return {{}, err};
+        return {URLlib::URL(), err};
     }
     else
     {
