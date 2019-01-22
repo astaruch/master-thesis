@@ -10,6 +10,6 @@ add_library(
         ${URLLIB}
 
         STATIC
-        urllib.h
-        urllib.cpp
+        URLlib.h
+        URLlib.cpp
 )
