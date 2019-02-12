@@ -6,6 +6,7 @@
 // TODO: use this go parser - https://github.com/golang/go/blob/master/src/net/url/url.go
 
 class URLlib {
+public:
   class URL {
    public:
     struct UserInfo {

@@ -1,0 +1,6 @@
+**/literature/*.pdf
+.vscode
+.idea
+cmake-build-*
+data-sets
+code/junk

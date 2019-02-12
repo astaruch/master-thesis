@@ -4,6 +4,7 @@
 
 #include <string>
 #include <array>
+#include "urllib-cpp/URLlib.h"
 #include "third-party/lurlparser/LUrlParser.h"
 
 class url_anomalies {
@@ -34,9 +35,7 @@ public:
 private:
     std::string m_url;
 
-    LUrlParser::clParseURL m_parsed_url;
-
-
+    URLlib::URL m_parsed_url;
 };
 
 

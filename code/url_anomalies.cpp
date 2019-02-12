@@ -6,6 +6,7 @@
 
 void url_anomalies::parse_url(const std::string& url) {
     m_url = url;
+    URLlib::URL::Parse()
     m_parsed_url = LUrlParser::clParseURL::ParseURL(url);
 }
 
