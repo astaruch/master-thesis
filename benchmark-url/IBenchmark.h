@@ -1,0 +1,19 @@
+#include <utility>
+
+#ifndef BENCHMARK_URL_IBENCHMARK_H
+#define BENCHMARK_URL_IBENCHMARK_H
+
+#include <string>
+#include <vector>
+
+class IBenchmark {
+public:
+    explicit IBenchmark(std::vector<std::string> urls): m_raw_urls(std::move(urls)) {}
+
+    virtual void DoBenchmark() = 0;
+    virtual std::string Name() = 0;
+protected:
+    std::vector<std::string> m_raw_urls;
+};
+
+#endif //BENCHMARK_URL_IBENCHMARK_H
