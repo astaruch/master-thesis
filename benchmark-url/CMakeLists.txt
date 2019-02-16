@@ -3,7 +3,7 @@ project(benchmark_url VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Boost REQUIRED COMPONENTS system)
+#find_package(Boost REQUIRED COMPONENTS system)
 find_package(uriparser REQUIRED)
 
 add_executable(
@@ -12,10 +12,10 @@ add_executable(
         main.cpp
 
         IBenchmark.h
-        SkyrUrl.hpp
+        CSkyrUrl.hpp
 
         boost_asio.hpp
-        Uriparser.hpp
+        CUriparser.hpp
 )
 
 
@@ -23,14 +23,15 @@ target_include_directories(
         benchmark_url
         PRIVATE
 
-        ${Boost_INCLUDE_DIR}
+#        ${Boost_INCLUDE_DIR}
 )
 
 target_link_libraries(
         benchmark_url
         PUBLIC
 
-        ${Boost_LIBRARIES}
+#        ${Boost_LIBRARIES}
         skyr-url
         uriparser::uriparser
+        network-uri
 )

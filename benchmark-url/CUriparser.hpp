@@ -4,9 +4,9 @@
 #include <uriparser/Uri.h>
 
 #include "IBenchmark.h"
-class Uriparser: public IBenchmark {
+class CUriparser: public IBenchmark {
 public:
-    explicit Uriparser(std::vector<std::string> urls)
+    explicit CUriparser(std::vector<std::string> urls)
             :IBenchmark(std::move(urls)) { }
 
     void DoBenchmark() override;
@@ -18,7 +18,7 @@ private:
     std::vector<UriUriA> m_parsed_urls;
 };
 
-void Uriparser::DoBenchmark()
+void CUriparser::DoBenchmark()
 {
     for (const auto& url: m_raw_urls) {
         UriUriA parsed_url;
@@ -33,9 +33,9 @@ void Uriparser::DoBenchmark()
     }
 }
 
-std::string Uriparser::Name()
+std::string CUriparser::Name()
 {
-    return "Uriparser";
+    return "uriparser";
 }
 
 #endif //BENCHMARK_URL_URIPARSER_H

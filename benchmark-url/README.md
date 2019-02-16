@@ -1,6 +1,6 @@
 # Boost::Asio
 
-# Skyr URL
+# cpp-netlib/url - Skyr URL
 
 - link - https://github.com/cpp-netlib/url
 - modern C++17 library, active development
@@ -22,6 +22,7 @@
 Building & Install library:
 
     $ git clone https://github.com/cpp-netlib/url
+    $ cd url
     $ git submodule update --init --recursive
     $ mkdir build && cd build
     $ cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=/usr
@@ -30,7 +31,25 @@ Building & Install library:
     $ sudo ninja install
     $ ninja doc
 
-# Uriparser
+# cpp-netlib/uri
+- link - https://github.com/cpp-netlib/uri
+
+Installing prerequisites same as in `skyr-url`
+
+Building & Install library:
+
+    $ git clone https://github.com/cpp-netlib/uri
+    $ cd uri
+    $ git submodule update --init --recursive
+    $ mkdir _build & cd _build
+    $ cmake -DUri_WARNINGS_AR_ERRORS=OFF ..
+    $ make
+    $ make test
+    $ sudo make install
+    $ make doc
+
+
+# CUriparser
 
 - link https://github.com/uriparser/uriparser
 - C89 - ANSI C library
@@ -55,3 +74,5 @@ Building & Install library:
     $ make
     $ make test
     $ sudo make install
+
+
