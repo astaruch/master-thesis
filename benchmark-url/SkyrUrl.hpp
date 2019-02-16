@@ -14,6 +14,7 @@ public:
 
     void DoBenchmark() override;
     std::string Name() override;
+    size_t ParsedSize() override { return m_parsed_urls.size(); }
 private:
     std::vector<url_type> m_parsed_urls;
 
@@ -26,19 +27,10 @@ void SkyrUrl::DoBenchmark()
                 return skyr::make_url(url);
             });
 
-    std::vector<url_type> invalid_urls;
-
-    url_type url = skyr::make_url("\xf0\x9f\x8d\xa3\xf0\x9f\x8d\xba");
-    if (!url) {
-        std::cout << "Invalid url\n";
-    }
-//    m_parsed_urls.push_back(url);
-    std::copy_if(m_parsed_urls.begin(), m_parsed_urls.end(), std::back_inserter(invalid_urls),
-            [](const url_type& url) -> bool {
-                return !url;
-            });
-
-    std::cout << "Invalid urls: " << invalid_urls.size() << "\n";
+//    std::copy_if(m_parsed_urls.begin(), m_parsed_urls.end(), std::back_inserter(m_invalid_urls),
+//            [](const url_type& url) -> bool {
+//                return !url;
+//            });
 }
 
 std::string SkyrUrl::Name()

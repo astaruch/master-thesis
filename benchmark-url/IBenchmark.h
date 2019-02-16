@@ -12,8 +12,15 @@ public:
 
     virtual void DoBenchmark() = 0;
     virtual std::string Name() = 0;
+    size_t InvalidSize() {
+        return m_invalid_urls.size();
+    }
+    virtual size_t ParsedSize() = 0;
+
 protected:
     std::vector<std::string> m_raw_urls;
+    std::vector<std::string> m_invalid_urls;
+
 };
 
 #endif //BENCHMARK_URL_IBENCHMARK_H

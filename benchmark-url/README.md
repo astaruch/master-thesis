@@ -3,9 +3,9 @@
 # Skyr URL
 
 - link - https://github.com/cpp-netlib/url
+- modern C++17 library, active development
 - prerequisites for Ubuntu 18.04:
     - C++17 compiler:
-
 
             $ sudo apt-get install gcc-8 g++8
             $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
@@ -29,3 +29,29 @@ Building & Install library:
     $ ninja test
     $ sudo ninja install
     $ ninja doc
+
+# Uriparser
+
+- link https://github.com/uriparser/uriparser
+- C89 - ANSI C library
+
+Building & Install library:
+
+    ### GTEST
+    $ GTEST_VERSION=1.8.1
+    $ GTEST_PREFIX=~/.local/
+    $  wget https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz --no-check-certificate
+    $ tar xf release-${GTEST_VERSION}.tar.gz
+    $ cd googletest-release-${GTEST_VERSION}/
+    $  cmake -DBUILD_SHARED_LIBS=ON -DCVF_VERSION=${GTEST_VERSION} -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_PREFIX} .
+    $ make
+    $ make install
+
+    ### URIPARSER
+    $ git clone https://github.com/uriparser/uriparser.git
+    $ cd uriparser && mkdir build && cd build
+    $ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_PREFIX} ..
+    $ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
+    $ make
+    $ make test
+    $ sudo make install

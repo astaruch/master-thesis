@@ -4,11 +4,11 @@
 #include <thread>
 
 #include "SkyrUrl.hpp"
-//#include "boost_asio.hpp"
+#include "Uriparser.hpp"
 
 using namespace std::chrono_literals;
 
-int main()
+int main(int argc, char** argv)
 {
 
     constexpr const char* filename = "../urls-5000.txt";
@@ -18,15 +18,22 @@ int main()
     while (std::getline(file, url)) {
         urls.push_back(url);
     }
-    auto url_library = SkyrUrl(std::move(urls));
 
-    auto start = std::chrono::high_resolution_clock::now();
-    url_library.DoBenchmark();
-    auto end = std::chrono::high_resolution_clock::now();
+    std::vector<std::unique_ptr<IBenchmark>> libraries;
+    libraries.push_back(std::make_unique<SkyrUrl>(urls));
+    libraries.push_back(std::make_unique<Uriparser>(urls));
 
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+    for (auto& library: libraries) {
+        auto start = std::chrono::high_resolution_clock::now();
+        library->DoBenchmark();
+        auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << url_library.Name() << " benchmark. Elapsed: " << elapsed << "ms.\n";
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
+        std::cout << library->Name() << " benchmark. " <<
+            "Parsed: " << library->ParsedSize() << ". " <<
+            "Invalid: " << library->InvalidSize() << ". " <<
+            "Elapsed: " << elapsed << "us.\n";
+    }
 
     return 0;
 }

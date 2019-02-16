@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.6)
-project(benchmark_url)
+project(benchmark_url VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(Boost REQUIRED COMPONENTS system)
+find_package(uriparser REQUIRED)
 
 add_executable(
         benchmark_url
@@ -14,6 +15,7 @@ add_executable(
         SkyrUrl.hpp
 
         boost_asio.hpp
+        Uriparser.hpp
 )
 
 
@@ -22,12 +24,13 @@ target_include_directories(
         PRIVATE
 
         ${Boost_INCLUDE_DIR}
-
 )
 
 target_link_libraries(
         benchmark_url
+        PUBLIC
 
         ${Boost_LIBRARIES}
         skyr-url
+        uriparser::uriparser
 )
