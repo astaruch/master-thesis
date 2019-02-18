@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "CCppRestSdk.hpp"
+#include "CFolly.hpp"
 #include "CNetworkUri.hpp"
 #include "CPoco.hpp"
 #include "CSkyrUrl.hpp"
@@ -28,6 +29,7 @@ int main(int argc, char** argv)
     libraries.push_back(std::make_unique<CNetworkUri>(urls));
     libraries.push_back(std::make_unique<CPoco>(urls));
     libraries.push_back(std::make_unique<CCppRestSdk>(urls));
+    libraries.push_back(std::make_unique<CFolly>(urls));
 
     std::cout << "Parsed\t|Invalid\t|Elapsed (ms)\t|Size\n";
     for (auto& library: libraries) {

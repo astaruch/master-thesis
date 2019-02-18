@@ -149,3 +149,44 @@ Building & Installing library:
 
 
     #include <cpprest/base_uri.h>
+    
+    
+# Folly (Facebook)
+
+- link: https://github.com/facebook/folly
+
+Building & Installing library:
+
+    $ sudo apt-get install \
+        g++ \
+        cmake \
+        libboost-all-dev \
+        libevent-dev \
+        libdouble-conversion-dev \
+        libgoogle-glog-dev \
+        libgflags-dev \
+        libiberty-dev \
+        liblz4-dev \
+        liblzma-dev \
+        libsnappy-dev \
+        make \
+        zlib1g-dev \
+        binutils-dev \
+        libjemalloc-dev \
+        libssl-dev \
+        pkg-config
+        
+    $ git clone https://github.com/facebook/folly.git
+    $ cd build folly && mkdir _build && cd _build
+    $ cmake ..
+    $ make -j $(nproc)
+    $ sudo make install
+    
+- usage in CMake:
+
+
+    find_package(folly REQUIRED)
+    target_link_libraries(
+            benchmark_url
+            PUBLIC
+            ${FOLLY_LIBRARIES})

@@ -9,6 +9,9 @@ find_package(Poco REQUIRED Foundation)
 set(cpprestsdk_DIR /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/cmake/)
 find_package(cpprestsdk REQUIRED)
 
+find_package(folly REQUIRED)
+find_package(Threads REQUIRED)
+
 add_executable(
         benchmark_url
 
@@ -21,6 +24,7 @@ add_executable(
         CPoco.hpp
         CSkyrUrl.hpp
         CUriparser.hpp
+        CFolly.hpp
 )
 
 
@@ -34,9 +38,11 @@ target_link_libraries(
         benchmark_url
         PUBLIC
 
+        ${CMAKE_THREAD_LIBS_INIT}
         skyr-url
         uriparser::uriparser
         network-uri
         ${Poco_LIBRARIES}
         cpprestsdk::cpprest
+        ${FOLLY_LIBRARIES}
 )
