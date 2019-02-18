@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 int main(int argc, char** argv)
 {
 
-    constexpr const char* filename = "../urls-5000.txt";
+    constexpr const char* filename = "../../10kURLclean.txt";
     std::ifstream file(filename);
     std::string url;
     std::vector<std::string> urls;
