@@ -24,13 +24,12 @@ private:
 };
 
 void CNetworkUri::DoBenchmark() {
-    for (const auto &url: m_raw_urls) {
+    for (const auto &raw_url: m_raw_urls) {
         try {
-            auto parsed_url = network::uri(url);
-            m_parsed_urls.push_back(parsed_url);
+            m_parsed_urls.push_back(network::uri(raw_url));
         }
         catch (network::uri_syntax_error &) {
-            m_invalid_urls.push_back(url);
+            m_invalid_urls.push_back(raw_url);
         }
     }
 }

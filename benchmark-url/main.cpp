@@ -3,10 +3,11 @@
 #include <fstream>
 #include <thread>
 
+#include "CCppRestSdk.hpp"
 #include "CNetworkUri.hpp"
+#include "CPoco.hpp"
 #include "CSkyrUrl.hpp"
 #include "CUriparser.hpp"
-#include "CPoco.hpp"
 
 using namespace std::chrono_literals;
 
@@ -26,6 +27,7 @@ int main(int argc, char** argv)
     libraries.push_back(std::make_unique<CSkyrUrl>(urls));
     libraries.push_back(std::make_unique<CNetworkUri>(urls));
     libraries.push_back(std::make_unique<CPoco>(urls));
+    libraries.push_back(std::make_unique<CCppRestSdk>(urls));
 
     std::cout << "Parsed\t|Invalid\t|Elapsed (ms)\t|Size\n";
     for (auto& library: libraries) {

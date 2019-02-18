@@ -3,9 +3,11 @@ project(benchmark_url VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-#find_package(Boost REQUIRED COMPONENTS system)
 find_package(uriparser REQUIRED)
 find_package(Poco REQUIRED Foundation)
+
+set(cpprestsdk_DIR /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/cmake/)
+find_package(cpprestsdk REQUIRED)
 
 add_executable(
         benchmark_url
@@ -13,11 +15,12 @@ add_executable(
         main.cpp
 
         IBenchmark.h
-        CSkyrUrl.hpp
 
-        boost_asio.hpp
-        CUriparser.hpp
+        CCppRestSdk.hpp
+        CNetworkUri.hpp
         CPoco.hpp
+        CSkyrUrl.hpp
+        CUriparser.hpp
 )
 
 
@@ -25,16 +28,15 @@ target_include_directories(
         benchmark_url
         PRIVATE
 
-#        ${Boost_INCLUDE_DIR}
 )
 
 target_link_libraries(
         benchmark_url
         PUBLIC
 
-#        ${Boost_LIBRARIES}
         skyr-url
         uriparser::uriparser
         network-uri
         ${Poco_LIBRARIES}
+        cpprestsdk::cpprest
 )

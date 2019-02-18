@@ -29,7 +29,11 @@ private:
 void CSkyrUrl::DoBenchmark() {
     for (const auto &url: m_raw_urls) {
         url_type parsed_url = skyr::make_url(url);
-        parsed_url.has_value() ? m_parsed_urls.push_back(parsed_url) : m_invalid_urls.push_back(url);
+        if (parsed_url.has_value()) {
+            m_parsed_urls.push_back(parsed_url);
+        } else {
+            m_invalid_urls.push_back(url);
+        }
     }
 }
 

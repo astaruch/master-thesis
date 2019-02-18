@@ -18,6 +18,16 @@
 
             $ sudo apt-get install graphviz doxygen python-pip python-sphinx
             $ pip install sphinx_bootstrap_theme breathe recommonmark
+            
+- usage in CMake: 
+    
+        target_link_libraries(project PUBLIC
+                    skyr-url)
+            
+- usage in code:
+            
+       #include <skyr/url.hpp>
+    
 
 Building & Install library:
 
@@ -33,6 +43,14 @@ Building & Install library:
 
 # cpp-netlib/uri
 - link - https://github.com/cpp-netlib/uri
+- usage in CMake: 
+    
+        target_link_libraries(project PUBLIC
+                    network-uri)
+            
+- usage in code:
+            
+       #include <network/uri.hpp>
 
 Installing prerequisites same as in `skyr-url`
 
@@ -53,6 +71,16 @@ Building & Install library:
 
 - link https://github.com/uriparser/uriparser
 - C89 - ANSI C library
+- usage in CMake: 
+    
+        find_package(uriparser REQUIRED)
+        target_link_libraries(project PUBLIC
+            uriparser::uriparser)
+            
+- usage in code:
+            
+        #include <uriparser/Uri.h>    
+
 
 Building & Install library:
 
@@ -78,8 +106,17 @@ Building & Install library:
 
 # Poco
 
-- link https://github.com/pocoproject/poco/tree/master
-- con: heavy library, long building
+- link: https://github.com/pocoproject/poco/tree/master
+- cons: heavy library, long building
+- usage in CMake: 
+    
+        find_package(Poco REQUIRED Foundation)
+        target_link_libraries(project PUBLIC
+            ${Poco_LIBRARIES})
+            
+- usage in code:
+            
+        #include <Poco/URI.h> 
 
 Building & Installing library:
 
@@ -89,4 +126,26 @@ Building & Installing library:
     $ make
     $ sudo make install
     
-# 
+# C++ REST SDK (Microsoft)
+
+- link: https://github.com/Microsoft/cpprestsdk
+
+Building & Installing library:
+
+    $ sudo apt-get install libcpprest-dev
+    
+- usage in CMake:
+
+    
+    set(cpprestsdk_DIR /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/cmake/)
+    find_package(cpprestsdk REQUIRED)
+    target_link_libraries(
+            benchmark_url
+            PUBLIC
+            cpprestsdk::cpprest)
+            
+            
+- usage in code:
+
+
+    #include <cpprest/base_uri.h>
