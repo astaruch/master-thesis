@@ -5,34 +5,37 @@
 
 #include "IBenchmark.h"
 
-class CNetworkUri: public IBenchmark {
+class CNetworkUri : public IBenchmark {
 public:
     explicit CNetworkUri(std::vector<std::string> urls)
-            :IBenchmark(std::move(urls)) { }
+            : IBenchmark(std::move(urls)) {}
 
     void DoBenchmark() override;
+
     std::string Name() override;
+
     size_t ParsedSize() override { return m_parsed_urls.size(); }
+
+    size_t BytesSize() override { return sizeof(std::vector<network::uri>) + (sizeof(network::uri) * m_parsed_urls.size()); }
+
 private:
     std::vector<network::uri> m_parsed_urls;
 
 };
 
-void CNetworkUri::DoBenchmark()
-{
-    for (const auto& url: m_raw_urls) {
+void CNetworkUri::DoBenchmark() {
+    for (const auto &url: m_raw_urls) {
         try {
             auto parsed_url = network::uri(url);
             m_parsed_urls.push_back(parsed_url);
         }
-        catch (network::uri_syntax_error&) {
+        catch (network::uri_syntax_error &) {
             m_invalid_urls.push_back(url);
         }
     }
 }
 
-std::string CNetworkUri::Name()
-{
+std::string CNetworkUri::Name() {
     return "cpp-netlib/uri (C++ Network URI)";
 }
 

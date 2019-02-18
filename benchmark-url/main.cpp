@@ -6,6 +6,7 @@
 #include "CNetworkUri.hpp"
 #include "CSkyrUrl.hpp"
 #include "CUriparser.hpp"
+#include "CPoco.hpp"
 
 using namespace std::chrono_literals;
 
@@ -21,11 +22,12 @@ int main(int argc, char** argv)
     }
 
     std::vector<std::unique_ptr<IBenchmark>> libraries;
-    libraries.push_back(std::make_unique<CSkyrUrl>(urls));
     libraries.push_back(std::make_unique<CUriparser>(urls));
+    libraries.push_back(std::make_unique<CSkyrUrl>(urls));
     libraries.push_back(std::make_unique<CNetworkUri>(urls));
+    libraries.push_back(std::make_unique<CPoco>(urls));
 
-    std::cout << "Parsed\t|Invalid\t|Elapsed (ms)\n";
+    std::cout << "Parsed\t|Invalid\t|Elapsed (ms)\t|Size\n";
     for (auto& library: libraries) {
         auto start = std::chrono::high_resolution_clock::now();
         library->DoBenchmark();
@@ -33,7 +35,7 @@ int main(int argc, char** argv)
 
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
         std::cout << library->Name() << "\n" << library->ParsedSize() << "\t|" <<
-            library->InvalidSize() << "\t|" << elapsed << "\n\n";
+            library->InvalidSize() << "\t|" << elapsed << "\t|" << library->BytesSize() << "\n\n";
     }
 
     return 0;

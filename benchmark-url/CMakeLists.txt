@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 #find_package(Boost REQUIRED COMPONENTS system)
 find_package(uriparser REQUIRED)
+find_package(Poco REQUIRED Foundation)
 
 add_executable(
         benchmark_url
@@ -16,6 +17,7 @@ add_executable(
 
         boost_asio.hpp
         CUriparser.hpp
+        CPoco.hpp
 )
 
 
@@ -34,4 +36,5 @@ target_link_libraries(
         skyr-url
         uriparser::uriparser
         network-uri
+        ${Poco_LIBRARIES}
 )

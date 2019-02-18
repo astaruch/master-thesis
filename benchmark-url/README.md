@@ -76,3 +76,17 @@ Building & Install library:
     $ sudo make install
 
 
+# Poco
+
+- link https://github.com/pocoproject/poco/tree/master
+- con: heavy library, long building
+
+Building & Installing library:
+
+    $ git clone -b master https://github.com/pocoproject/poco.git
+    $ cd poco
+    $ sudo cmake --install . 
+    $ make
+    $ sudo make install
+    
+# 
