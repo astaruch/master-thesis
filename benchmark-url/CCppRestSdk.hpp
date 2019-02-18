@@ -26,12 +26,13 @@ private:
 void CCppRestSdk ::DoBenchmark() {
     for (const auto &raw_url: m_raw_urls) {
         try {
-            m_parsed_urls.push_back(web::uri(raw_url));
+            m_parsed_urls.emplace_back(web::uri(raw_url));
         }
         catch (web::uri_exception&) {
             m_invalid_urls.push_back(raw_url);
         }
     }
+
 }
 
 std::string CCppRestSdk ::Name() {

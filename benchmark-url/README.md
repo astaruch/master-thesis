@@ -190,3 +190,10 @@ Building & Installing library:
             benchmark_url
             PUBLIC
             ${FOLLY_LIBRARIES})
+
+# Qt
+
+- Installing
+
+
+    $ sudo apt-get install qt5-default

@@ -9,6 +9,7 @@
 #include "CPoco.hpp"
 #include "CSkyrUrl.hpp"
 #include "CUriparser.hpp"
+//#include "CQt.hpp"
 
 using namespace std::chrono_literals;
 
@@ -24,12 +25,13 @@ int main(int argc, char** argv)
     }
 
     std::vector<std::unique_ptr<IBenchmark>> libraries;
-    libraries.push_back(std::make_unique<CUriparser>(urls));
-    libraries.push_back(std::make_unique<CSkyrUrl>(urls));
-    libraries.push_back(std::make_unique<CNetworkUri>(urls));
-    libraries.push_back(std::make_unique<CPoco>(urls));
     libraries.push_back(std::make_unique<CCppRestSdk>(urls));
     libraries.push_back(std::make_unique<CFolly>(urls));
+    libraries.push_back(std::make_unique<CNetworkUri>(urls));
+    libraries.push_back(std::make_unique<CPoco>(urls));
+    libraries.push_back(std::make_unique<CSkyrUrl>(urls));
+    libraries.push_back(std::make_unique<CUriparser>(urls));
+//    libraries.push_back(std::make_unique<CQt>(urls));
 
     std::cout << "Parsed\t|Invalid\t|Elapsed (ms)\t|Size\n";
     for (auto& library: libraries) {
