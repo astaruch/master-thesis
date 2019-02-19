@@ -10,6 +10,7 @@ public:
         None = 0x0,
         Length = 0x1,
         Depth = 0x2,
+        SpecialChars = 0x3,
     };
 
     UrlTest();
@@ -18,6 +19,7 @@ public:
 
     void AddTestLength(int length);
     void AddTestDepth(int depth);
+    void AddTestSpecialChars();
 
     int PerformtTests();
 
@@ -32,6 +34,7 @@ private:
 
     int TestLength();
     int TestDepth();
+    int TestSpecialChars();
 };
 
 #endif //URL_TESTS_URLTEST_H

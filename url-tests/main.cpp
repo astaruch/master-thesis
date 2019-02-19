@@ -20,6 +20,7 @@ int main(int argc, char** argv)
                 ("test-all", "Perform all tests with")
                 ("test-length", "Test whether URL exceeds given length", cxxopts::value<int>()->implicit_value("53")->default_value("53"))
                 ("test-depth", "Test whether URL exceeds given depth", cxxopts::value<int>()->implicit_value("5")->default_value("5"))
+                ("test-special-chars", "Test whether URL has some special characters")
                 ;
 
         auto result = options.parse(argc, argv);
@@ -42,6 +43,7 @@ int main(int argc, char** argv)
         if (result.count("test-all")) {
             url_test.AddTestLength(result["test-length"].as<int>());
             url_test.AddTestDepth(result["test-depth"].as<int>());
+            url_test.AddTestSpecialChars();
         }
         else {
             if (result.count("test-length")) {
@@ -49,6 +51,9 @@ int main(int argc, char** argv)
             }
             if (result.count("test-depth")) {
                 url_test.AddTestDepth(result["test-depth"].as<int>());
+            }
+            if (result.count("test-special-chars")) {
+                url_test.AddTestSpecialChars();
             }
         }
 

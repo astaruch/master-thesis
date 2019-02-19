@@ -31,6 +31,9 @@ int UrlTest::PerformtTests()
     if (m_test_flags & Test::Depth) {
         result += TestDepth();
     }
+    if (m_test_flags & Test::SpecialChars) {
+        result += TestSpecialChars();
+    }
     return result;
 }
 
@@ -74,6 +77,19 @@ int UrlTest::TestDepth()
     return 0;
 }
 
+void UrlTest::AddTestSpecialChars()
+{
+    std::cout << "Adding test for special characters.\n";
+    m_test_flags |= Test::SpecialChars;
+}
 
-
-
+int UrlTest::TestSpecialChars() {
+    int result = 0;
+    std::cout << "Testing special chars in URL... ";
+    if (!m_url.getUserInfo().empty()) {
+        // @
+        result += 1;
+    }
+    std::cout << (result ? "FAIL" : "PASS") << std::endl;
+    return result;
+}
