@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <Poco/StringTokenizer.h>
+
 #include "UrlTest.h"
 
 UrlTest::UrlTest()
@@ -33,6 +35,9 @@ int UrlTest::PerformtTests()
     }
     if (m_test_flags & Test::SpecialChars) {
         result += TestSpecialChars();
+    }
+    if (m_test_flags & Test::Keywords) {
+        result += TestKeywords();
     }
     return result;
 }
@@ -83,7 +88,8 @@ void UrlTest::AddTestSpecialChars()
     m_test_flags |= Test::SpecialChars;
 }
 
-int UrlTest::TestSpecialChars() {
+int UrlTest::TestSpecialChars()
+{
     int result = 0;
     std::cout << "Testing special chars in URL... ";
     if (!m_url.getUserInfo().empty()) {
@@ -93,3 +99,26 @@ int UrlTest::TestSpecialChars() {
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     return result;
 }
+
+void UrlTest::AddTestKeywords(const std::string& keywords)
+{
+    std::cout << "Adding test for keywords.\n";
+    m_test_flags |= Test::Keywords;
+
+    auto tokens = Poco::StringTokenizer(keywords, ",");
+    m_test_keywords = std::vector<std::string>(tokens.begin(), tokens.end());
+}
+
+int UrlTest::TestKeywords()
+{
+    std::cout << "Testing keywords in URL... ";
+    int result = 0;
+    for (const auto& keyword: m_test_keywords) {
+        if (m_raw_url.find(keyword)!=std::string::npos) {
+            result += 1;
+        }
+    }
+    std::cout << (result ? "FAIL" : "PASS") << std::endl;
+    return result;
+}
+

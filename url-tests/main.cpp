@@ -16,11 +16,19 @@ int main(int argc, char** argv)
                 ("h,help", "Print help")
                 ("u,url", "URL", cxxopts::value<std::string>()->default_value(""));
 
+        const std::string def_length = "53";
+        const std::string def_depth = "5";
+        const std::string def_keywords = "webscr,secure,banking,ebayisapi,account,confirm,login,signin";
+
         options.add_options("Test")
                 ("test-all", "Perform all tests with")
-                ("test-length", "Test whether URL exceeds given length", cxxopts::value<int>()->implicit_value("53")->default_value("53"))
-                ("test-depth", "Test whether URL exceeds given depth", cxxopts::value<int>()->implicit_value("5")->default_value("5"))
+                ("test-length", "Test whether URL exceeds given length",
+                        cxxopts::value<int>()->implicit_value("53")->default_value("53"))
+                ("test-depth", "Test whether URL exceeds given depth",
+                        cxxopts::value<int>()->implicit_value("5")->default_value("5"))
                 ("test-special-chars", "Test whether URL has some special characters")
+                ("test-keywords", "Test whether URL contains any from given keywords separeted by comma",
+                        cxxopts::value<std::string>()->default_value(def_keywords)->implicit_value(def_keywords))
                 ;
 
         auto result = options.parse(argc, argv);
@@ -44,6 +52,7 @@ int main(int argc, char** argv)
             url_test.AddTestLength(result["test-length"].as<int>());
             url_test.AddTestDepth(result["test-depth"].as<int>());
             url_test.AddTestSpecialChars();
+            url_test.AddTestKeywords(result["test-keywords"].as<std::string>());
         }
         else {
             if (result.count("test-length")) {
@@ -54,6 +63,9 @@ int main(int argc, char** argv)
             }
             if (result.count("test-special-chars")) {
                 url_test.AddTestSpecialChars();
+            }
+            if (result.count("test-keywords")) {
+                url_test.AddTestKeywords(result["test-keywords"].as<std::string>());
             }
         }
 
