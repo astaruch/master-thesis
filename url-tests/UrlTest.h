@@ -12,6 +12,7 @@ public:
         Depth = 0x2,
         SpecialChars = 0x4,
         Keywords = 0x8,
+        EncodedChars = 0x10,
     };
 
     UrlTest();
@@ -22,6 +23,7 @@ public:
     void AddTestDepth(int depth);
     void AddTestSpecialChars();
     void AddTestKeywords(const std::string& keywords);
+    void AddTestEncodedChars();
 
     int PerformtTests();
 
@@ -39,6 +41,7 @@ private:
     int TestDepth();
     int TestSpecialChars();
     int TestKeywords();
+    int TestEncodedChars();
 };
 
 #endif //URL_TESTS_URLTEST_H
