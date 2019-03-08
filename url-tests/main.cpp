@@ -28,9 +28,9 @@ main(int argc, char **argv)
             ("test-depth", "Test whether URL exceeds given depth",
              cxxopts::value<int>()->implicit_value("5")->default_value("5"))
             ("test-special-chars", "Test whether URL has some special characters")
-            ("test-keywords", "Test whether URL contains any from given keywords separeted by comma",
+            ("test-keywords", "Test whether URL contains any from given keywords separated by comma",
              cxxopts::value<std::string>()->default_value(def_keywords)->implicit_value(def_keywords))
-            ("test-encoded-url", "Test whether URL contains enconded characters")
+            ("test-encoded-url", "Test whether URL contains encoded characters")
             ;
 
         auto result = options.parse(argc, argv);
