@@ -73,6 +73,10 @@ int UrlTest::PerformTests()
     {
         result += TestScriptsInQuery();
     }
+    if (m_test_flags & Test::CharsFrequency)
+    {
+        result += TestCharsFrequency();
+    }
     return result;
 }
 
@@ -307,6 +311,20 @@ int UrlTest::TestScriptsInQuery()
     long result = std::count_if(tags.begin(), tags.end(), [&](const auto& tag) {
         return query.find(tag) != std::string::npos;
     });
+    std::cout << (result ? "FAIL" : "PASS") << std::endl;
+    return result;
+}
+
+void UrlTest::AddTestCharsFrequency()
+{
+    std::cout << "Adding test to check character frequency.\n";
+    m_test_flags |= Test::CharsFrequency;
+}
+
+int UrlTest::TestCharsFrequency()
+{
+    std::cout << "Testing chars frequency... ";
+    int result = 0;
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     return result;
 }

@@ -35,6 +35,7 @@ main(int argc, char **argv)
             ("test-non-standard-port", "Test whether URL port is standard (http=80/https=443")
             ("test-non-standard-tld", "Test whether URL has suspicious TLD")
             ("test-scripts-in-query", "Test whether query contains scripts and is XSS-prone")
+            ("test-chars-frequency", "Tests characters frequency in a domain name")
             ;
 
         auto result = options.parse(argc, argv);
@@ -69,6 +70,7 @@ main(int argc, char **argv)
             url_test.AddTestNonStandardPort();
             url_test.AddTestNonStandardTLD();
             url_test.AddTestScriptsInQuery();
+            url_test.AddTestCharsFrequency();
         }
         else
         {
@@ -107,6 +109,10 @@ main(int argc, char **argv)
             if (result.count("test-scripts-in-query"))
             {
                 url_test.AddTestScriptsInQuery();
+            }
+            if (result.count("test-chars-frequency"))
+            {
+                url_test.AddTestCharsFrequency();
             }
         }
 

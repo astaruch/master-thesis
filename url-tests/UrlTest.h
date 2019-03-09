@@ -17,6 +17,7 @@ public:
         NonStandardPort = 0x40,
         NonStandardTLD = 0x80,
         ScriptInQuery = 0x100,
+        CharsFrequency = 0x200,
     };
 
     UrlTest();
@@ -32,6 +33,7 @@ public:
     void AddTestNonStandardPort();
     void AddTestNonStandardTLD();
     void AddTestScriptsInQuery();
+    void AddTestCharsFrequency();
 
     int PerformTests();
 
@@ -58,6 +60,7 @@ private:
     int TestNonStandardPort();
     int TestNonStandardTLD();
     int TestScriptsInQuery();
+    int TestCharsFrequency();
 
     int TestPunyCode();
     int TestPercentEncoding();
