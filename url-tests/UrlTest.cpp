@@ -65,6 +65,10 @@ int UrlTest::PerformTests()
     {
         result += TestNonStandardPort();
     }
+    if (m_test_flags & Test::NonStandardTLD)
+    {
+        result += TestNonStandardTLD();
+    }
     return result;
 }
 
@@ -255,5 +259,25 @@ int UrlTest::TestNonStandardPort()
     {
         return m_url.getPort() == 443 ? 1 : 0;
     }
+    return 0;
+}
+
+void UrlTest::AddTestNonStandardTLD()
+{
+    std::cout << "Adding test for non standard TLD.\n";
+    m_test_flags |= Test::NonStandardTLD;
+}
+
+int UrlTest::TestNonStandardTLD()
+{
+    /*
+     * Tato metoda je použitelná hlavně v kombinaci s metodou analýzy obsahu či metodou analýzy
+existence a chování. Nalezneme v URL TLD a snažíme se odvodit, zda není příliš nepravděpodobné,
+že by uživatel navštívil stránku s touto TLD (např. vůči historii dříve navštívených stránek), nebo že
+by se stránka s daným obsahem (převážně pak jazykem) nacházela na takovéto TLD. Ke správnému
+nastavení rozhodovacího algoritmu může být užitečná Tabulka 4, která zobrazuje deset nejčastěji
+používaných TLD ve phishingových stránkách pro rok 2013
+
+     */
     return 0;
 }

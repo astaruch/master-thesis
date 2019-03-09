@@ -15,6 +15,7 @@ public:
         EncodedChars = 0x10,
         IpAddressOccurence = 0x20,
         NonStandardPort = 0x40,
+        NonStandardTLD = 0x80,
     };
 
     UrlTest();
@@ -28,6 +29,7 @@ public:
     void AddTestEncodedChars();
     void AddTestIpAddressOccurrence();
     void AddTestNonStandardPort();
+    void AddTestNonStandardTLD();
 
     int PerformTests();
 
@@ -52,6 +54,7 @@ private:
     int TestEncodedChars();
     int TestIpAddressOccurrence();
     int TestNonStandardPort();
+    int TestNonStandardTLD();
 
     int TestPunyCode();
     int TestPercentEncoding();

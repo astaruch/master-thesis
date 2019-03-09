@@ -33,6 +33,7 @@ main(int argc, char **argv)
             ("test-encoded-url", "Test whether URL contains encoded characters")
             ("test-ip-address-occurrence", "Test whether hostname contains IP address")
             ("test-non-standard-port", "Test whether URL port is standard (http=80/https=443")
+            ("test-non-standard-tld", "Test whether URL has suspicious TLD")
             ;
 
         auto result = options.parse(argc, argv);
@@ -65,6 +66,7 @@ main(int argc, char **argv)
             url_test.AddTestEncodedChars();
             url_test.AddTestIpAddressOccurrence();
             url_test.AddTestNonStandardPort();
+            url_test.AddTestNonStandardTLD();
         }
         else
         {
@@ -91,6 +93,14 @@ main(int argc, char **argv)
             if (result.count("test-ip-address-occurrence"))
             {
                 url_test.AddTestIpAddressOccurrence();
+            }
+            if (result.count("test-non-standard-port"))
+            {
+                url_test.AddTestNonStandardPort();
+            }
+            if (result.count("test-non-standard-tld"))
+            {
+                url_test.AddTestNonStandardTLD();
             }
         }
 
