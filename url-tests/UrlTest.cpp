@@ -57,7 +57,7 @@ int UrlTest::PerformTests()
     {
         result += TestEncodedChars();
     }
-    if (m_test_flags & Test::IpAddressOccurence)
+    if (m_test_flags & Test::IpAddressOccurrence)
     {
         result += TestIpAddressOccurrence();
     }
@@ -68,6 +68,10 @@ int UrlTest::PerformTests()
     if (m_test_flags & Test::NonStandardTLD)
     {
         result += TestNonStandardTLD();
+    }
+    if (m_test_flags & Test::ScriptInQuery)
+    {
+        result += TestScriptsInQuery();
     }
     return result;
 }
@@ -233,14 +237,18 @@ int UrlTest::TestEncodedChars()
 void UrlTest::AddTestIpAddressOccurrence()
 {
     std::cout << "Adding test for IP address occurrence.\n";
-    m_test_flags |= Test::IpAddressOccurence;
+    m_test_flags |= Test::IpAddressOccurrence;
 }
 
 int UrlTest::TestIpAddressOccurrence()
 {
+    std::cout << "Testing IP address in host... ";
+
     // TODO: combine that IP address matches hostname resolving
     Poco::Net::IPAddress ip;
-    return Poco::Net::IPAddress::tryParse(m_sld, ip) ? 1 : 0;
+    int result = Poco::Net::IPAddress::tryParse(m_sld, ip) ? 1 : 0;
+    std::cout << (result ? "FAIL" : "PASS") << std::endl;
+    return result;
 }
 
 void UrlTest::AddTestNonStandardPort()
@@ -251,6 +259,7 @@ void UrlTest::AddTestNonStandardPort()
 
 int UrlTest::TestNonStandardPort()
 {
+    std::cout << "Testing non-standard port... \n";
     if (m_url.getScheme() == "http")
     {
         return m_url.getPort() == 80 ? 1 : 0;
@@ -270,6 +279,7 @@ void UrlTest::AddTestNonStandardTLD()
 
 int UrlTest::TestNonStandardTLD()
 {
+    std::cout << "Testing non-standard TLD... ";
     /*
      * Tato metoda je použitelná hlavně v kombinaci s metodou analýzy obsahu či metodou analýzy
 existence a chování. Nalezneme v URL TLD a snažíme se odvodit, zda není příliš nepravděpodobné,
@@ -279,5 +289,24 @@ nastavení rozhodovacího algoritmu může být užitečná Tabulka 4, která zo
 používaných TLD ve phishingových stránkách pro rok 2013
 
      */
+    std::cout << std::endl;
     return 0;
+}
+
+void UrlTest::AddTestScriptsInQuery()
+{
+    std::cout << "Adding test to checks scripts in query.\n";
+    m_test_flags |= Test::ScriptInQuery;
+}
+
+int UrlTest::TestScriptsInQuery()
+{
+    std::cout << "Testing scripts in query... ";
+    const auto& query = m_url.getQuery();
+    const std::vector<const char*> tags = {"<html>", "<body>", "<form>", "<script>", "<input>", "<iframe>"};
+    long result = std::count_if(tags.begin(), tags.end(), [&](const auto& tag) {
+        return query.find(tag) != std::string::npos;
+    });
+    std::cout << (result ? "FAIL" : "PASS") << std::endl;
+    return result;
 }

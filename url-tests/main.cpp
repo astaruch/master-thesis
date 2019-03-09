@@ -34,6 +34,7 @@ main(int argc, char **argv)
             ("test-ip-address-occurrence", "Test whether hostname contains IP address")
             ("test-non-standard-port", "Test whether URL port is standard (http=80/https=443")
             ("test-non-standard-tld", "Test whether URL has suspicious TLD")
+            ("test-scripts-in-query", "Test whether query contains scripts and is XSS-prone")
             ;
 
         auto result = options.parse(argc, argv);
@@ -67,6 +68,7 @@ main(int argc, char **argv)
             url_test.AddTestIpAddressOccurrence();
             url_test.AddTestNonStandardPort();
             url_test.AddTestNonStandardTLD();
+            url_test.AddTestScriptsInQuery();
         }
         else
         {
@@ -101,6 +103,10 @@ main(int argc, char **argv)
             if (result.count("test-non-standard-tld"))
             {
                 url_test.AddTestNonStandardTLD();
+            }
+            if (result.count("test-scripts-in-query"))
+            {
+                url_test.AddTestScriptsInQuery();
             }
         }
 
