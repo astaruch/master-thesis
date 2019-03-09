@@ -61,6 +61,10 @@ int UrlTest::PerformTests()
     {
         result += TestIpAddressOccurrence();
     }
+    if (m_test_flags & Test::NonStandardPort)
+    {
+        result += TestNonStandardPort();
+    }
     return result;
 }
 
@@ -233,4 +237,23 @@ int UrlTest::TestIpAddressOccurrence()
     // TODO: combine that IP address matches hostname resolving
     Poco::Net::IPAddress ip;
     return Poco::Net::IPAddress::tryParse(m_sld, ip) ? 1 : 0;
+}
+
+void UrlTest::AddTestNonStandardPort()
+{
+    std::cout << "Adding test for non standard port.\n";
+    m_test_flags |= Test::NonStandardPort;
+}
+
+int UrlTest::TestNonStandardPort()
+{
+    if (m_url.getScheme() == "http")
+    {
+        return m_url.getPort() == 80 ? 1 : 0;
+    }
+    if (m_url.getScheme() == "https")
+    {
+        return m_url.getPort() == 443 ? 1 : 0;
+    }
+    return 0;
 }

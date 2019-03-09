@@ -14,6 +14,7 @@ public:
         Keywords = 0x8,
         EncodedChars = 0x10,
         IpAddressOccurence = 0x20,
+        NonStandardPort = 0x40,
     };
 
     UrlTest();
@@ -26,6 +27,7 @@ public:
     void AddTestKeywords(const std::string& keywords);
     void AddTestEncodedChars();
     void AddTestIpAddressOccurrence();
+    void AddTestNonStandardPort();
 
     int PerformTests();
 
@@ -49,6 +51,7 @@ private:
     int TestKeywords();
     int TestEncodedChars();
     int TestIpAddressOccurrence();
+    int TestNonStandardPort();
 
     int TestPunyCode();
     int TestPercentEncoding();

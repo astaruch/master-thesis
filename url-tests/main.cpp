@@ -32,6 +32,7 @@ main(int argc, char **argv)
              cxxopts::value<std::string>()->default_value(def_keywords)->implicit_value(def_keywords))
             ("test-encoded-url", "Test whether URL contains encoded characters")
             ("test-ip-address-occurrence", "Test whether hostname contains IP address")
+            ("test-non-standard-port", "Test whether URL port is standard (http=80/https=443")
             ;
 
         auto result = options.parse(argc, argv);
@@ -63,6 +64,7 @@ main(int argc, char **argv)
             url_test.AddTestKeywords(result["test-keywords"].as<std::string>());
             url_test.AddTestEncodedChars();
             url_test.AddTestIpAddressOccurrence();
+            url_test.AddTestNonStandardPort();
         }
         else
         {
