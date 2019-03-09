@@ -25,11 +25,14 @@ public:
     void AddTestKeywords(const std::string& keywords);
     void AddTestEncodedChars();
 
-    int PerformtTests();
+    int PerformTests();
 
 private:
-    Poco::URI m_url;
-    std::string m_raw_url;
+    Poco::URI m_url; //!< Parsed URL object
+    std::string m_raw_url; //!< Raw URL
+    std::string m_tld; //!< Top level domain
+    //! Labels (or component) of hostname. If www.inf.ed.ac.uk, then m_tld = uk, m_labels[0] = ac, m_labels[1] = ed, ...
+    std::vector<std::string> m_components;
 
     int m_test_url_length;
     int m_test_url_depth;
@@ -42,6 +45,9 @@ private:
     int TestSpecialChars();
     int TestKeywords();
     int TestEncodedChars();
+
+    int TestPunyCode();
+    int TestPercentEncoding();
 };
 
 #endif //URL_TESTS_URLTEST_H

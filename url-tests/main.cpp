@@ -86,7 +86,7 @@ main(int argc, char **argv)
             }
         }
 
-        int value = url_test.PerformtTests();
+        int value = url_test.PerformTests();
 
         std::cout << "Tests performed. Final weight: " << value << std::endl;
     }
