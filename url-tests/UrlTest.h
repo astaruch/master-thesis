@@ -13,6 +13,7 @@ public:
         SpecialChars = 0x4,
         Keywords = 0x8,
         EncodedChars = 0x10,
+        IpAddressOccurence = 0x20,
     };
 
     UrlTest();
@@ -24,6 +25,7 @@ public:
     void AddTestSpecialChars();
     void AddTestKeywords(const std::string& keywords);
     void AddTestEncodedChars();
+    void AddTestIpAddressOccurrence();
 
     int PerformTests();
 
@@ -31,6 +33,7 @@ private:
     Poco::URI m_url; //!< Parsed URL object
     std::string m_raw_url; //!< Raw URL
     std::string m_tld; //!< Top level domain
+    std::string m_sld; //!< Second level domain
     //! Labels (or component) of hostname. If www.inf.ed.ac.uk, then m_tld = uk, m_labels[0] = ac, m_labels[1] = ed, ...
     std::vector<std::string> m_components;
 
@@ -45,6 +48,7 @@ private:
     int TestSpecialChars();
     int TestKeywords();
     int TestEncodedChars();
+    int TestIpAddressOccurrence();
 
     int TestPunyCode();
     int TestPercentEncoding();

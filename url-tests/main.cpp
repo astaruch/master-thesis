@@ -31,6 +31,7 @@ main(int argc, char **argv)
             ("test-keywords", "Test whether URL contains any from given keywords separated by comma",
              cxxopts::value<std::string>()->default_value(def_keywords)->implicit_value(def_keywords))
             ("test-encoded-url", "Test whether URL contains encoded characters")
+            ("test-ip-address-occurrence", "Test whether hostname contains IP address")
             ;
 
         auto result = options.parse(argc, argv);
@@ -61,6 +62,7 @@ main(int argc, char **argv)
             url_test.AddTestSpecialChars();
             url_test.AddTestKeywords(result["test-keywords"].as<std::string>());
             url_test.AddTestEncodedChars();
+            url_test.AddTestIpAddressOccurrence();
         }
         else
         {
@@ -80,9 +82,13 @@ main(int argc, char **argv)
             {
                 url_test.AddTestKeywords(result["test-keywords"].as<std::string>());
             }
-            if (result.count("test-encoded-cahrs"))
+            if (result.count("test-encoded-chars"))
             {
                 url_test.AddTestEncodedChars();
+            }
+            if (result.count("test-ip-address-occurrence"))
+            {
+                url_test.AddTestIpAddressOccurrence();
             }
         }
 

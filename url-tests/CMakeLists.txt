@@ -4,7 +4,7 @@ project(url_tests)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(cxxopts REQUIRED)
-find_package(Poco REQUIRED Foundation)
+find_package(Poco REQUIRED Foundation Net)
 
 add_executable(
         url_tests

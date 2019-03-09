@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <Poco/StringTokenizer.h>
+#include <Poco/Net/IPAddress.h>
 
 #include "UrlTest.h"
 
@@ -10,7 +11,7 @@ UrlTest::UrlTest()
 {
 }
 
-void UrlTest::SetUrl(const std::string &url)
+void UrlTest::SetUrl(const std::string& url)
 {
     // TODO: add some logger
     std::cout << "Setting up the URL: " << url << "\n";
@@ -19,7 +20,7 @@ void UrlTest::SetUrl(const std::string &url)
     {
         m_url = Poco::URI(url);
     }
-    catch (const Poco::Exception &ex)
+    catch (const Poco::Exception& ex)
     {
         std::cerr << ex.what() << ex.message() << "\n";
     }
@@ -29,6 +30,7 @@ void UrlTest::SetUrl(const std::string &url)
     m_tld = m_components.back();
     m_components.pop_back();
     std::reverse(m_components.begin(), m_components.end()); // reverse it so we have most relevant domain on [0] pos
+    m_sld = m_components.front(); // have a shortcut to second level domain
 }
 
 int UrlTest::PerformTests()
@@ -54,6 +56,10 @@ int UrlTest::PerformTests()
     if (m_test_flags & Test::SpecialChars)
     {
         result += TestEncodedChars();
+    }
+    if (m_test_flags & Test::IpAddressOccurence)
+    {
+        result += TestIpAddressOccurrence();
     }
     return result;
 }
@@ -87,8 +93,8 @@ void UrlTest::AddTestDepth(int depth)
 int UrlTest::TestDepth()
 {
     std::cout << "Testing URL depth... ";
-    const auto &host = m_url.getHost();
-    auto dots = std::count_if(host.begin(), host.end(), [](const char &c) {
+    const auto& host = m_url.getHost();
+    auto dots = std::count_if(host.begin(), host.end(), [](const char& c) {
         return c == '.';
     });
     if (dots > m_test_url_depth)
@@ -125,7 +131,7 @@ int UrlTest::TestSpecialChars()
     // TODO: determine correct values for these special chars
     // TODO: test maybe only www-google-com.info or something like that with special chars
     std::vector<char> special_chars{'@', '/', '?', '.', '=', '-', '_'};
-    for (const auto &c: special_chars)
+    for (const auto& c: special_chars)
     {
         std::cout << c << " ... ";
         if (std::count(m_raw_url.begin(), m_raw_url.end(), c) > 0)
@@ -141,7 +147,7 @@ int UrlTest::TestSpecialChars()
     return result;
 }
 
-void UrlTest::AddTestKeywords(const std::string &keywords)
+void UrlTest::AddTestKeywords(const std::string& keywords)
 {
     std::cout << "Adding test for keywords.\n";
     m_test_flags |= Test::Keywords;
@@ -154,7 +160,7 @@ int UrlTest::TestKeywords()
 {
     std::cout << "Testing keywords in URL... ";
     int result = 0;
-    for (const auto &keyword: m_test_keywords)
+    for (const auto& keyword: m_test_keywords)
     {
         if (m_raw_url.find(keyword) != std::string::npos)
         {
@@ -180,7 +186,6 @@ int UrlTest::TestPunyCode()
         Poco::URI::decode(component, decoded);
         return decoded.size() >= 4 && decoded.substr(0, 4) == "xn--";
     });
-
 
     return result; //TODO: change return type
 }
@@ -215,4 +220,17 @@ int UrlTest::TestEncodedChars()
     int result = TestPercentEncoding() + TestPunyCode();
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     return result;
+}
+
+void UrlTest::AddTestIpAddressOccurrence()
+{
+    std::cout << "Adding test for IP address occurrence.\n";
+    m_test_flags |= Test::IpAddressOccurence;
+}
+
+int UrlTest::TestIpAddressOccurrence()
+{
+    // TODO: combine that IP address matches hostname resolving
+    Poco::Net::IPAddress ip;
+    return Poco::Net::IPAddress::tryParse(m_sld, ip) ? 1 : 0;
 }
