@@ -13,7 +13,6 @@ UrlTest::UrlTest()
 
 void UrlTest::SetUrl(const std::string& url)
 {
-    // TODO: add some logger
     std::cout << "Setting up the URL: " << url << "\n";
     m_raw_url = url;
     try
@@ -31,6 +30,65 @@ void UrlTest::SetUrl(const std::string& url)
     m_components.pop_back();
     std::reverse(m_components.begin(), m_components.end()); // reverse it so we have most relevant domain on [0] pos
     m_sld = m_components.front(); // have a shortcut to second level domain
+}
+
+void UrlTest::AddTestLength(int length)
+{
+    std::cout << "Adding test for length (" << length << ").\n";
+    m_test_flags |= Test::Length;
+    m_test_url_length = length;
+}
+
+void UrlTest::AddTestDepth(int depth)
+{
+    std::cout << "Adding test for depth (" << depth << ").\n";
+    m_test_flags |= Test::Depth;
+    m_test_url_depth = depth;
+}
+
+void UrlTest::AddTestSpecialChars()
+{
+    std::cout << "Adding test for special characters.\n";
+    m_test_flags |= Test::SpecialChars;
+}
+
+void UrlTest::AddTestKeywords(const std::string& keywords)
+{
+    std::cout << "Adding test for keywords.\n";
+    m_test_flags |= Test::Keywords;
+
+    auto tokens = Poco::StringTokenizer(keywords, ",");
+    m_test_keywords = std::vector<std::string>(tokens.begin(), tokens.end());
+}
+
+void UrlTest::AddTestEncodedChars()
+{
+    std::cout << "Adding test for encoded characters.\n";
+    m_test_flags |= Test::EncodedChars;
+}
+
+void UrlTest::AddTestIpAddressOccurrence()
+{
+    std::cout << "Adding test for IP address occurrence.\n";
+    m_test_flags |= Test::IpAddressOccurrence;
+}
+
+void UrlTest::AddTestNonStandardTLD()
+{
+    std::cout << "Adding test for non standard TLD.\n";
+    m_test_flags |= Test::NonStandardTLD;
+}
+
+void UrlTest::AddTestScriptsInQuery()
+{
+    std::cout << "Adding test to checks scripts in query.\n";
+    m_test_flags |= Test::ScriptInQuery;
+}
+
+void UrlTest::AddTestCharsFrequency()
+{
+    std::cout << "Adding test to check character frequency.\n";
+    m_test_flags |= Test::CharsFrequency;
 }
 
 int UrlTest::PerformTests()
@@ -80,13 +138,6 @@ int UrlTest::PerformTests()
     return result;
 }
 
-void UrlTest::AddTestLength(int length)
-{
-    std::cout << "Adding test for length (" << length << ").\n";
-    m_test_flags |= Test::Length;
-    m_test_url_length = length;
-}
-
 int UrlTest::TestLength()
 {
     std::cout << "Testing URL length... ";
@@ -97,13 +148,6 @@ int UrlTest::TestLength()
     }
     std::cout << "PASS\n";
     return 0;
-}
-
-void UrlTest::AddTestDepth(int depth)
-{
-    std::cout << "Adding test for depth (" << depth << ").\n";
-    m_test_flags |= Test::Depth;
-    m_test_url_depth = depth;
 }
 
 int UrlTest::TestDepth()
@@ -120,12 +164,6 @@ int UrlTest::TestDepth()
     }
     std::cout << "PASS\n";
     return 0;
-}
-
-void UrlTest::AddTestSpecialChars()
-{
-    std::cout << "Adding test for special characters.\n";
-    m_test_flags |= Test::SpecialChars;
 }
 
 int UrlTest::TestSpecialChars()
@@ -163,15 +201,6 @@ int UrlTest::TestSpecialChars()
     return result;
 }
 
-void UrlTest::AddTestKeywords(const std::string& keywords)
-{
-    std::cout << "Adding test for keywords.\n";
-    m_test_flags |= Test::Keywords;
-
-    auto tokens = Poco::StringTokenizer(keywords, ",");
-    m_test_keywords = std::vector<std::string>(tokens.begin(), tokens.end());
-}
-
 int UrlTest::TestKeywords()
 {
     std::cout << "Testing keywords in URL... ";
@@ -185,12 +214,6 @@ int UrlTest::TestKeywords()
     }
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     return result;
-}
-
-void UrlTest::AddTestEncodedChars()
-{
-    std::cout << "Adding test for encoded characters.\n";
-    m_test_flags |= Test::EncodedChars;
 }
 
 int UrlTest::TestPunyCode()
@@ -238,12 +261,6 @@ int UrlTest::TestEncodedChars()
     return result;
 }
 
-void UrlTest::AddTestIpAddressOccurrence()
-{
-    std::cout << "Adding test for IP address occurrence.\n";
-    m_test_flags |= Test::IpAddressOccurrence;
-}
-
 int UrlTest::TestIpAddressOccurrence()
 {
     std::cout << "Testing IP address in host... ";
@@ -275,12 +292,6 @@ int UrlTest::TestNonStandardPort()
     return 0;
 }
 
-void UrlTest::AddTestNonStandardTLD()
-{
-    std::cout << "Adding test for non standard TLD.\n";
-    m_test_flags |= Test::NonStandardTLD;
-}
-
 int UrlTest::TestNonStandardTLD()
 {
     std::cout << "Testing non-standard TLD... ";
@@ -297,12 +308,6 @@ používaných TLD ve phishingových stránkách pro rok 2013
     return 0;
 }
 
-void UrlTest::AddTestScriptsInQuery()
-{
-    std::cout << "Adding test to checks scripts in query.\n";
-    m_test_flags |= Test::ScriptInQuery;
-}
-
 int UrlTest::TestScriptsInQuery()
 {
     std::cout << "Testing scripts in query... ";
@@ -313,12 +318,6 @@ int UrlTest::TestScriptsInQuery()
     });
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     return result;
-}
-
-void UrlTest::AddTestCharsFrequency()
-{
-    std::cout << "Adding test to check character frequency.\n";
-    m_test_flags |= Test::CharsFrequency;
 }
 
 int UrlTest::TestCharsFrequency()
