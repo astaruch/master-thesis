@@ -13,13 +13,20 @@ main(int argc, char **argv)
             .positional_help("[optional args]")
             .show_positional_help();
 
-        options.add_options()
-            ("h,help", "Print help")
-            ("u,url", "URL", cxxopts::value<std::string>()->default_value(""));
 
         const std::string def_length = "53";
         const std::string def_depth = "5";
         const std::string def_keywords = "webscr,secure,banking,ebayisapi,account,confirm,login,signin";
+
+        options.add_options("General")
+            ("h,help", "Print help")
+            ("u,url", "URL", cxxopts::value<std::string>()->default_value(""))
+            ("cmdline", "Whether application will take URL input from a commandline")
+            ("socket", "Whether application will listen for URLs on socket")
+            ("icap", "Whether application will work as ICAP server")
+            ("rest", "Whether application will communicate through REST API")
+            ("a,address", "Address where application will listen", cxxopts::value<std::string>())
+                ;
 
         options.add_options("Test")
             ("test-all", "Perform all tests with")
@@ -29,36 +36,25 @@ main(int argc, char **argv)
              cxxopts::value<int>()->implicit_value("5")->default_value("5"))
             ("test-special-chars", "Test whether URL has some special characters")
             ("test-keywords", "Test whether URL contains any from given keywords separated by comma",
-             cxxopts::value<std::string>()->default_value(def_keywords)->implicit_value(def_keywords))
+             cxxopts::value<std::string>()->implicit_value(def_keywords)->default_value(""))
             ("test-encoded-url", "Test whether URL contains encoded characters")
             ("test-ip-address-occurrence", "Test whether hostname contains IP address")
             ("test-non-standard-port", "Test whether URL port is standard (http=80/https=443")
             ("test-non-standard-tld", "Test whether URL has suspicious TLD")
             ("test-scripts-in-query", "Test whether query contains scripts and is XSS-prone")
             ("test-chars-frequency", "Tests characters frequency in a domain name")
-            ;
+                ;
+
 
         auto result = options.parse(argc, argv);
 
         if (result.count("help") || result.count("h"))
         {
-            std::cout << options.help({"", "Test"}) << std::endl;
+            std::cout << options.help({"General", "Test"}) << std::endl;
             return 0;
         }
 
         UrlTest url_test;
-
-        if (result.count("url"))
-        {
-            url_test.SetUrl(result["url"].as<std::string>());
-        }
-        else
-        {
-            std::cerr << "Invalid URL\n";
-            std::cout << options.help({"", "Test"}) << std::endl;
-            return 1;
-        }
-
         if (result.count("test-all"))
         {
             url_test.AddTestLength(result["test-length"].as<int>());
@@ -116,9 +112,50 @@ main(int argc, char **argv)
             }
         }
 
-        int value = url_test.PerformTests();
+        if (result.count("cmdline"))
+        {
+            std::cout << "Starting app for one URL from commandline\n";
+            if (result.count("url"))
+            {
+                url_test.SetUrl(result["url"].as<std::string>());
+            }
+            else
+            {
+                std::cerr << "Invalid URL\n";
+                std::cout << options.help({"General"}) << std::endl;
+                return 1;
+            }
 
-        std::cout << "Tests performed. Final weight: " << value << std::endl;
+            int value = url_test.PerformTests();
+
+            std::cout << "Tests performed. Final weight: " << value << std::endl;
+            return 0;
+        }
+
+        if (result.count("socket"))
+        {
+            std::string address;
+            if (result.count("address"))
+            {
+                address = result["address"].as<std::string>();
+            } else
+            {
+                std::cerr << "Please enter address for socket...\n";
+                std::cerr << options.help({"General"}) << std::endl;
+                return 1;
+            }
+            std::cout << "Listening on address '" << address << "'...\n";
+        }
+
+        if (result.count("icap"))
+        {
+            std::cout << "Not implemented yet...\n";
+            return 0;
+        }
+
+
+
+
     }
     catch (const cxxopts::OptionException &e)
     {
