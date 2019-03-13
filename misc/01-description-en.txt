@@ -6,10 +6,12 @@ Description:
 
 The goal of this master's thesis is to design and implement a system,
 which will compute potential risk for a given URL. The computation of
-potentional risk is based on extendable series of individual tests suites and the result
-of weighted tests is number called 'phishing score'. Based on this number, application can automatically
-allow or block this communication. Optionally, the end user could be warned and
+potential risk is based on extendable series of individual test suites,
+and the result of weighted tests is a number called 'phishing score'.
+Based on this number, the application can automatically allow or block
+the given communication. Optionally, the end user could be warned and
 decide if he wants to proceed to this website.
+
 
 The source for tests should be this following work:
 https://is.muni.cz/auth/th/dyi2v/Diplomova_prace.pdf
