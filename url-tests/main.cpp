@@ -1,10 +1,15 @@
 #include <iostream>
-#include <cxxopts.hpp>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+#include <cxxopts.hpp>
+#include <zconf.h>
 #include "UrlTest.h"
 
-int
-main(int argc, char **argv)
+
+int main(int argc, char **argv)
 {
     try
     {
@@ -25,7 +30,7 @@ main(int argc, char **argv)
             ("socket", "Whether application will listen for URLs on socket")
             ("icap", "Whether application will work as ICAP server")
             ("rest", "Whether application will communicate through REST API")
-            ("a,address", "Address where application will listen", cxxopts::value<std::string>())
+            ("a,address", "Port on where application will listen", cxxopts::value<std::string>())
                 ;
 
         options.add_options("Test")
@@ -114,15 +119,14 @@ main(int argc, char **argv)
 
         if (result.count("cmdline"))
         {
-            std::cout << "Starting app for one URL from commandline\n";
+            std::cout << "Starting app for one URL from commandline...\n";
             if (result.count("url"))
             {
                 url_test.SetUrl(result["url"].as<std::string>());
             }
             else
             {
-                std::cerr << "Invalid URL\n";
-                std::cout << options.help({"General"}) << std::endl;
+                std::cerr << "ERROR: Invalid URL...\n\n";
                 return 1;
             }
 
@@ -140,11 +144,74 @@ main(int argc, char **argv)
                 address = result["address"].as<std::string>();
             } else
             {
-                std::cerr << "Please enter address for socket...\n";
+                std::cerr << "Please enter port for socket...\n";
                 std::cerr << options.help({"General"}) << std::endl;
                 return 1;
             }
             std::cout << "Listening on address '" << address << "'...\n";
+
+            int sockfd, newsockfd, portno, clilen;
+            char buffer[256];
+            struct sockaddr_in serv_addr{};
+            struct sockaddr_in cli_addr{};
+            int  n;
+
+            /* First call to socket() function */
+            sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+            if (sockfd < 0) {
+                perror("ERROR opening socket");
+                exit(1);
+            }
+
+            /* Initialize socket structure */
+            bzero((char *) &serv_addr, sizeof(serv_addr));
+            portno = std::stoi(address);
+
+            serv_addr.sin_family = AF_INET;
+            serv_addr.sin_addr.s_addr = INADDR_ANY;
+            serv_addr.sin_port = htons(portno);
+
+            /* Now bind the host address using bind() call.*/
+            if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+                perror("ERROR on binding");
+                exit(1);
+            }
+
+            /* Now start listening for the clients, here process will
+               * go in sleep mode and will wait for the incoming connection
+            */
+
+            listen(sockfd,5);
+            clilen = sizeof(cli_addr);
+
+            /* Accept actual connection from the client */
+            newsockfd = accept(sockfd, nullptr, nullptr);
+
+            if (newsockfd < 0) {
+                perror("ERROR on accept");
+                exit(1);
+            }
+
+            /* If connection is established then start communicating */
+            bzero(buffer,256);
+            n = read( newsockfd,buffer,255 );
+
+            if (n < 0) {
+                perror("ERROR reading from socket");
+                exit(1);
+            }
+
+            printf("Here is the message: %s\n",buffer);
+
+            /* Write a response to the client */
+            n = write(newsockfd,"I got your message",18);
+
+            if (n < 0) {
+                perror("ERROR writing to socket");
+                exit(1);
+            }
+
         }
 
         if (result.count("icap"))
