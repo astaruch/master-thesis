@@ -72,6 +72,7 @@ int main(int argc, const char** argv)
             break;
         }
 
+        std::cout << strInputURL << std::endl;
         if (-1 == send(sock, strInputURL.c_str(), strInputURL.size(), 0))
         {
             std::cerr << "send failed\n";
