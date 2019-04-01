@@ -147,25 +147,20 @@ int main(int argc, char **argv)
             } else
             {
                 std::cerr << "Please enter port for socket...\n";
-//                std::cerr << options.help({"General"}) << std::endl;
                 return 1;
             }
-            std::cout << "Listening on localhost:'" << nPort << "'...\n";
+            std::cout << "Listening on localhost:" << nPort << "\n";
             int server_fd, new_socket;
             struct sockaddr_in server_address{};
             int opt = 1;
             int addrlen = sizeof(server_address);
-            char buffer[1024] = {0};
-            const char *hello = "Hello from server";
 
-            std::cout << "socket()\n";
             if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
             {
                 std::cerr << "Socket failed\n";
                 return -1;
             }
 
-            std::cout << "setsockopt()\n";
             if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
                            &opt, sizeof(opt)))
             {
@@ -177,49 +172,29 @@ int main(int argc, char **argv)
             server_address.sin_addr.s_addr = INADDR_ANY;
             server_address.sin_port = htons(nPort);
 
-            std::cout << "bind()\n";
             if (-1 == bind(server_fd, (struct sockaddr *)&server_address, sizeof(server_address)))
             {
                 std::cout << "bind failed\n";
                 return -1;
             }
 
-            std::cout << "listen()\n";
             if (-1 == listen(server_fd, 3))
             {
                 std::cerr << "listen failed\n";
                 return -1;
             }
 
-            std::cout << "accept()\n";
             if (-1 == (new_socket = accept(server_fd, (struct sockaddr *)&server_address, (socklen_t*)&addrlen)))
             {
                 std::cerr << "accept failed\n";
                 return -1;
             }
-            std::cout << "read()\n";
-            if (0 >= read( new_socket , buffer, 1024))
-            {
-                std::cerr << "read failed\n";
-                return -1;
-            }
-            std::cout << buffer << std::endl;
-
-            std::cout << "send()\n";
-            if (0 >= send(new_socket , hello , strlen(hello) , 0 ))
-            {
-                std::cerr << "send failed\n";
-                return -1;
-            }
-
-            memset(buffer, 0, 1024);
+            char buffer[1024] = {0};
             while (0 < read(new_socket, buffer, 1024))
             {
-                std::cout << "Testing '" << buffer << "'\n";
                 url_test.SetUrl(std::string(buffer));
                 int value = url_test.PerformTests();
                 std::cout << "Tests performed. Final weight: " << value << std::endl;
-
                 std::string strBuffer = std::to_string(value);
 
                 if (-1 == send(new_socket, strBuffer.c_str(), strBuffer.size(), 0))

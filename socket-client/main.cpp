@@ -34,22 +34,18 @@ int main(int argc, const char** argv)
         return -1;
     }
 
-    std::cout << "Client socket application. Connect to localhost:" << nPort << std::endl;
+    std::cout << "Connecting to localhost:" << nPort << std::endl;
 
-    struct sockaddr_in address{};
     struct sockaddr_in server_address{};
     int sock = 0;
-    const char* hello = "Hello from client";
-    char buffer[1024] = {0};
 
-    std::cout << "socket()\n";
     if (-1 == (sock = socket(AF_INET, SOCK_STREAM, 0)))
     {
         std::cerr << "Socket creation error. Exiting...\n";
         return -1;
     }
 
-    memset(&server_address, '0', sizeof(server_address));
+    memset(&server_address, 0, sizeof(server_address));
 
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(nPort);
@@ -61,29 +57,13 @@ int main(int argc, const char** argv)
         return -1;
     }
 
-    std::cout << "connect()\n";
     if (-1 == connect(sock, (struct sockaddr *)&server_address, sizeof(server_address)))
     {
         std::cerr << "connect failed\n";
         return -1;
     }
 
-    std::cout << "send() hello\n";
-    if (-1 == send(sock, hello, strlen(hello), 0))
-    {
-        std::cerr << "send failed\n";
-        return -1;
-    }
-
-    std::cout << "read()\n";
-    if (0 >= read(sock, buffer, 1024))
-    {
-        std::cerr << "read failed\n";
-        return -1;
-    }
-    std::cout << buffer << std::endl;
-    memset(buffer, 0, 1024);
-
+    char buffer[1024] = {0};
     std::string strInputURL;
     while (std::cin >> strInputURL)
     {
@@ -92,14 +72,12 @@ int main(int argc, const char** argv)
             break;
         }
 
-        std::cout << "checking: " << strInputURL << std::endl;
         if (-1 == send(sock, strInputURL.c_str(), strInputURL.size(), 0))
         {
             std::cerr << "send failed\n";
             return -1;
         }
 
-        std::cout << "waiting for response...\n";
         if (0 >= read(sock, buffer, 1024))
         {
             std::cerr << "read failed\n";
