@@ -139,79 +139,78 @@ int main(int argc, char **argv)
         if (result.count("socket"))
         {
             std::string address;
+            uint16_t nPort = 0;
             if (result.count("address"))
             {
                 address = result["address"].as<std::string>();
+                nPort = std::stoi(address);
             } else
             {
                 std::cerr << "Please enter port for socket...\n";
-                std::cerr << options.help({"General"}) << std::endl;
+//                std::cerr << options.help({"General"}) << std::endl;
                 return 1;
             }
-            std::cout << "Listening on address '" << address << "'...\n";
+            std::cout << "Listening on localhost:'" << nPort << "'...\n";
+            int server_fd, new_socket;
+            struct sockaddr_in server_address{};
+            int opt = 1;
+            int addrlen = sizeof(server_address);
+            char buffer[1024] = {0};
+            const char *hello = "Hello from server";
 
-            int sockfd, newsockfd, portno, clilen;
-            char buffer[256];
-            struct sockaddr_in serv_addr{};
-            struct sockaddr_in cli_addr{};
-            int  n;
-
-            /* First call to socket() function */
-            sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-            if (sockfd < 0) {
-                perror("ERROR opening socket");
-                exit(1);
+            std::cout << "socket()\n";
+            if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+            {
+                std::cerr << "Socket failed\n";
+                return -1;
             }
 
-            /* Initialize socket structure */
-            bzero((char *) &serv_addr, sizeof(serv_addr));
-            portno = std::stoi(address);
-
-            serv_addr.sin_family = AF_INET;
-            serv_addr.sin_addr.s_addr = INADDR_ANY;
-            serv_addr.sin_port = htons(portno);
-
-            /* Now bind the host address using bind() call.*/
-            if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-                perror("ERROR on binding");
-                exit(1);
+            std::cout << "setsockopt()\n";
+            if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+                           &opt, sizeof(opt)))
+            {
+                std::cerr << "setsockopt failed\n";
+                return -1;
             }
 
-            /* Now start listening for the clients, here process will
-               * go in sleep mode and will wait for the incoming connection
-            */
+            server_address.sin_family = AF_INET;
+            server_address.sin_addr.s_addr = INADDR_ANY;
+            server_address.sin_port = htons(nPort);
 
-            listen(sockfd,5);
-            clilen = sizeof(cli_addr);
-
-            /* Accept actual connection from the client */
-            newsockfd = accept(sockfd, nullptr, nullptr);
-
-            if (newsockfd < 0) {
-                perror("ERROR on accept");
-                exit(1);
+            std::cout << "bind()\n";
+            if (-1 == bind(server_fd, (struct sockaddr *)&server_address, sizeof(server_address)))
+            {
+                std::cout << "bind failed\n";
+                return -1;
             }
 
-            /* If connection is established then start communicating */
-            bzero(buffer,256);
-            n = read( newsockfd,buffer,255 );
-
-            if (n < 0) {
-                perror("ERROR reading from socket");
-                exit(1);
+            std::cout << "listen()\n";
+            if (-1 == listen(server_fd, 3))
+            {
+                std::cerr << "listen failed\n";
+                return -1;
             }
 
-            printf("Here is the message: %s\n",buffer);
-
-            /* Write a response to the client */
-            n = write(newsockfd,"I got your message",18);
-
-            if (n < 0) {
-                perror("ERROR writing to socket");
-                exit(1);
+            std::cout << "accept()\n";
+            if (-1 == (new_socket = accept(server_fd, (struct sockaddr *)&server_address, (socklen_t*)&addrlen)))
+            {
+                std::cerr << "accept failed\n";
+                return -1;
             }
+            std::cout << "read()\n";
+            if (0 >= read( new_socket , buffer, 1024))
+            {
+                std::cerr << "read failed\n";
+                return -1;
+            }
+            std::cout << buffer << std::endl;
 
+            std::cout << "send()\n";
+            if (0 >= send(new_socket , hello , strlen(hello) , 0 ))
+            {
+                std::cerr << "send failed\n";
+                return -1;
+            }
         }
 
         if (result.count("icap"))
