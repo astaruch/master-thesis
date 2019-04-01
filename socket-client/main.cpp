@@ -61,14 +61,14 @@ int main(int argc, const char** argv)
         return -1;
     }
 
-    std::cout << "connect().\n";
+    std::cout << "connect()\n";
     if (-1 == connect(sock, (struct sockaddr *)&server_address, sizeof(server_address)))
     {
         std::cerr << "connect failed\n";
         return -1;
     }
 
-    std::cout << "send()\n";
+    std::cout << "send() hello\n";
     if (-1 == send(sock, hello, strlen(hello), 0))
     {
         std::cerr << "send failed\n";
@@ -82,6 +82,32 @@ int main(int argc, const char** argv)
         return -1;
     }
     std::cout << buffer << std::endl;
+    memset(buffer, 0, 1024);
+
+    std::string strInputURL;
+    while (std::cin >> strInputURL)
+    {
+        if (strInputURL == "exit")
+        {
+            break;
+        }
+
+        std::cout << "checking: " << strInputURL << std::endl;
+        if (-1 == send(sock, strInputURL.c_str(), strInputURL.size(), 0))
+        {
+            std::cerr << "send failed\n";
+            return -1;
+        }
+
+        std::cout << "waiting for response...\n";
+        if (0 >= read(sock, buffer, 1024))
+        {
+            std::cerr << "read failed\n";
+            return -1;
+        }
+        std::cout << buffer << std::endl;
+        memset(buffer, 0, 1024);
+    }
 
     std::cout << "close()\n";
     if (-1 == close(sock))

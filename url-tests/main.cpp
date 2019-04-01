@@ -211,6 +211,24 @@ int main(int argc, char **argv)
                 std::cerr << "send failed\n";
                 return -1;
             }
+
+            memset(buffer, 0, 1024);
+            while (0 < read(new_socket, buffer, 1024))
+            {
+                std::cout << "Testing '" << buffer << "'\n";
+                url_test.SetUrl(std::string(buffer));
+                int value = url_test.PerformTests();
+                std::cout << "Tests performed. Final weight: " << value << std::endl;
+
+                std::string strBuffer = std::to_string(value);
+
+                if (-1 == send(new_socket, strBuffer.c_str(), strBuffer.size(), 0))
+                {
+                    std::cerr << "send failed\n";
+                    return -1;
+                }
+                memset(buffer, 0, 1024);
+            }
         }
 
         if (result.count("icap"))
