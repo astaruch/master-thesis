@@ -10,3 +10,6 @@ end_of_line = lf
 
 [*.{js,ts,jsx,tsx,json}]
 indent_size = 2
+
+[*.{yaml,yml}]
+indent_size = 2
