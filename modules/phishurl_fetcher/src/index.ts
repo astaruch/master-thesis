@@ -5,14 +5,6 @@ import { Phishtank } from './entity/Phishtank'
 
 createConnection().then(async connection => {
   console.log('Inserting a new record into the database...')
-  // 6014538,
-  // https://outletdeprimaveira.com/index.php?produto=489466851,
-  // http://www.phishtank.com/phish_detail.php?phish_id=6014538,
-  // 2019-04-17T20:36:17+00:00,
-  // yes,
-  // 2019-04-17T20:37:05+00:00,
-  // yes,
-  // Other
 
   const phishtankRecord = new Phishtank()
   phishtankRecord.phishId = 6014538

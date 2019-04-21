@@ -4,7 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "test",
-   "database": "phishing-detecetion",
+   "database": "phishing-detection",
    "synchronize": true,
    "logging": false,
    "entities": [

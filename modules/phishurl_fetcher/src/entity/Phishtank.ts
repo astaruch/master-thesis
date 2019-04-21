@@ -9,14 +9,14 @@ export class Phishtank {
    * The ID number by which Phishtank refers to a phish submission.
    * All data in PhishTank is tied to this ID. This will always be a positive integer
    */
-  @Column()
+  @Column({ name: 'phish_id' })
   public phishId: number
 
   /**
    * PhishTank detail url for the phish, where you can view data about
    * the phish, including a screenshot and the community votes.
    */
-  @Column()
+  @Column({ name: 'phish_detail_url' })
   public phishDetailUrl: string
 
   /**
@@ -29,14 +29,14 @@ export class Phishtank {
    * The date and time at which this phish was reported to Phishtank.
    * This is an ISO 8601 formatted date.
    */
-  @Column('timestamp with time zone')
+  @Column({ type: 'timestamp with time zone', name: 'submission_time' })
   public submssionTime: string
 
   /**
    * The date and time at which the phish was verified as valid by our community.
    * This is an ISO 8601 formatted date.
    */
-  @Column('timestamp with time zone')
+  @Column({ type: 'timestamp with time zone', name: 'verification_time' })
   public verificationTime: string
 
   /**
@@ -54,6 +54,6 @@ export class Phishtank {
   /**
    * The date and time at which this phish was taken down from the internet.
    */
-  @Column({ type: 'timestamp with time zone', nullable: true })
+  @Column({ type: 'timestamp with time zone', name: 'end_time', nullable: true })
   public endTime: string
 }
