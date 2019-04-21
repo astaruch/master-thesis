@@ -5,8 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts",
-    "lint": "eslint ./src"
+    "build": "tsc",
+    "server": "ts-node src/index.ts",
+    "start": "nodemon",
+    "lint": "eslint --ext js,ts,jsx,tsx ./src"
+  },
+  "engines": {
+    "node": ">=8.3.0"
   },
   "author": "Andrej Staruch",
   "license": "ISC",
@@ -16,15 +21,28 @@
     "typeorm": "^0.2.16"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-decorators": "^7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
     "@strv/eslint-config-node": "^1.0.4",
     "@strv/eslint-config-typescript": "^1.0.4",
     "@types/node": "^11.13.6",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-module-resolver": "^3.2.0",
     "eslint": "^5.16.0",
+    "install": "^0.12.2",
     "nodemon": "^1.18.11",
+    "npm": "^6.9.0",
     "pino": "^5.12.2",
     "pino-pretty": "^2.6.1",
     "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
     "typescript": "^3.4.4"
   }
 }
