@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "serve": "ts-node src/index.ts",
+    "serve": "ts-node src/index.ts | pino-pretty",
     "start": "nodemon",
     "lint": "eslint --ext js,ts,jsx,tsx ./src",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
@@ -32,6 +32,7 @@
     "@strv/eslint-config-node": "^1.0.4",
     "@strv/eslint-config-typescript": "^1.0.4",
     "@types/node": "^11.13.6",
+    "@types/pino": "^5.8.6",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "babel-cli": "^6.26.0",
