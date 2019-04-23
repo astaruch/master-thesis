@@ -24,5 +24,5 @@ export class LastUpdated {
    * The date and time at which was table last updated.
    */
   @Column({ type: 'timestamp with time zone', name: 'last_updated' })
-  public lastUpdated: string
+  public lastUpdated: Date
 }
