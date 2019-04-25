@@ -1,6 +1,8 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-sync */
+/* eslint-disable camelcase */
 import 'reflect-metadata'
 import * as fs from 'fs'
-// import { promisify } from 'util'
 import * as path from 'path'
 import { createConnection } from 'typeorm'
 import pino, { Logger } from 'pino'
@@ -8,16 +10,12 @@ import parse from 'csv-parse/lib/sync'
 import { Phishtank } from './entity/Phishtank'
 import { LastUpdated, TableName } from './entity/LastUpdated'
 
-interface IPhishtankRecordType {
-  // eslint-disable-next-line camelcase
+interface IPhishtankCsvRecordType {
   phish_id: string
   url: string
-  // eslint-disable-next-line camelcase
   phish_detail_url: string
-  // eslint-disable-next-line camelcase
   submission_time: string
   verified: string
-  // eslint-disable-next-line camelcase
   verification_time: string
   online: string
   target: string
@@ -26,90 +24,114 @@ interface IPhishtankRecordType {
 const logger: Logger = pino({})
 
 const run = (): void => {
-  createConnection().then(connection => {
+  createConnection().then(async connection => {
     const dir = path.join(__dirname, '../../../../master-thesis-phishtank-data/data/csv')
-    // eslint-disable-next-line no-sync
     const files = fs.readdirSync(dir)
-
-    const promiseArray = files.map(file => {
-      const fullpath = path.join(dir, file)
-      // eslint-disable-next-line no-sync
+    for (let i = 0; i < files.length; i++) {
+      const fullpath = path.join(dir, files[i])
       if (!fs.statSync(fullpath).isFile()) {
         logger.info(`Skipping non-file: ${fullpath}`)
+        continue
       }
       logger.info(`Parsing ${fullpath}`)
-      return connection.manager.getRepository(LastUpdated)
-        .findOneOrFail({ tableName: TableName.PHISHTANK })
-        .then(lastUpdadedRow => {
-          logger.info(`Before: ${lastUpdadedRow.lastUpdated}`)
-          lastUpdadedRow.lastUpdated.setSeconds(lastUpdadedRow.lastUpdated.getSeconds() + 1)
-          logger.info(`After: ${lastUpdadedRow.lastUpdated}`)
-          return connection.manager.getRepository(LastUpdated).save(lastUpdadedRow).then(() => logger.info('Saved.'))
-        })
-    })
+      let lastDate
+      try {
+        const lastUpdatedRow = await connection
+          .manager
+          .getRepository(LastUpdated)
+          .findOneOrFail({ tableName: TableName.PHISHTANK })
+        lastDate = lastUpdatedRow.lastUpdated
+      } catch (err) {
+        logger.info('LastUpdate table doesn\'t exists. Using epoch time zero as lastUpdate.')
+        lastDate = new Date(0)
+        await connection
+          .manager
+          .getRepository(LastUpdated)
+          .insert({ tableName: TableName.PHISHTANK, lastUpdated: lastDate.toISOString() })
+      }
 
-    Promise.all(promiseArray).then(() => logger.info('Done.'))
+      // remove '.csv' extension and create same type as in database
+      const currentDate = new Date(files[i].substr(0, files[i].length - 4))
+
+      if (currentDate > lastDate) {
+        logger.info(`Updating database with new csv: ${files[i]}`)
+
+        const phishtankDb = await connection
+          .manager
+          .getRepository(Phishtank)
+          .createQueryBuilder('phishtank')
+          .getMany()
+
+        const phishtankDbIds = phishtankDb
+          .filter(dbRow => dbRow)
+          .map(dbRow => dbRow.phishId)
+
+        const phishtankDbOnlineIds = phishtankDb
+          .filter(dbRow => dbRow && dbRow.online)
+          .map(dbRow => dbRow.phishId)
+
+        const csvContent = fs.readFileSync(fullpath)
+        const csvRecords: IPhishtankCsvRecordType[] = parse(csvContent.toString('utf8'), {
+          columns: true,
+          delimiter: ',',
+        })
+        const phishtankCvsIds = csvRecords
+          .filter(csvRow => Boolean(csvRow))
+          .map(csvRow => Number(csvRow.phish_id))
+
+
+        // all IDs in DB set to online and that they aren't in CSV are going to online: false
+        const idsGoesOffline = phishtankDbOnlineIds.filter(dbId => !phishtankCvsIds.includes(dbId))
+        logger.trace(`IDs to set offline: ${idsGoesOffline}`)
+
+        const currentIsoDate = currentDate.toISOString()
+        idsGoesOffline.map(async id => {
+          await connection
+            .manager
+            .getRepository(Phishtank)
+            .update({ phishId: id }, { online: false, endTime: currentIsoDate })
+        })
+
+        const idsToInsert = phishtankCvsIds.filter(csvId => !phishtankDbIds.includes(csvId))
+        logger.trace(`IDS to insert: ${idsToInsert}`)
+        const rowsToInsert = csvRecords.filter(csvRow =>
+          csvRow && idsToInsert.includes(Number(csvRow.phish_id)))
+
+        logger.trace(`Rows to insert: ${rowsToInsert}`)
+        const rowsIntoDb: Phishtank[] = rowsToInsert.map(row => ({
+          phishId: Number(row.phish_id),
+          url: row.url,
+          phishDetailUrl: row.phish_detail_url,
+          submissionTime: row.submission_time,
+          verificationTime: row.verification_time,
+          online: Boolean(row.online),
+          target: row.target,
+        }))
+
+        // insert only 1k rows at once
+        let rowsIntoDbSmaller = rowsIntoDb.splice(0, 1000)
+        while (rowsIntoDbSmaller.length > 0) {
+          logger.info(`Inserting ${rowsIntoDbSmaller.length} rows.`)
+          await connection
+            .manager
+            .getRepository(Phishtank)
+            .insert(rowsIntoDbSmaller)
+
+          rowsIntoDbSmaller = rowsIntoDb.splice(0, 1000)
+        }
+
+        logger.info(`Updating table lastUpdated to ${currentIsoDate}.`)
+        await connection
+          .manager
+          .getRepository(LastUpdated)
+          .update({ tableName: TableName.PHISHTANK }, { lastUpdated: currentIsoDate })
+
+
+        logger.info('Done.')
+      }
+    }
   })
 }
-
-
-// const promises = files.map(file => {
-//   const fullpath = path.join(dir, file)
-//   // eslint-disable-next-line no-sync
-//   if (!fs.statSync(fullpath).isFile()) {
-//     logger.trace(`Skipping non-file: ${fullpath}`)
-//     // return new Promise(null)
-//   }
-//   logger.info(`Parsing ${fullpath}`)
-
-//   connection.manager
-//     .getRepository(LastUpdated)
-//     .findOneOrFail({ tableName: TableName.PHISHTANK })
-//     .then(lastUpdatedRow => {
-//       logger.info(`Before: ${lastUpdatedRow.lastUpdated}`)
-//       lastUpdatedRow.lastUpdated.setSeconds(lastUpdatedRow.lastUpdated.getSeconds() + 1)
-//       logger.info(`After: ${lastUpdatedRow.lastUpdated}`)
-//       connection.manager.getRepository(LastUpdated).save(lastUpdatedRow).then(async () => {
-//         logger.info('saved')
-//         const ids = await connection.manager
-//           .getRepository(Phishtank)
-//           .createQueryBuilder('phishtank')
-//           .select('phishtank.phishId')
-//           .getMany()
-//         logger.info(ids[0])
-
-//         // eslint-disable-next-line no-sync
-//         const csvContent = fs.readFileSync(fullpath)
-//         const newRecords: IPhishtankRecordType[] = parse(csvContent.toString('utf8'), {
-//           columns: true,
-//           delimiter: ',',
-//         })
-//       })
-//     })
-// })
-// }
-// })
-
-// const phishtankRecord = new Phishtank()
-// phishtankRecord.phishId = 6014538
-// phishtankRecord.url = 'https://outletdeprimaveira.com/index.php?produto=489466851'
-// phishtankRecord.phishDetailUrl = 'http://www.phishtank.com/phish_detail.php?phish_id=6014538'
-// phishtankRecord.submssionTime = '2019-04-17T20:36:17+00:00'
-// phishtankRecord.verificationTime = '2019-04-17T20:37:05+00:00'
-// phishtankRecord.online = true
-// phishtankRecord.target = 'Other'
-
-
-// await connection.manager.save(phishtankRecord)
-// logger.info(`Saved a new user with id: ${phishtankRecord.id}`)
-
-// logger.info('Loading users from the database...')
-// const records = await connection.manager.find(Phishtank)
-// logger.info('Loaded users: ', records)
-
-// logger.info('Here you can setup and run express/koa/any other framework.')
-// }).catch(error => logger.info(error))
-// }
 
 if (require.main === module) {
   run()
