@@ -9,7 +9,8 @@
     "serve": "ts-node src/index.ts | pino-pretty",
     "start": "nodemon",
     "lint": "eslint --ext js,ts,jsx,tsx ./src",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migrate": "npm run typeorm migration:run"
   },
   "engines": {
     "node": ">=8.3.0"
