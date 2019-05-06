@@ -66,11 +66,11 @@ const setOfflineIds = (
   })
 }
 
-const insertPhishtankRecordsFromCsv = async (
+const insertPhishtankRecordsFromCsv = (
   manager: EntityManager,
   csvRecords: IPhishtankCsvRecordType[],
   dbIds: number[],
-): Promise<void> => {
+): void => {
   const idsToInsert = csvRecords
     .filter(row => row)
     .map(row => Number(row.phish_id))
