@@ -2,5 +2,5 @@
 .vscode
 .idea
 **/cmake-build-*
-**/data-sets
+old_project_structure/data-sets
 **/code/junk
