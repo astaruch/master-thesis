@@ -1,0 +1,4 @@
+- staci pouzit implementaciu ICAP serveru (nginx/apache/python), nemusim si to sam implementovat
+- nakonfigurovat to tak a pokusit sa to otestovat napr. so squidom
+- pozriet sa co robi squidguard
+- request mode
