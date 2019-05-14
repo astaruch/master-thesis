@@ -64,7 +64,7 @@ Config::get_config()
 void
 Config::set_path(const std::string& path)
 {
-    spdlog::info("Setting a path for config to '{}'.", path);
+    spdlog::info("Setting a path for config to '{}'", path);
     if (m_config && !m_config->m_path.empty()) {
         spdlog::error("Path for config was already set. Path: {}", m_config->m_path);
         return;
@@ -79,27 +79,27 @@ Config::load()
     std::lock_guard<std::mutex> lck(m_mtx);
     auto& cfg = m_config->m_root_node;
     if (!fs::exists(m_config->m_path)) {
-        spdlog::warn("The config file at location '{}' doesn't exist.", m_config->m_path);
+        spdlog::warn("The config file at location '{}' doesn't exist", m_config->m_path);
         auto tmp = load_defaults();
         std::swap(cfg, tmp);
         return;
     }
 
-    spdlog::info("Loading config file from '{}'.", m_config->m_path);
+    spdlog::info("Loading config file from '{}'", m_config->m_path);
     cfg = YAML::LoadFile(m_config->m_path);
     if (m_config->m_root_node.IsNull()) {
-        spdlog::error("The config file is corrupted.");
+        spdlog::error("The config file is corrupted");
         auto tmp = load_defaults();
         std::swap(cfg, tmp);
     }
-    spdlog::info("Config file loaded.");
+    spdlog::info("Config file loaded");
 }
 
 void
 Config::save()
 {
     std::lock_guard<std::mutex> lck(m_mtx);
-    spdlog::info("Saving the configuration into file '{}'.", m_config->m_path);
+    spdlog::info("Saving the configuration into file '{}'", m_config->m_path);
     std::ofstream outputFile(m_config->m_path);
     outputFile << m_config->m_root_node;
 }
@@ -107,19 +107,8 @@ Config::save()
 YAML::Node
 Config::load_defaults()
 {
-    spdlog::info("Loading default config values.");
+    spdlog::info("Loading default config values");
     YAML::Node cfg;
-//    cfg.push_back("tests");
-//    cfg["tests"].push_back("length");
-//    cfg["tests"].push_back("depth");
-//    cfg["tests"].push_back("special_chars");
-//    cfg["tests"].push_back("special_keywords");
-//    cfg["tests"].push_back("hostname_ip");
-//    cfg["tests"].push_back("non_std_port");
-//    cfg["tests"].push_back("non_std_tld");
-//    cfg["tests"].push_back("query_script");
-//    cfg["tests"].push_back("query_html");
-//    cfg["tests"].push_back("chars_freq");
 
     cfg["tests"]["length"]["weight"] = defaults::weights::length;
     cfg["tests"]["length"]["max_length"] = defaults::params::max_length;
