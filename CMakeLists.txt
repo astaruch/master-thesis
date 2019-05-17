@@ -13,11 +13,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 ### PROJECT OPTIONS
 ###
 option(PHISHAPP_BUILD_TESTS "Enable testing" ON)
+find_package(PostgreSQL REQUIRED)
 
 add_executable(
   ${PHISHAPP}
   main.cpp
   libs/config.cpp libs/config.h
+  libs/database.cpp libs/database.h
 )
 
 # From http://www.cmake.org/pipermail/cmake/2010-March/035992.html:
@@ -25,19 +27,19 @@ add_executable(
 # into a single list
 function(add_sources)
   get_property(is_defined GLOBAL PROPERTY SRCS_LIST DEFINED)
-  if(NOT is_defined)
+  if (NOT is_defined)
     define_property(GLOBAL PROPERTY SRCS_LIST
       BRIEF_DOCS "List of source files"
       FULL_DOCS "List of all source files in the entire project")
-  endif()
+  endif ()
   # make absolute paths
   set(SRCS)
-  foreach(s IN LISTS ARGN)
-    if(NOT IS_ABSOLUTE "${s}")
+  foreach (s IN LISTS ARGN)
+    if (NOT IS_ABSOLUTE "${s}")
       get_filename_component(s "${s}" ABSOLUTE)
-    endif()
+    endif ()
     list(APPEND SRCS "${s}")
-  endforeach()
+  endforeach ()
   # append to global list
   set_property(GLOBAL APPEND PROPERTY SRCS_LIST "${SRCS}")
 endfunction(add_sources)
@@ -49,15 +51,16 @@ add_subdirectory(extern)
 add_dependencies(
   ${PHISHAPP}
   yaml-cpp
+  taopq
 )
-
-
 
 target_include_directories(
   ${PHISHAPP}
 
   PRIVATE
   ${YAML_CPP_INCLUDE_DIR}
+  ${PostgreSQL_INCLUDE_DIRS}
+  ${TAOPQ_INCLUDE_DIR}
 
   PUBLIC
   extern/spdlog/include
@@ -68,11 +71,13 @@ target_link_libraries(
 
   stdc++fs
   ${YAML_CPP_LIBRARY}
+  ${PostgreSQL_LIBRARIES}
+  ${TAOPQ_LIBRARY}
 )
 
-if(${PHISHAPP_BUILD_TESTS})
+if (${PHISHAPP_BUILD_TESTS})
   enable_testing()
   add_subdirectory(tests)
-endif()
+endif ()
 
 

@@ -3,6 +3,8 @@ os:
   - linux
 dist: xenial
 
+services: postgresql
+
 matrix:
   include:
     - os: linux
