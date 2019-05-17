@@ -5,6 +5,7 @@
 #include <fstream>
 #include <filesystem>
 #include <mutex>
+#include <thread>
 
 #include <yaml-cpp/yaml.h>
 
@@ -25,6 +26,9 @@ public:
 
     static void
     save();
+
+    static void
+    destroy();
 
     static int
     weight_length()

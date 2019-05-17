@@ -80,8 +80,7 @@ Config::load()
     auto& cfg = m_config->m_root_node;
     if (!fs::exists(m_config->m_path)) {
         spdlog::warn("The config file at location '{}' doesn't exist", m_config->m_path);
-        auto tmp = load_defaults();
-        std::swap(cfg, tmp);
+        cfg = load_defaults();
         return;
     }
 
@@ -89,8 +88,7 @@ Config::load()
     cfg = YAML::LoadFile(m_config->m_path);
     if (m_config->m_root_node.IsNull()) {
         spdlog::error("The config file is corrupted");
-        auto tmp = load_defaults();
-        std::swap(cfg, tmp);
+        cfg = load_defaults();
     }
     spdlog::info("Config file loaded");
 }
@@ -102,6 +100,12 @@ Config::save()
     spdlog::info("Saving the configuration into file '{}'", m_config->m_path);
     std::ofstream outputFile(m_config->m_path);
     outputFile << m_config->m_root_node;
+}
+
+void
+Config::destroy()
+{
+    m_config.reset(nullptr);
 }
 
 YAML::Node
@@ -133,7 +137,6 @@ Config::load_defaults()
     cfg["tests"]["query_html"]["weight"] = defaults::weights::query_html;
 
     cfg["tests"]["chars_freq"]["weight"] = defaults::weights::chars_freq;
-
 
     return cfg;
 }
