@@ -1,9 +1,26 @@
 language: c++
 os:
   - linux
+dist: xenial
 compiler:
   - clang
   - gcc
+
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
 before_script:
   - mkdir build
   - cd build
@@ -11,3 +28,4 @@ before_script:
 script:
   - cmake --build . --target all -- -j 4
   - bin/run_tests
+
