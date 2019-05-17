@@ -1,0 +1,13 @@
+language: c++
+os:
+  - linux
+compiler:
+  - clang
+  - gcc
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+script:
+  - cmake --build . --target all -- -j 4
+  - bin/run_tests

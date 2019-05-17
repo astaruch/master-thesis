@@ -4,7 +4,7 @@ project(gtest_builder NONE)
 include(ExternalProject)
 
 set(GTEST_FORCE_SHARED_CRT ON)
-set(GTEST_DISABLE_PTHREADS OFF)
+set(GTEST_DISABLE_PTHREADS ON)
 set(GTEST_BUILD_TESTS OFF)
 
 ExternalProject_Add(
