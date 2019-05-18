@@ -79,18 +79,35 @@ Config::load()
     std::lock_guard<std::mutex> lck(m_mtx);
     auto& cfg = m_config->m_root_node;
     if (!fs::exists(m_config->m_path)) {
-        spdlog::warn("The config file at location '{}' doesn't exist", m_config->m_path);
+        spdlog::warn("the config file at location '{}' doesn't exist", m_config->m_path);
         cfg = load_defaults();
-        return;
     }
+    else {
+        spdlog::info("loading config file from '{}'", m_config->m_path);
+        cfg = YAML::LoadFile(m_config->m_path);
+        if (m_config->m_root_node.IsNull()) {
+            spdlog::error("the config file is corrupted");
+            cfg = load_defaults();
+        }
+    }
+    spdlog::info("config file loaded");
+    print();
+}
 
-    spdlog::info("Loading config file from '{}'", m_config->m_path);
-    cfg = YAML::LoadFile(m_config->m_path);
-    if (m_config->m_root_node.IsNull()) {
-        spdlog::error("The config file is corrupted");
-        cfg = load_defaults();
-    }
-    spdlog::info("Config file loaded");
+void
+Config::print()
+{
+    spdlog::info("test weight - length: '{}'", weight_length());
+    spdlog::info("test weight - max_depth: '{}'", weight_depth());
+    spdlog::info("test weight - special_chars: '{}'", weight_special_chars());
+    spdlog::info("test weight - special_keywords: '{}'", weight_special_keywords());
+    spdlog::info("test weight - hostname_ip: '{}'", weight_hostname_ip());
+    spdlog::info("test weight - non_std_port: '{}'", weight_non_std_port());
+    spdlog::info("test weight - non_std_tld: '{}'", weight_non_std_tld());
+    spdlog::info("test weight - query_script: '{}'", weight_query_script());
+    spdlog::info("test weight - query_html: '{}'", weight_query_html());
+    spdlog::info("test weight - chars_freq: '{}'", weight_chars_freq());
+    spdlog::info("database connection: '{}'", conn_string());
 }
 
 void
@@ -137,6 +154,8 @@ Config::load_defaults()
     cfg["tests"]["query_html"]["weight"] = defaults::weights::query_html;
 
     cfg["tests"]["chars_freq"]["weight"] = defaults::weights::chars_freq;
+
+    cfg["conn_string"] = "";
 
     return cfg;
 }

@@ -13,7 +13,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 ### PROJECT OPTIONS
 ###
 option(PHISHAPP_BUILD_TESTS "Enable testing" ON)
-find_package(PostgreSQL REQUIRED)
+find_package(PostgreSQL 9.6 REQUIRED)
 
 add_executable(
   ${PHISHAPP}

@@ -30,6 +30,9 @@ public:
     static void
     destroy();
 
+    static void
+    print();
+
     static int
     weight_length()
     {
@@ -88,6 +91,12 @@ public:
     weight_chars_freq()
     {
         return m_config->m_root_node["tests"]["chars_freq"]["weight"].as<int>();
+    }
+
+    static std::string
+    conn_string()
+    {
+        return m_config->m_root_node["conn_string"].as<std::string>();
     }
 
 private:
