@@ -1,0 +1,7 @@
+Cieľom tejto práce je navrhnúť a implementovať systém, ktorý vyhodnotí
+rizikovosť zadanej URL adresy. Výpočet bude založený na sérií rozšíriteľných
+individuálnych testovacích sád a výsledkom týchto vážených testov bude jedno
+číslo - "phishing skóre". Aplikácia sa na základe tohto čísla následne
+rozhodne, čí danú komunikáciu automaticky zablokuje alebo povolí. Koncový
+užívateľ bude môcť byť takisto vo voliteľných prípadoch varovaný,
+či má komunikácia s danou webstránkou prebiehať ďalej.
