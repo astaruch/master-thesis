@@ -33,6 +33,9 @@ public:
     static void
     print();
 
+    ///
+    /// Getters for test weights
+    ///
     static int
     weight_length()
     {
@@ -93,6 +96,88 @@ public:
         return m_config->m_root_node["tests"]["chars_freq"]["weight"].as<int>();
     }
 
+    ///
+    /// Getters for test params
+    ///
+    static int
+    params_max_length()
+    {
+        return m_config->m_root_node["tests"]["length"]["max_length"].as<int>();
+    }
+
+    static int
+    params_max_depth()
+    {
+        return m_config->m_root_node["tests"]["depth"]["max_depth"].as<int>();
+    }
+
+    ///
+    /// Getters whether tests should run
+    ///
+    static bool
+    test_length()
+    {
+        return m_config->m_root_node["tests"]["length"]["active"].as<bool>();
+    }
+
+    static bool
+    test_depth()
+    {
+        return m_config->m_root_node["tests"]["depth"]["active"].as<bool>();
+    }
+
+    static bool
+    test_special_chars()
+    {
+        return m_config->m_root_node["tests"]["special_chars"]["active"].as<bool>();
+    }
+
+    static bool
+    test_special_keywords()
+    {
+        return m_config->m_root_node["tests"]["special_keywords"]["active"].as<bool>();
+    }
+
+    static bool
+    test_hostname_ip()
+    {
+        return m_config->m_root_node["tests"]["hostname_ip"]["active"].as<bool>();
+    }
+
+    static bool
+    test_non_std_port()
+    {
+        return m_config->m_root_node["tests"]["non_std_port"]["active"].as<bool>();
+    }
+
+    static bool
+    test_non_std_tld()
+    {
+        return m_config->m_root_node["tests"]["non_std_tld"]["active"].as<bool>();
+    }
+
+    static bool
+    test_query_script()
+    {
+        return m_config->m_root_node["tests"]["query_script"]["active"].as<bool>();
+    }
+
+    static bool
+    test_query_html()
+    {
+        return m_config->m_root_node["tests"]["query_html"]["active"].as<bool>();
+    }
+
+    static bool
+    test_chars_freq()
+    {
+        return m_config->m_root_node["tests"]["chars_freq"]["active"].as<bool>();
+    }
+
+    /**
+     * Gets connection string to a database
+     * @return
+     */
     static std::string
     conn_string()
     {

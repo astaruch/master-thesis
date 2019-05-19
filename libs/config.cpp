@@ -133,29 +133,39 @@ Config::load_defaults()
 
     cfg["tests"]["length"]["weight"] = defaults::weights::length;
     cfg["tests"]["length"]["max_length"] = defaults::params::max_length;
+    cfg["tests"]["length"]["active"] = true;
 
     cfg["tests"]["depth"]["weight"] = defaults::weights::depth;
     cfg["tests"]["depth"]["max_depth"] = defaults::params::max_depth;
+    cfg["tests"]["depth"]["active"] = true;
 
     cfg["tests"]["special_chars"]["weight"] = defaults::weights::special_chars;
     cfg["tests"]["special_chars"]["chars"] = YAML::Load(defaults::params::special_chars);
+    cfg["tests"]["special_chars"]["active"] = true;
 
     cfg["tests"]["special_keywords"]["weight"] = defaults::weights::special_keywords;
     cfg["tests"]["special_keywords"]["keywords"] = YAML::Load(defaults::params::special_keywords);
+    cfg["tests"]["special_keywords"]["active"] = true;
 
     cfg["tests"]["hostname_ip"]["weight"] = defaults::weights::ip_hostname;
+    cfg["tests"]["hostname_ip"]["active"] = true;
 
     cfg["tests"]["non_std_port"]["weight"] = defaults::weights::non_std_port;
+    cfg["tests"]["non_std_port"]["active"] = true;
 
     cfg["tests"]["non_std_tld"]["weight"] = defaults::weights::non_std_tld;
+    cfg["tests"]["non_std_tld"]["active"] = true;
 
     cfg["tests"]["query_script"]["weight"] = defaults::weights::query_script;
+    cfg["tests"]["query_script"]["active"] = true;
 
     cfg["tests"]["query_html"]["weight"] = defaults::weights::query_html;
+    cfg["tests"]["query_html"]["active"] = true;
 
     cfg["tests"]["chars_freq"]["weight"] = defaults::weights::chars_freq;
+    cfg["tests"]["chars_freq"]["active"] = true;
 
-    cfg["conn_string"] = "";
+    cfg["conn_string"] = "postgres://postgres@localhost:5432/phishing-detection";
 
     return cfg;
 }

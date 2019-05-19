@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/astaruch/master-thesis.svg?branch=master)](https://travis-ci.com/astaruch/master-thesis)
 
 ## Prerequisites
-> Database setup
+> database setup
 
     $ sudo apt-get install wget ca-certificates
     $ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
