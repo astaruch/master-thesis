@@ -1,6 +1,6 @@
 **/literature/*.pdf
-.vscode
 .idea
 **/cmake-build-*
 old_project_structure/data-sets
 **/code/junk
+src/.vscode

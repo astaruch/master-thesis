@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres:11.2
+    restart: always
+    container_name: thesis-db
+    environment:
+      POSTGRES_DB: phishing-detection
+    expose:
+      - "15432"
+    ports:
+      - "15432:5432"
+    volumes:
+      - /home/astaruch/Documents/code/docker-volumes/thesis-db:/var/lib/postgresql/data
+    network_mode: bridge
+
+  thesis-svc:
+    image: thesis/runtime
+    container_name: thesis-svc
+    build:
+      context: .
+      target: runtime
+
+  thesis-builder:
+    image: thesis/builder
+    container_name: thesis-builder
+    build:
+      context: .
+      target: builder
