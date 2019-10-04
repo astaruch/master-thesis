@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  database:
+  thesis-db:
     image: postgres:11.2
     restart: always
     container_name: thesis-db
@@ -15,6 +15,13 @@ services:
       - /home/astaruch/Documents/code/docker-volumes/thesis-db:/var/lib/postgresql/data
     network_mode: bridge
 
+  thesis-builder:
+    image: thesis/builder
+    container_name: thesis-builder
+    build:
+      context: .
+      target: builder
+
   thesis-svc:
     image: thesis/runtime
     container_name: thesis-svc
@@ -22,9 +29,3 @@ services:
       context: .
       target: runtime
 
-  thesis-builder:
-    image: thesis/builder
-    container_name: thesis-builder
-    build:
-      context: .
-      target: builder
