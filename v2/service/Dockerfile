@@ -55,6 +55,9 @@ RUN cd /tmp/vcpkg \
 RUN cd /tmp/vcpkg \
     && ./vcpkg install spdlog libpq gtest yaml-cpp
 
+RUN cd /tmp/vcpkg \
+    && ./vcpkg install libpqxx
+
 COPY ./src /src
 WORKDIR /src
 

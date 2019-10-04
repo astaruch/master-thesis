@@ -21,6 +21,7 @@ services:
     build:
       context: .
       target: builder
+    network_mode: bridge
 
   thesis-svc:
     image: thesis/runtime
@@ -28,4 +29,5 @@ services:
     build:
       context: .
       target: runtime
+    network_mode: bridge
 
