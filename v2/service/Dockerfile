@@ -63,12 +63,12 @@ RUN mkdir out \
     && cmake .. -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
     && make
 
-CMD bash
+CMD ["bash"]
 
 # #############################
 FROM ubuntu:18.04 as runtime
 LABEL description="Run container"
 
-COPY --from=builder  /src/out/myapp /app/myapp
+COPY --from=builder  /src/out/phishsvc /app/phishsvc
 WORKDIR /app
-CMD ./myapp
+CMD ./phishsvc

@@ -2,11 +2,9 @@
 #include <vector>
 #include <string>
 
+#include <spdlog/spdlog.h>
+
 int main() {
-    std::cout << "Hello, world!\n";
-    std::vector<std::string> vec{"1", "2"};
-    for (const auto& str: vec) {
-        std::cout << str << std::endl;
-    }
+    spdlog::info("logger loaded");
     return 0;
 }
