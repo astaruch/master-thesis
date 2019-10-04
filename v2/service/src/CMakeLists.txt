@@ -8,13 +8,14 @@ find_package(PostgreSQL REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Threads REQUIRED)
+find_package(Poco REQUIRED Foundation Net)
 
-message(STATUS "Workaround - 'libpqxx' is not providing libpqxx-config.cmake")
 set(PQ_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/libpq)
 set(PQXX_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/pqxx)
 
 set(PQXX_LIB ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/liblibpqxx_static.a)
 set(PQ_LIB ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/libpq.a)
+message(STATUS "Found libpqxx: ${PQXX_LIB}")
 
 find_library(PQXX_LIB pqxx)
 find_library(PQ_LIB pq)
@@ -29,8 +30,9 @@ target_include_directories(phishsvc
   ${PQ_INCLUDE_DIR}
   )
 
-# Be **EXTREMELY** carefull with order of linking libraries. One small change, and whole project will fall apart
-# due to unknown and unreadable reasons
+# Be **EXTREMELY** careful with an order for linking libraries.
+# One small change, and whole project will fall apart
+# due to unknown and unreadable reasons. God bless C++!
 target_link_libraries(phishsvc
   PRIVATE
 
@@ -46,4 +48,7 @@ target_link_libraries(phishsvc
 
   # Threads come as last (or at least after ssl)
   Threads::Threads
+
+  Poco::Foundation
+  Poco::Net
 )
