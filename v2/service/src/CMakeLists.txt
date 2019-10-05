@@ -22,6 +22,8 @@ find_library(PQ_LIB pq)
 
 add_executable(phishsvc
   main.cpp
+
+  database.h database.cpp
   )
 
 target_include_directories(phishsvc
