@@ -74,4 +74,6 @@ LABEL description="Run container"
 
 COPY --from=builder  /src/out/phishsvc /app/phishsvc
 WORKDIR /app
-CMD ./phishsvc
+
+ENTRYPOINT [ "/app/phishsvc" ]
+CMD ["--help"]
