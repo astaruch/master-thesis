@@ -1,25 +1,19 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build Debug",
             "type": "shell",
-            "label": "g++ build active file",
-            "command": "/usr/bin/g++",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "/usr/bin"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build"
+            "command": "cd service/src && rm -rf Debug && mkdir Debug && cd Debug && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake && make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build Release",
+            "type": "shell",
+            "command": "cd service/src && rm -rf Debug && mkdir Release && cd Release && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake && make"
         }
     ]
 }
