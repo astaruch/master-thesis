@@ -1,14 +1,20 @@
-FROM ubuntu:18.04 as builder
-LABEL description="Build container"
+FROM ubuntu:18.04 as dependencies
+LABEL description="Dependencies container"
 
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
-    #
     # Verify git, process tools, lsb-release (useful for CLI installs) installed
     && apt-get -y install curl git procps lsb-release unzip tar wget \
-    #
     # Install C++ tools
     && apt-get -y install build-essential cmake cppcheck valgrind \
+    # Install add-apt-repository
+    && apt-get -y install software-properties-common \
+    # Install additional compilers
+    && add-apt-repository ppa:ubuntu-toolchain-r/test \
+    && apt-get -y install gcc-8 g++-8 gcc-9 g++-9 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 900 --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -24,16 +30,16 @@ RUN cd /tmp \
 
 # Install C++ 3rd party libraries
 RUN cd /tmp/vcpkg \
-    && ./vcpkg install POCO
-
-RUN cd /tmp/vcpkg \
-    && ./vcpkg install spdlog libpq gtest yaml-cpp
-
-RUN cd /tmp/vcpkg \
-    && ./vcpkg install libpqxx
+    && ./vcpkg install POCO spdlog libpq gtest yaml-cpp libpqxx
 
 COPY ./src /src
 WORKDIR /src
+
+CMD  ["bash"]
+
+############################
+FROM dependencies AS builder
+LABEL description="Build container"
 
 RUN mkdir out \
     && cd out \
@@ -42,7 +48,7 @@ RUN mkdir out \
 
 CMD ["bash"]
 
-###############################
+############################
 FROM ubuntu:18.04 as runtime
 LABEL description="Run container"
 
