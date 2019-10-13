@@ -28,7 +28,6 @@ script:
   - cd v2/service 
   # Build Docker image with building tools
   - make configure
-  - make push-docker-images
   # Build the application & run it
   - make build
   - make run
