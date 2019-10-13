@@ -21,6 +21,10 @@ services:
     build:
       context: .
       target: dependencies
+      # https://andrewlock.net/caching-docker-layers-on-serverless-build-hosts-with-multi-stage-builds---target,-and---cache-from/#the-cache-from-argument
+      cache_from:
+        - thesis/deps
+        - astaruch/thesis-deps
     network_mode: bridge
 
   thesis-builder:

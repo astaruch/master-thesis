@@ -2,9 +2,10 @@ language: c++
 services: 
   - docker
 
-# travis-ci does not supporting caching for Docker images built locally, 
-# so we have to save & load them manually so we don't have 30min+ builds
+# Travis-ci does not supporting caching for Docker images built locally, 
+# so we have to save & load them manually so we don't have 30min+ builds.
 # https://github.com/travis-ci/travis-ci/issues/5358
+# https://andrewlock.net/caching-docker-layers-on-serverless-build-hosts-with-multi-stage-builds---target,-and---cache-from/#the-cache-from-argument
 
 before_cache:
   # Save tagged docker images
