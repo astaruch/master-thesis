@@ -20,7 +20,7 @@ services:
     container_name: thesis-deps
     build:
       context: .
-      target: dependencies
+      target: thesis-deps
       # https://andrewlock.net/caching-docker-layers-on-serverless-build-hosts-with-multi-stage-builds---target,-and---cache-from/#the-cache-from-argument
       cache_from:
         - thesis/deps
@@ -32,7 +32,7 @@ services:
     container_name: thesis-builder
     build:
       context: .
-      target: builder
+      target: thesis-builder
     network_mode: bridge
 
   thesis-svc:
@@ -40,7 +40,7 @@ services:
     container_name: thesis-svc
     build:
       context: .
-      target: runtime
+      target: thesis-svc
     network_mode: bridge
     depends_on:
       - "thesis-db"

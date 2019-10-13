@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 as dependencies
+FROM ubuntu:18.04 as thesis-deps
 LABEL description="Dependencies container"
 
 RUN apt-get update \
@@ -38,7 +38,7 @@ WORKDIR /src
 CMD  ["bash"]
 
 ############################
-FROM dependencies AS builder
+FROM thesis-deps AS thesis-builder
 LABEL description="Build container"
 
 RUN mkdir out \
@@ -49,10 +49,15 @@ RUN mkdir out \
 CMD ["bash"]
 
 ############################
-FROM ubuntu:18.04 as runtime
+FROM ubuntu:18.04 as thesis-svc
 LABEL description="Run container"
 
-COPY --from=builder  /src/out/phishsvc /app/phishsvc
+RUN apt-get update \
+    && apt-get -y install software-properties-common \
+    && add-apt-repository ppa:ubuntu-toolchain-r/test \
+    && apt-get -y install gcc-9 g++-9
+
+COPY --from=thesis-builder  /src/out/phishsvc /app/phishsvc
 WORKDIR /app
 
 ENTRYPOINT [ "/app/phishsvc" ]
