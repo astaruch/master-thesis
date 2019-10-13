@@ -3,16 +3,25 @@
 [![Build Status](https://travis-ci.com/astaruch/master-thesis.svg?branch=master)](https://travis-ci.com/astaruch/master-thesis)
 
 ## Prerequisites
-> database setup
 
-    $ sudo apt-get install wget ca-certificates
-    $ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-    $ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-    $ sudo apt-get update
-    $ sudo apt-get install postgresql-9.6 postgresql-contrib-9.6 postgresql-server-dev-9.6
-    
+For an easier setup & development, we are advising to use Docker. Build steps and all other information are stored in [Dockerfile](v2/service/Dockerfile) and [docker-compose](v2/service/docker-compose.yml).
 
-Run a database and store connection string in `config.yaml`
+Shortcuts to build & run are in [Makefile](v2/service/Makefile).
 
-> conn_string: postgres://postgres@localhost:5432/phishing-detection
-    
+Host machine for development:
+
+- `docker-compose` version >= 3.7 / 1.24.1
+- `docker` engine >= 18.06
+
+## Building
+
+For now, there is not prepared database table & data. You need to fill it manualy. Comming soon! In a good case, where the database is running and you have it's IP address, you can fire up the codeL:
+
+    cd v2/service
+    make configure
+    make build
+    make run
+
+## Debugging
+
+For now, easiest debugging is done through a Visual Studio Code and `Remote Development` extension. There is prepared [folder](v2/.vscode/) with tasks and editor settings, to open folder in Docker container, so we can debug step by step actual code and have all the advantages of a IDE.
