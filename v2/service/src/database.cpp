@@ -15,47 +15,58 @@ database::database(const std::string& conn_string)
     test_connection();
 }
 
-void database::prepare_update_url_parts()
+void database::prepare_update_url_parts(const std::string& table_name)
 {
     _conn.prepare(
         "update_url_parts",
-        "UPDATE $1 SET "
-        "  scheme = $3 "
-        "  user_info = $4 "
-        "  port = $5 "
-        "  path = $6 "
-        "  query = $7 "
+        "UPDATE " + _txn.esc(table_name) + " SET "
+        "  scheme = $2, "
+        "  user_info = $3, "
+        "  host = $4, "
+        "  port = $5, "
+        "  path = $6, "
+        "  query = $7, "
         "  fragment = $8 "
-        "WHERE id = $2");
+        "WHERE id = $1");
 }
 
-pqxx::result database::execute_update_url_parts(const std::string& table_name,
-    int id,
-    const std::string& scheme,
-    const std::string& user_info,
-    const std::string& host,
-    unsigned int port,
-    const std::string& path,
-    const std::string& query,
-    const std::string& fragment)
+pqxx::result database::execute_update_url_parts(int id,
+    const std::string* scheme,
+    const std::string* user_info,
+    const std::string* host,
+    unsigned int* port,
+    const std::string* path,
+    const std::string* query,
+    const std::string* fragment)
 {
     return _txn.exec_prepared("update_url_parts",
-        table_name, id, scheme, user_info, host, port,
-        path, query, fragment);
+        id,
+        scheme->empty() ? nullptr : scheme->c_str(),
+        user_info->empty() ? nullptr : user_info->c_str(),
+        host->empty() ? nullptr : host->c_str(),
+        *port == 0 ? nullptr : std::to_string(*port).c_str(),
+        path->empty() ? nullptr : path->c_str(),
+        query->empty() ? nullptr : query->c_str(),
+        fragment->empty() ? nullptr : fragment->c_str());
 }
 
-pqxx::result database::execute_update_url_parts(const std::string& table_name,
-    int id,
-    const Poco::URI& url)
+pqxx::result database::execute_update_url_parts(int id, const Poco::URI& url)
 {
-    return execute_update_url_parts(table_name, id,
-        url.getScheme(),
-        url.getUserInfo(),
-        url.getHost(),
-        url.getPort(),
-        url.getPath(),
-        url.getQuery(),
-        url.getFragment());
+    auto scheme = url.getScheme();
+    auto user_info = url.getUserInfo();
+    auto host = url.getHost();
+    unsigned port = url.getPort();
+    auto path = url.getPath();
+    auto query = url.getQuery();
+    auto fragment = url.getFragment();
+    return execute_update_url_parts(id,
+        &scheme,
+        &user_info,
+        &host,
+        &port,
+        &path,
+        &query,
+        &fragment);
 }
 
 std::vector<database::db_record> database::get_all_records(const std::string& table_name)
@@ -95,6 +106,24 @@ std::vector<database::db_record> database::get_all_records(const std::string& ta
         spdlog::error("{}", ex.what());
     }
     return {};
+}
+
+bool database::fill_db_with_url_parts(const std::string& table_name,
+    const std::vector<database::db_record>& records)
+{
+    spdlog::info("fill_db_with_url_parts({}, {} records)", table_name, records.size());
+    prepare_update_url_parts(table_name);
+    for (auto& record: records) {
+        try {
+            auto result = execute_update_url_parts(record.id, record.url_obj);
+        } catch (const pqxx::broken_connection& ex) {
+            spdlog::error("{}", ex.what());
+            return false;
+        }
+    }
+    _txn.commit();
+    spdlog::info("table '{}' updated successfully", table_name);
+    return true;
 }
 
 void database::add_url_columns(const std::string& table_name)

@@ -35,26 +35,38 @@ public:
     std::set<std::string> get_column_names(const std::string& table_name);
 
     /// Prepare a statement with name "update_url_parts" for database
-    void prepare_update_url_parts();
+    void prepare_update_url_parts(const std::string& table_name);
 
     /// Executes a statement with name "update_url_parts"
-    pqxx::result execute_update_url_parts(const std::string& table_name,
-        int id, const std::string& scheme,
-        const std::string& user_info,
-        const std::string& host,
-        unsigned int port,
-        const std::string& path,
-        const std::string& query,
-        const std::string& fragment);
+    /**
+     * We need to hack our way around and pass pointers, so we can check
+     * if value is empty and pass NULL value to SQL command.
+     */
+    pqxx::result execute_update_url_parts(int id,
+        const std::string* scheme,
+        const std::string* user_info,
+        const std::string* host,
+        unsigned int* port,
+        const std::string* path,
+        const std::string* query,
+        const std::string* fragment);
 
     /// Executes a statement with name "update_url_parts"
-    pqxx::result execute_update_url_parts(const std::string& tabale_name,
-        int id,
+    /**
+     * TODO: optimize to not create a copy of strings
+     * This method creates a temporary copy so we can pass a pointer to execute
+     * method. This is not optimal, but I don't know the other way how, how to
+     * pass either value or NULL to sql.
+     */
+    pqxx::result execute_update_url_parts(int id,
         const Poco::URI& url);
 
     /// Gets a records with ID & URL
     std::vector<database::db_record> get_all_records(const std::string& table_name);
 
+    /// Fill the database with parsed URLs
+    bool fill_db_with_url_parts(const std::string& table_name,
+        const std::vector<database::db_record>& records);
 
     /// Test whether connection is valid
     void test_connection();

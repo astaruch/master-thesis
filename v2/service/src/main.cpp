@@ -17,7 +17,9 @@ int main() {
     spdlog::info("logger loaded");
 
     database db("postgresql://postgres:password@172.17.0.2/urls");
-    db.get_all_records("alexa");
+    auto records = db.get_all_records("alexa");
+    spdlog::info("test");
+    db.fill_db_with_url_parts("alexa", records);
 
     return 0;
 }
