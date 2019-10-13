@@ -3,7 +3,9 @@ prepare-images:
 	docker-compose build thesis-runtime
 
 build:
+	docker pull astaruch/thesis-deps || true
 	docker-compose build thesis-builder
+	docker pull astaruch/thesis-runtime || true
 	docker-compose build thesis-app
 
 run:
