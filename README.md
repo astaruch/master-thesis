@@ -15,12 +15,17 @@ Host machine for development:
 
 ## Building
 
-For now, there is not prepared database table & data. You need to fill it manualy. Comming soon! In a good case, where the database is running and you have it's IP address, you can fire up the codeL:
+For now, there is not prepared database table & data. You need to fill it manualy. Comming soon! In a good case, where the database is running and you have it's IP address, you can fire up the code with following commands:
 
     cd v2/service
-    make configure
     make build
+    make test
     make run
+
+Before first run, you can build & images to dockerhub:
+
+    make prepare-images
+    make push-image
 
 ## Debugging
 

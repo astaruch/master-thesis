@@ -1,15 +1,18 @@
-build:
-	docker-compose build thesis-builder
+prepare-images:
+	docker-compose build thesis-deps
 	docker-compose build thesis-runtime
 
-run:
+build:
+	docker-compose build thesis-builder
 	docker-compose build thesis-app
+
+run:
 	docker run --rm thesis-app
 
 test:
 	@echo "TODO: need to implement tests :-)"
 
-push-docker-images:
+push-images:
 	docker tag thesis-deps astaruch/thesis-deps
 	docker push astaruch/thesis-deps
 	docker tag thesis-runtime astaruch/thesis-runtime

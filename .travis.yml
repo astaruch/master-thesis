@@ -28,11 +28,8 @@ before_install:
 
 script:
   - cd v2/service 
-  # Build the application & push interlying images to docker.io
+  # Build the application
   - make build
-  - make push-docker-images
-  # Compile & test the app
-  - make run
   - make test
 
 ### DISABLING CACHE. USING DOCKERHUB
