@@ -37,8 +37,8 @@ WORKDIR /src
 
 CMD  ["bash"]
 
-############################
-FROM thesis-deps AS thesis-builder
+##############################################
+FROM astaruch/thesis-deps AS thesis-builder
 LABEL description="Build container"
 
 RUN mkdir out \
@@ -48,8 +48,8 @@ RUN mkdir out \
 
 CMD ["bash"]
 
-############################
-FROM ubuntu:18.04 as thesis-svc
+###################################
+FROM ubuntu:18.04 as thesis-runtime
 LABEL description="Run container"
 
 RUN apt-get update \
@@ -57,6 +57,12 @@ RUN apt-get update \
     && add-apt-repository ppa:ubuntu-toolchain-r/test \
     && apt-get -y install gcc-9 g++-9
 
+CMD ["bash"]
+
+
+##########################################
+FROM astaruch/thesis-runtime as thesis-app
+LABEL description="Application container"
 COPY --from=thesis-builder  /src/out/phishsvc /app/phishsvc
 WORKDIR /app
 
