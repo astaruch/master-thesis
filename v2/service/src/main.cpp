@@ -1,3 +1,4 @@
+#include <array>
 #include <iostream>
 #include <set>
 #include <string>
@@ -16,15 +17,16 @@ int main() {
     spdlog::info("logger loaded");
 
     database db("postgresql://postgres:password@172.17.0.2/urls");
-    auto column_names = db.get_column_names("alexa");
-    for (const auto& name: column_names) {
-        std::cout << name << std::endl;
-    }
-    db.add_url_columns("alexa");
-    column_names = db.get_column_names("alexa");
-    for (const auto& name: column_names) {
-        std::cout << name << std::endl;
-    }
+    // auto column_names = db.get_column_names("alexa");
+    // for (const auto& name: column_names) {
+    //     std::cout << name << std::endl;
+    // }
+    // db.add_url_columns("alexa");
+    // column_names = db.get_column_names("alexa");
+    // for (const auto& name: column_names) {
+    //     std::cout << name << std::endl;
+    // }
+    db.get_all_records("alexa");
     // spdlog::info("connecting to database");
 
     // std::string conn_string("postgresql://postgres:password@172.17.0.3/urls");

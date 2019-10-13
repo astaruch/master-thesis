@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
+project(phishsvc CXX)
 
-set(CMAKE_CXX_STANDARD 14)
-
-project(phishsvc)
 
 find_package(PostgreSQL REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -25,6 +23,8 @@ add_executable(phishsvc
 
   database.h database.cpp
   )
+
+target_compile_features(phishsvc PUBLIC cxx_std_14)
 
 target_include_directories(phishsvc
   PRIVATE
