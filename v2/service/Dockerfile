@@ -41,6 +41,9 @@ CMD  ["bash"]
 FROM astaruch/thesis-deps AS thesis-builder
 LABEL description="Build container"
 
+COPY ./src /src
+WORKDIR /src
+
 RUN mkdir out \
     && cd out \
     && cmake .. -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \

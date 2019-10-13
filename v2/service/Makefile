@@ -2,14 +2,21 @@ prepare-images:
 	docker-compose build thesis-deps
 	docker-compose build thesis-runtime
 
-build:
+build-travis:
 	docker pull astaruch/thesis-deps || true
 	docker-compose build thesis-builder
 	docker pull astaruch/thesis-runtime || true
 	docker-compose build thesis-app
 
+build:
+	docker-compose build thesis-builder
+	docker-compose build thesis-app
+
 run:
-	docker run --rm thesis-app
+	docker run --rm --name thesis-phish-app thesis-app
+
+kill:
+	docker container stop thesis-phish-app
 
 test:
 	@echo "TODO: need to implement tests :-)"
