@@ -26,13 +26,23 @@ program::program(int argc, char** argv)
         ("connstring", "The whole connection string to use instead of separate parameters", cxxopts::value<std::string>(_conn_string))
     ;
 
-    auto _result = _options.parse(argc, argv);
+    _options.add_options("Table manipulation")
+        ("table", "Name of the table where our operations will be performed", cxxopts::value<std::string>(_table))
+        ("parse-urls", "Parse URLs from the given table into new columns", cxxopts::value<bool>(_parse_urls))
+    ;
+
+    try {
+        auto _result = _options.parse(argc, argv);
+    } catch (const cxxopts::option_not_exists_exception& ex) {
+        fmt::print(stderr, "{}\n", ex.what());
+        exit(1);
+    }
 }
 
-void program::check_general_opts()
+void program::check_options()
 {
     if (_help) {
-        fmt::print("{}\n", _options.help({"General", "Database"}));
+        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation"}));
         exit(0);
     }
 
@@ -56,9 +66,29 @@ void program::check_general_opts()
         _conn_string = fmt::format("host = '{}' port = '{}' dbname = '{}' user = '{}' password = '{}'",
             _host, _port, _dbname, _user, _password);
     }
+
+    // checking options for a one table manipulation
+    if (!_table.empty() || _parse_urls) {
+        _table_manipulation = true;
+    }
 }
 
 std::string program::get_conn_string()
 {
     return _conn_string;
+}
+
+bool program::table_manipulation()
+{
+    return _table_manipulation;
+}
+
+bool program::parse_urls()
+{
+    return _parse_urls;
+}
+
+std::string program::table_name()
+{
+    return _table;
 }

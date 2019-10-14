@@ -73,6 +73,9 @@ public:
     /// Test whether connection is valid
     void test_connection();
 
+    /// Parse URLs from the given table into new columns
+    void process_table_and_parse_urls(const std::string& table_name);
+
 private:
     pqxx::connection _conn;
     pqxx::work _txn;
