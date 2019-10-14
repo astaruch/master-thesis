@@ -30,7 +30,7 @@ RUN cd /tmp \
 
 # Install C++ 3rd party libraries
 RUN cd /tmp/vcpkg \
-    && ./vcpkg install POCO spdlog libpq gtest yaml-cpp libpqxx
+    && ./vcpkg install POCO spdlog libpq gtest yaml-cpp libpqxx cxxopts
 
 COPY ./src /src
 WORKDIR /src
