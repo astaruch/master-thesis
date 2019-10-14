@@ -8,6 +8,8 @@ find_package(spdlog REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Poco REQUIRED Foundation Net)
 find_package(cxxopts CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+
 
 set(PQ_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/libpq)
 set(PQXX_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/pqxx)
@@ -57,4 +59,7 @@ target_link_libraries(phishsvc
   Poco::Net
 
   cxxopts::cxxopts
+
+  fmt::fmt
+  fmt::fmt-header-only
 )
