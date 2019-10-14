@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef PHISHSVC_DATABASE_H
 #define PHISHSVC_DATABASE_H
 

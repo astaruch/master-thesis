@@ -7,6 +7,7 @@ find_package(OpenSSL REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Poco REQUIRED Foundation Net)
+find_package(cxxopts CONFIG REQUIRED)
 
 set(PQ_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/libpq)
 set(PQXX_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/pqxx)
@@ -22,6 +23,7 @@ add_executable(phishsvc
   main.cpp
 
   database.h database.cpp
+  program.h program.cpp
   )
 
 target_compile_features(phishsvc PUBLIC cxx_std_14)
@@ -53,4 +55,6 @@ target_link_libraries(phishsvc
 
   Poco::Foundation
   Poco::Net
+
+  cxxopts::cxxopts
 )
