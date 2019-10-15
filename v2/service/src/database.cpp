@@ -118,8 +118,9 @@ bool database::fill_db_with_url_parts(const std::string& table_name,
             execute_update_url_parts(txn, record.id, record.url_obj);
         } catch (const pqxx::data_exception& ex) {
             spdlog::error("{}", ex.what());
-            spdlog::error("Malformed data (error in encoding in Poco::URI::Parse())");
-            spdlog::error("Reoving this URL from records: {}", record.full_url);
+            // spdlog::error("Malformed data (error in encoding in Poco::URI::Parse())");
+            spdlog::error("Removing this URL from records: {}", record.full_url);
+            spdlog::info("Rollbacking the transaction");
             debug_record(record);
             record.url_obj = Poco::URI();
             throw pqxx::transaction_rollback("Removing malformed URL");
@@ -237,15 +238,32 @@ void database::process_table_and_parse_urls(const std::string& table_name)
 
     // try several times to insert data into db, each time we will modify them
     int tries = 1;
-    int max_tries = 10;
-    const auto& update_callback = [this, &table_name, &records, &tries]() {
-        spdlog::info("Try {}", tries++);
-        return fill_db_with_url_parts(table_name, records);
-    };
-    bool updated_ok = pqxx::perform(update_callback, max_tries);
-    if (updated_ok) {
-        spdlog::info("OK");
-    } else {
-        spdlog::error("ERROR. Can't insert records after {} tries", max_tries);
+    int max_tries = 100;
+
+    // if transaction will fail, there will be a retry with all data again ->
+    // we can optimize this a little bit by splitting vector on smaller transactions
+    int num_of_records = 10'000;
+    int num_of_vectors = 0;
+
+    while (num_of_records * num_of_vectors < records.size()) {
+        int first = num_of_records * num_of_vectors;
+        int last = num_of_records * (num_of_vectors + 1);
+        if (last > records.size()) {
+            last = records.size();
+        }
+        std::vector<db_record> subvector(records.begin() + first, records.begin() + last);
+        const auto& update_callback = [this, &table_name, &subvector, &tries]() {
+            spdlog::info("Retry {}", tries++);
+            return fill_db_with_url_parts(table_name, subvector);
+        };
+        bool updated_ok = pqxx::perform(update_callback, max_tries);
+        if (updated_ok) {
+            num_of_vectors++;
+            spdlog::info("OK. Inserted {} records", subvector.size());
+        } else {
+            spdlog::error("ERROR. Can't insert records after {} tries", max_tries);
+            return;
+        }
     }
+    spdlog::info("Everything OK");
 }
