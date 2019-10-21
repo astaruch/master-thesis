@@ -70,3 +70,11 @@ services:
       - "8080:80"
     network_mode: bridge
 
+  notebook:
+    image: jupyter/minimal-notebook
+    container_name: notebook
+    ports:
+      - "10000:8888"
+    volumes:
+      - "/home/astaruch/Documents/code/jupyter-notebook-volume:/home/jovyan"
+    network_mode: bridge
