@@ -18,6 +18,7 @@ program::program(int argc, char** argv)
     ;
 
     _options.add_options("Database")
+        ("enable-database", "Flag whether database will be used", cxxopts::value<bool>(_enable_database))
         ("host", "Name of the host where is the database", cxxopts::value<std::string>(_host))
         ("port", "Port number to connect to at the server host", cxxopts::value<std::string>(_port))
         ("dbname", "The database name", cxxopts::value<std::string>(_dbname))
@@ -27,8 +28,14 @@ program::program(int argc, char** argv)
     ;
 
     _options.add_options("Table manipulation")
+        ("enable-table-manipulation", "Flag wether table manipulation will be used", cxxopts::value<bool>(_enable_table_manipulation))
         ("table", "Name of the table where our operations will be performed", cxxopts::value<std::string>(_table))
         ("parse-urls", "Parse URLs from the given table into new columns", cxxopts::value<bool>(_parse_urls))
+    ;
+
+    _options.add_options("Features")
+        ("enable-features", "Enter mode with features", cxxopts::value<bool>(_enable_features))
+        ("ip-address", "Check whether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
     ;
 
     try {
@@ -42,7 +49,7 @@ program::program(int argc, char** argv)
 void program::check_options()
 {
     if (_help) {
-        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation"}));
+        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features"}));
         exit(0);
     }
 
@@ -50,6 +57,12 @@ void program::check_options()
         fmt::print("0.0.1\n");
         exit(0);
     }
+
+    if (_enable_features) {
+        fmt::print("Checking features");
+        exit(0);
+    }
+
 
     // check database options
     if (_conn_string.empty() && _host.empty() && _port.empty() && _dbname.empty() &&

@@ -32,7 +32,11 @@ private:
     bool _help;
     bool _version;
 
-    /// Database options
+    /// Disambiguation options
+    bool _enable_features;
+    bool _enable_database;
+    bool _enable_table_manipulation;
+
     std::string _host;
     std::string _port;
     std::string _dbname;
@@ -42,9 +46,12 @@ private:
 
     /// Table manipulation options
     bool _table_manipulation;
-
     std::string _table;
     bool _parse_urls;
+
+    /// Features
+    bool _feature_ip_address;
+
 };
 
 #endif // PHISHSVC_PROGRAM_H
