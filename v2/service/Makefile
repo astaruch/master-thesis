@@ -7,10 +7,12 @@ build-travis:
 	docker-compose build thesis-builder
 	docker pull astaruch/thesis-runtime || true
 	docker-compose build thesis-app
+	docker-compose build thesis-tests
 
 build:
 	docker-compose build thesis-builder
 	docker-compose build thesis-app
+	docker-compose build thesis-tests
 
 run:
 	docker run --rm --name thesis-phish-app thesis-app
@@ -19,7 +21,7 @@ kill:
 	docker container stop thesis-phish-app
 
 test:
-	@echo "TODO: need to implement tests :-)"
+	docker run --rm --name thesis-phish-app thesis-tests
 
 push-images:
 	docker tag thesis-deps astaruch/thesis-deps

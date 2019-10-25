@@ -47,7 +47,7 @@ WORKDIR /src
 RUN mkdir out \
     && cd out \
     && cmake .. -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    && make
+    && make -j 4
 
 CMD ["bash"]
 
@@ -69,5 +69,13 @@ LABEL description="Application container"
 COPY --from=thesis-builder  /src/out/phishsvc /app/phishsvc
 WORKDIR /app
 
-ENTRYPOINT [ "/app/phishsvc" ]
-CMD ["--help"]
+CMD ["/app/phishsvc", "--help"]
+
+
+############################################
+FROM astaruch/thesis-runtime as thesis-tests
+LABEL description="Application tests container"
+COPY --from=thesis-builder  /src/out/test/all_tests /app/all_tests
+WORKDIR /app
+
+CMD ["/app/all_tests"]

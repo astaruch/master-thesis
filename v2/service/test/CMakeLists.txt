@@ -14,6 +14,4 @@ target_link_libraries(all_tests
   GTest::gmock_main
 )
 
-add_executable(simple simple.cpp)
-target_link_libraries(simple GTest::gtest GTest::gmock_main)
-add_test(NAME simple_test COMMAND simple)
+add_test(NAME all_tests COMMAND all_tests)
