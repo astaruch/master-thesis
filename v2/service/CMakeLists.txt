@@ -21,6 +21,8 @@ message(STATUS "Found libpqxx: ${PQXX_LIB}")
 find_library(PQXX_LIB pqxx)
 find_library(PQ_LIB pq)
 
+
+### Main application
 add_executable(phishsvc
   src/main.cpp
 
@@ -63,3 +65,8 @@ target_link_libraries(phishsvc
   fmt::fmt
   fmt::fmt-header-only
 )
+
+
+### Tests
+enable_testing()
+add_subdirectory(test)
