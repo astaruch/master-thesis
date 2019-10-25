@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(phishsvc CXX)
+project(phishsvc VERSION 0.0.1 LANGUAGES CXX)
 
 
 find_package(PostgreSQL REQUIRED)
@@ -22,10 +22,10 @@ find_library(PQXX_LIB pqxx)
 find_library(PQ_LIB pq)
 
 add_executable(phishsvc
-  main.cpp
+  src/main.cpp
 
-  database.h database.cpp
-  program.h program.cpp
+  src/database.h src/database.cpp
+  src/program.h src/program.cpp
   )
 
 target_compile_features(phishsvc PUBLIC cxx_std_14)
