@@ -7,6 +7,7 @@ program::program(int argc, char** argv)
     : _options("phishsvc", "Application for phishing defence")
     , _help(false)
     , _version(false)
+    , _feature_flags(0)
 {
     _options
         .positional_help("[positional args]")
@@ -35,11 +36,29 @@ program::program(int argc, char** argv)
 
     _options.add_options("Features")
         ("enable-features", "Enter mode with features", cxxopts::value<bool>(_enable_features))
-        ("ip-address", "Check whether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
+        ("feat-ip-address", "Check whether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
+    ;
+
+    _options.add_options("Training data")
+        ("enable-training-data", "Flag wether we are creating a training data for ML algorithms",
+            cxxopts::value<bool>(_enable_training_data))
+        ("td-url", "Enter one escaped URL as parameter",
+            cxxopts::value<std::string>(_training_data_url))
+        ("td-stdin", "Flag that we are using standard input as source",
+            cxxopts::value<bool>(_training_data_stdin))
+        ("td-input-file", "Path containing escaped URLs delimitaded by a new line",
+            cxxopts::value<std::string>(_training_data_input_file))
+        ("td-output-name", "Desired name of the output data.",
+            cxxopts::value<std::string>(_training_data_output_name)
+                ->default_value("training-data.csv")
+                ->implicit_value("training-data.csv"))
+        ("td-class-value", "Sets the classification value for the training data",
+            cxxopts::value<double>(_training_data_class_value))
     ;
 
     try {
         auto _result = _options.parse(argc, argv);
+        _missing_training_data_class_value = _result.count("td-class-value") == 0;
     } catch (const cxxopts::option_not_exists_exception& ex) {
         fmt::print(stderr, "{}\n", ex.what());
         exit(1);
@@ -49,7 +68,7 @@ program::program(int argc, char** argv)
 void program::check_options()
 {
     if (_help) {
-        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features"}));
+        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "Training data"}));
         exit(0);
     }
 
@@ -59,25 +78,50 @@ void program::check_options()
     }
 
     if (_enable_features) {
-        fmt::print("Checking features");
-        exit(0);
+        fmt::print("Features:\n");
+        fmt::print("-- IP address - {}\n", on_off(_feature_ip_address));
+        if (_feature_ip_address) {
+            _feature_flags |= feature_name::ip_address;
+        }
     }
 
+    if (_enable_training_data) {
+        if (_training_data_url.empty() && !_training_data_stdin && _training_data_input_file.empty()) {
+            fmt::print(stderr, "You have to provide one source for data\n");
+            exit(1);
+        }
+
+        if (_training_data_input_file.size() > 0 || _training_data_stdin) {
+            fmt::print(stderr, "Not implemented yet\n");
+            exit(1);
+        }
+
+        if (_missing_training_data_class_value) {
+            fmt::print(stderr, "You need to set classification value for the input set\n");
+            exit(1);
+        }
+
+        if (_feature_flags == 0) {
+            fmt::print(stderr, "Feature flags are empty. Maybe you forgot to set what features you want?\n");
+        }
+    }
 
     // check database options
-    if (_conn_string.empty() && _host.empty() && _port.empty() && _dbname.empty() &&
-        _user.empty() && _password.empty())
-    {
-        fmt::print(stderr, "You have to provide either full connection string to a database\n");
-        fmt::print(stderr, "or enter parameters for connecting. Check PostgreSQL connection\n");
-        fmt::print(stderr, "for a reference or consult --help of this application.\n");
-        exit(1);
-    }
+    if (_enable_database) {
+        if (_conn_string.empty() && _host.empty() && _port.empty() && _dbname.empty() &&
+            _user.empty() && _password.empty())
+        {
+            fmt::print(stderr, "You have to provide either full connection string to a database\n");
+            fmt::print(stderr, "or enter parameters for connecting. Check PostgreSQL connection\n");
+            fmt::print(stderr, "for a reference or consult --help of this application.\n");
+            exit(1);
+        }
 
-    // construct a connection string from parameters
-    if (_conn_string.empty()) {
-        _conn_string = fmt::format("host = '{}' port = '{}' dbname = '{}' user = '{}' password = '{}'",
-            _host, _port, _dbname, _user, _password);
+        // construct a connection string from parameters
+        if (_conn_string.empty()) {
+            _conn_string = fmt::format("host = '{}' port = '{}' dbname = '{}' user = '{}' password = '{}'",
+                _host, _port, _dbname, _user, _password);
+        }
     }
 
     // checking options for a one table manipulation
@@ -104,4 +148,34 @@ bool program::parse_urls()
 std::string program::table_name()
 {
     return _table;
+}
+
+const char* program::on_off(bool feature)
+{
+    return feature ? "ON" : "OFF";
+}
+
+uint64_t program::feature_flags()
+{
+    return _feature_flags;
+}
+
+std::string program::training_data_url()
+{
+    return _training_data_url;
+}
+
+std::string program::training_data_output_name()
+{
+    return _training_data_output_name;
+}
+
+bool program::create_training_data()
+{
+    return _enable_training_data;
+}
+
+double program::training_data_class_value()
+{
+    return _training_data_class_value;
 }

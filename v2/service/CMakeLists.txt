@@ -23,11 +23,19 @@ find_library(PQ_LIB pq)
 
 
 ### Main application
+set (FEATURES_SOURCES
+  src/features/feature_base.h
+  src/features/feature_base.cpp
+  src/features/ip_address.h
+  src/features/ip_address.cpp
+)
 add_executable(phishsvc
   src/main.cpp
 
+  ${FEATURES_SOURCES}
   src/database.h src/database.cpp
   src/program.h src/program.cpp
+  src/training_data.h src/training_data.cpp
   )
 
 target_compile_features(phishsvc PUBLIC cxx_std_14)

@@ -5,6 +5,8 @@
 
 #include <cxxopts.hpp>
 
+#include "features/feature_base.h"
+
 class program {
 public:
     program(int argc, char** argv);
@@ -23,6 +25,18 @@ public:
     /// Check whether we are going to manipulating with a table
     bool table_manipulation();
 
+    /// Check whether we are going to work with a features
+    bool features_enabled();
+
+    /// Return flags with features
+    uint64_t feature_flags();
+
+    /// Training data options
+    std::string training_data_url();
+    std::string training_data_output_name();
+    bool create_training_data();
+    double training_data_class_value();
+
     bool parse_urls();
     std::string table_name();
 private:
@@ -36,6 +50,7 @@ private:
     bool _enable_features;
     bool _enable_database;
     bool _enable_table_manipulation;
+    bool _enable_training_data;
 
     std::string _host;
     std::string _port;
@@ -51,7 +66,18 @@ private:
 
     /// Features
     bool _feature_ip_address;
+    uint64_t _feature_flags;
 
+    /// Training data
+    std::string _training_data_url;
+    bool _training_data_stdin;
+    std::string _training_data_input_file;
+    std::string _training_data_output_name;
+    double _training_data_class_value;
+    bool _missing_training_data_class_value;
+
+
+    const char* on_off(bool feature);
 };
 
 #endif // PHISHSVC_PROGRAM_H
