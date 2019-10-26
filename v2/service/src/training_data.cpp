@@ -38,24 +38,15 @@ bool training_data::create_training_data()
 
 std::string training_data::create_csv_header()
 {
-    auto join = [](const auto &&range, const auto separator) {
-    if (range.empty()) return std::string();
-
-    return std::accumulate(
-         next(begin(range)), // there is at least 1 element, so OK.
-         end(range),
-
-         range[0], // the initial value
-
-         [&separator](auto result, const auto &value) {
-             return result + separator + value;
-         });
-    };
-
     std::vector<std::string> columns;
 
     if (_feature_flags & feature_name::ip_address == feature_name::ip_address) {
         columns.push_back("ip_address");
     }
-    return join(std::move(columns), ",");
+
+    return std::accumulate(columns.begin(), columns.end(), std::string(),
+        [](const std::string& a, const std::string& b) -> std::string {
+            return a + (a.length() > 0 ? "," : "") + b;
+        }
+    );
 }
