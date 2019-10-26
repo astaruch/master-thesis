@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include <Poco/URI.h>
+
 enum feature_name: uint64_t {
     ip_address = 1,
 };
@@ -18,6 +20,8 @@ public:
 protected:
     double _value;
     std::string _url;
+    Poco::URI _url_obj;
+    bool _url_is_ok;
 };
 
 } // namespace feature
