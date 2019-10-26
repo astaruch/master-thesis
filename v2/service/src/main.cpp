@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
         td.set_label(value);
         td.set_output_name(output_name);
         if (!td.create_training_data()) {
-            spdlog::error("Not finished correctly.");
+            fmt::print(stderr, "Not finished correctly.\n");
             return 1;
         }
         return 0;

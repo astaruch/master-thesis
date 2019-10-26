@@ -7,12 +7,17 @@
 
 #include "feature_base.h"
 
-class ip_address: public feature_base {
+namespace feature {
+class ip_address: public base {
 public:
+    ip_address();
 
-    std::string name() override;
+    double compute_value() override;
+    static std::string name();
 private:
 
 };
 
-#endif
+} // namespace feature
+
+#endif // PHISHSVC_FEATURE_IP_ADDRESS_H

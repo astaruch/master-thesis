@@ -36,8 +36,17 @@ private:
     /// Name of the output filename
     std::string _output_name;
 
+    /// Training data containing feature
+    std::vector<std::vector<double>> _training_data;
+
     /// Method to create csv header delimated by comma
     std::string create_csv_header();
+
+    /// Method to transform input URLs to training data containing feature vectors
+    std::vector<std::string> transform_urls_to_training_data();
+
+    /// Compute feature vector for a given URL
+    std::vector<double> compute_feature_vector(const std::string& url);
 };
 
 
