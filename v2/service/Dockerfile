@@ -1,5 +1,4 @@
 FROM ubuntu:18.04 as thesis-deps
-LABEL description="Dependencies container"
 
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
@@ -32,17 +31,15 @@ RUN cd /tmp \
 RUN cd /tmp/vcpkg \
     && ./vcpkg install POCO spdlog libpq gtest yaml-cpp libpqxx cxxopts fmt
 
-COPY ./src /src
-WORKDIR /src
-
 CMD  ["bash"]
 
 ##############################################
-FROM astaruch/thesis-deps AS thesis-builder
-LABEL description="Build container"
+FROM thesis-deps AS thesis-builder
 
-COPY ./src /src
-WORKDIR /src
+COPY ./src /project/src
+COPY ./test /project/test
+COPY ./CMakeLists.txt /project/CMakeLists.txt
+WORKDIR /project
 
 RUN mkdir out \
     && cd out \
@@ -53,7 +50,6 @@ CMD ["bash"]
 
 ###################################
 FROM ubuntu:18.04 as thesis-runtime
-LABEL description="Run container"
 
 RUN apt-get update \
     && apt-get -y install software-properties-common \
@@ -65,7 +61,7 @@ CMD ["bash"]
 
 ##########################################
 FROM astaruch/thesis-runtime as thesis-app
-LABEL description="Application container"
+
 COPY --from=thesis-builder  /src/out/phishsvc /app/phishsvc
 WORKDIR /app
 
@@ -74,7 +70,7 @@ CMD ["/app/phishsvc", "--help"]
 
 ############################################
 FROM astaruch/thesis-runtime as thesis-tests
-LABEL description="Application tests container"
+
 COPY --from=thesis-builder  /src/out/test/all_tests /app/all_tests
 WORKDIR /app
 
