@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Main",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/Debug/phishsvc",
+            "args": ["--enable-training-data",
+                "--td-url", "http://google.com",
+                "--td-class-value", "0",
+                "--enable-features",
+                "--feat-ip-address"],
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build Debug"
+        }
+    ]
+}
