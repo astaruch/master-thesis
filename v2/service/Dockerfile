@@ -62,7 +62,7 @@ CMD ["bash"]
 ##########################################
 FROM astaruch/thesis-runtime as thesis-app
 
-COPY --from=thesis-builder  /src/out/phishsvc /app/phishsvc
+COPY --from=thesis-builder  /project/out/phishsvc /app/phishsvc
 WORKDIR /app
 
 CMD ["/app/phishsvc", "--help"]
@@ -71,7 +71,7 @@ CMD ["/app/phishsvc", "--help"]
 ############################################
 FROM astaruch/thesis-runtime as thesis-tests
 
-COPY --from=thesis-builder  /src/out/test/all_tests /app/all_tests
+COPY --from=thesis-builder  /project/out/test/all_tests /app/all_tests
 WORKDIR /app
 
 CMD ["/app/all_tests"]
