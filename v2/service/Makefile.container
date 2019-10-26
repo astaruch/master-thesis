@@ -14,13 +14,13 @@ build:
 	docker-compose build thesis-app
 	docker-compose build thesis-tests
 
-run:
+run: build-travis
 	docker run --rm --name thesis-phish-app thesis-app
 
 kill:
 	docker container stop thesis-phish-app
 
-test:
+test: build-travis
 	docker run --rm --name thesis-phish-app thesis-tests
 
 push-images:
