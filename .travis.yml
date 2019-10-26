@@ -13,7 +13,7 @@ before_install:
 
 script:
   - cd v2/service 
-  - mv Makefile.containers Makefile
+  - mv Makefile.container Makefile
   # Build the application
   - make build-travis
   - make test
