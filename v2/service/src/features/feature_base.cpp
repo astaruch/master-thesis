@@ -15,6 +15,7 @@ void base::set_url(const std::string& url)
     } catch (const Poco::SyntaxException& ex) {
         fmt::print(stderr, "Error. URL '{}' is malformed.\n", url);
         _url_obj = Poco::URI();
+        _value = 1.0; // we say that URL is phishing if we can't parse it
     }
 }
 
