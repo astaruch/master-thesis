@@ -49,9 +49,7 @@ target_include_directories(phishsvc
 # Be **EXTREMELY** careful with an order for linking libraries.
 # One small change, and whole project will fall apart
 # due to unknown and unreadable reasons. God bless C++!
-target_link_libraries(phishsvc
-  PRIVATE
-
+set(ALL_LIBRARIES
   spdlog::spdlog
 
   # First we need to link pqxx, then pq (otherwise linker will throw lot of errors)
@@ -74,6 +72,7 @@ target_link_libraries(phishsvc
   fmt::fmt-header-only
 )
 
+target_link_libraries(phishsvc PRIVATE ${ALL_LIBRARIES})
 
 ### Tests
 enable_testing()
