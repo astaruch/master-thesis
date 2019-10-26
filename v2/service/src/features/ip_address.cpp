@@ -2,10 +2,6 @@
 
 namespace feature {
 
-ip_address::ip_address(): base()
-{
-}
-
 double ip_address::compute_value()
 {
     _value = -1.;

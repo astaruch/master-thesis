@@ -10,8 +10,6 @@
 namespace feature {
 class ip_address: public base {
 public:
-    ip_address();
-
     double compute_value() override;
     static std::string name();
 private:

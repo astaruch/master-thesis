@@ -13,8 +13,6 @@ namespace feature {
 
 class base {
 public:
-    base();
-
     virtual double compute_value() = 0;
     void set_url(const std::string& url);
 protected:

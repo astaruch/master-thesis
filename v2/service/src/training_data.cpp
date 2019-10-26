@@ -53,7 +53,6 @@ std::string training_data::create_csv_header()
     if (_feature_flags & feature_name::ip_address == feature_name::ip_address) {
         columns.push_back(feature::ip_address::name());
     }
-
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
@@ -75,8 +74,6 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
     std::vector<std::string> lines;
     for (const auto& url: _urls) {
         auto fvec = compute_feature_vector(url);
-
-
         std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
