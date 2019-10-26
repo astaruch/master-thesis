@@ -9,6 +9,7 @@
 
 enum feature_name: uint64_t {
     ip_address = 1,
+    url_length = 2,
 };
 
 namespace feature {

@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 
 #include "features/ip_address.h"
+#include "features/url_length.h"
 
 TEST(HostIPAddress, NoIPAddress)
 {
@@ -36,6 +37,20 @@ TEST(HostIPAddress, HexadecimalForm)
     feature::ip_address f;
     f.set_url("http://0x308f647/-credit-agricole-france/");
     EXPECT_EQ(1., f.compute_value());
+}
+
+TEST(URLLength, ShortURL)
+{
+    feature::url_length f;
+    f.set_url("https://google.com");
+    EXPECT_GT(0.1, f.compute_value());
+}
+
+TEST(URLLength, LongURL)
+{
+    feature::url_length f;
+    f.set_url("http://abielonline.com/wp-includes/alibaba/vqcr8bp0gud&amp;lc=1033&amp;id=64855&amp;mkt=en-us&amp;cbcxt=mai&amp;snsc.php?email=santmmafs@etttbt.com%20&amp;?email=rxeitsie@sbeilmep.com%20");
+    EXPECT_EQ(1, f.compute_value());
 }
 
 int main(int argc, char **argv) {

@@ -7,7 +7,7 @@
 
 #include "features/feature_base.h"
 #include "features/ip_address.h"
-
+#include "features/url_length.h"
 
 
 void training_data::set_feature_flags(uint64_t flags)
@@ -50,8 +50,11 @@ std::string training_data::create_csv_header()
 {
     std::vector<std::string> columns;
 
-    if (_feature_flags & feature_name::ip_address == feature_name::ip_address) {
+    if ((_feature_flags & feature_name::ip_address) == feature_name::ip_address) {
         columns.push_back(feature::ip_address::name());
+    }
+    if ((_feature_flags & feature_name::url_length) == feature_name::url_length) {
+        columns.push_back(feature::url_length::name());
     }
     columns.push_back("label");
 
@@ -86,11 +89,18 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 std::vector<double> training_data::compute_feature_vector(const std::string& url)
 {
     std::vector<double> fvec; // feature vector
-    if (_feature_flags & feature_name::ip_address == feature_name::ip_address) {
-        feature::ip_address f1;
-        f1.set_url(url);
-        fvec.push_back(f1.compute_value());
+    if ((_feature_flags & feature_name::ip_address) == feature_name::ip_address) {
+        feature::ip_address f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
     }
+
+    if ((_feature_flags & feature_name::url_length) == feature_name::url_length) {
+        feature::url_length f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+
     fvec.push_back(_label);
     return fvec;
 }

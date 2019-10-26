@@ -36,7 +36,8 @@ program::program(int argc, char** argv)
 
     _options.add_options("Features")
         ("enable-features", "Enter mode with features", cxxopts::value<bool>(_enable_features))
-        ("feat-ip-address", "Check whether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
+        ("feat-ip-address", "Check wether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
+        ("feat-url-length", "Check logness of the URL", cxxopts::value<bool>(_feature_url_length))
     ;
 
     _options.add_options("Training data")
@@ -80,8 +81,12 @@ void program::check_options()
     if (_enable_features) {
         fmt::print("Features:\n");
         fmt::print("-- IP address - {}\n", on_off(_feature_ip_address));
+        fmt::print("-- URL length - {}\n", on_off(_feature_url_length));
         if (_feature_ip_address) {
             _feature_flags |= feature_name::ip_address;
+        }
+        if (_feature_url_length) {
+            _feature_flags |= feature_name::url_length;
         }
     }
 

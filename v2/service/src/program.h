@@ -66,6 +66,8 @@ private:
 
     /// Features
     bool _feature_ip_address;
+    bool _feature_url_length;
+
     uint64_t _feature_flags;
 
     /// Training data

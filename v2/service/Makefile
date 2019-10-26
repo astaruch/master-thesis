@@ -6,8 +6,8 @@ build:
 	@echo $@  # print target name
 	@$(MAKE) -f $(THIS_FILE) build-debug # invoke other target
 
-run: feature1
-	@$(MAKE) -f $(THIS_FILE) feature1
+run: feature2
+	@$(MAKE) -f $(THIS_FILE) feature2
 
 test: build-debug
 	@echo $@
@@ -32,4 +32,13 @@ feature1: build-debug
 		--td-class-value 0 \
 		--enable-features \
 		--feat-ip-address
+
+feature2: build-debug
+	Debug/phishsvc \
+		--enable-training-data \
+		--td-url "http://google.com" \
+		--td-class-value 0 \
+		--enable-features \
+		--feat-ip-address \
+		--feat-url-length
 
