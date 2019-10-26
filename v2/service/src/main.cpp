@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         td.set_input_data(urls);
         td.set_label(value);
         td.set_output_name(output_name);
-        if (td.create_training_data()) {
+        if (!td.create_training_data()) {
             spdlog::error("Not finished correctly.");
             return 1;
         }

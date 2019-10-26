@@ -33,6 +33,8 @@ bool training_data::create_training_data()
 {
     std::string csv_header = create_csv_header();
     spdlog::info("CSV header = {}", csv_header);
+
+
     return false;
 }
 
