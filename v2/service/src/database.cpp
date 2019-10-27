@@ -245,11 +245,11 @@ void database::process_table_and_parse_urls(const std::string& table_name)
     int num_of_records = 10'000;
     int num_of_vectors = 0;
 
-    while (num_of_records * num_of_vectors < records.size()) {
+    while (num_of_records * num_of_vectors < static_cast<int>(records.size())) {
         int first = num_of_records * num_of_vectors;
         int last = num_of_records * (num_of_vectors + 1);
-        if (last > records.size()) {
-            last = records.size();
+        if (last > static_cast<int>(records.size())) {
+            last = static_cast<int>(records.size());
         }
         std::vector<db_record> subvector(records.begin() + first, records.begin() + last);
         const auto& update_callback = [this, &table_name, &subvector, &tries]() {

@@ -19,8 +19,8 @@ public:
     static std::string name();
 private:
 
-    int _max_length{161};
-    int _min_length{14};
+    size_t _max_length{161};
+    size_t _min_length{14};
 };
 
 } // namespace feature
