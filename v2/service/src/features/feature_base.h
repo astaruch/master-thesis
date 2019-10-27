@@ -16,6 +16,7 @@ namespace feature {
 
 class base {
 public:
+    virtual ~base() = default;
     virtual double compute_value() = 0;
     void set_url(const std::string& url);
 protected:
