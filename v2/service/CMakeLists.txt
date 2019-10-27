@@ -148,7 +148,7 @@ target_include_directories(phishsvc
 target_link_libraries(phishsvc
   PRIVATE
   ${ALL_LIBRARIES}
-  project_warnings
+  # project_warnings
   project_options
 )
 

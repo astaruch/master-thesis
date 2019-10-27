@@ -3,7 +3,7 @@
 #ifndef PHISHSVC_DATABASE_H
 #define PHISHSVC_DATABASE_H
 
-#include <algorithm>
+// #include <algorithm>
 #include <set>
 #include <string>
 #include <vector>

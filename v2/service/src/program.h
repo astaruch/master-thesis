@@ -1,85 +1,85 @@
-#pragma once
+// #pragma once
 
-#ifndef PHISHSVC_PROGRAM_H
-#define PHISHSVC_PROGRAM_H
+// #ifndef PHISHSVC_PROGRAM_H
+// #define PHISHSVC_PROGRAM_H
 
-#include <cxxopts.hpp>
+// #include <cxxopts.hpp>
 
-#include "features/feature_base.h"
+// #include "features/feature_base.h"
 
-class program {
-public:
-    program(int argc, char** argv);
+// class program {
+// public:
+//     program(int argc, char** argv);
 
-    /// Performs general operations from user input
-    /**
-     * This method will perform general checking, whether user provided
-     * all information needed, or how the application should behave, and
-     * prepare for the next steps.
-     */
-    void check_options();
+//     /// Performs general operations from user input
+//     /**
+//      * This method will perform general checking, whether user provided
+//      * all information needed, or how the application should behave, and
+//      * prepare for the next steps.
+//      */
+//     void check_options();
 
-    /// Gets or construct a connection string to a database
-    std::string get_conn_string();
+//     /// Gets or construct a connection string to a database
+//     std::string get_conn_string();
 
-    /// Check whether we are going to manipulating with a table
-    bool table_manipulation();
+//     /// Check whether we are going to manipulating with a table
+//     bool table_manipulation();
 
-    /// Check whether we are going to work with a features
-    bool features_enabled();
+//     /// Check whether we are going to work with a features
+//     bool features_enabled();
 
-    /// Return flags with features
-    uint64_t feature_flags();
+//     /// Return flags with features
+//     uint64_t feature_flags();
 
-    /// Training data options
-    std::string training_data_url();
-    std::string training_data_output_name();
-    bool create_training_data();
-    double training_data_class_value();
+//     /// Training data options
+//     std::string training_data_url();
+//     std::string training_data_output_name();
+//     bool create_training_data();
+//     double training_data_class_value();
 
-    bool parse_urls();
-    std::string table_name();
-private:
-    cxxopts::Options _options;
+//     bool parse_urls();
+//     std::string table_name();
+// private:
+//     cxxopts::Options _options;
 
-    /// General options
-    bool _help;
-    bool _version;
+//     /// General options
+//     bool _help;
+//     bool _version;
 
-    /// Disambiguation options
-    bool _enable_features;
-    bool _enable_database;
-    bool _enable_table_manipulation;
-    bool _enable_training_data;
+//     /// Disambiguation options
+//     bool _enable_features;
+//     bool _enable_database;
+//     bool _enable_table_manipulation;
+//     bool _enable_training_data;
 
-    std::string _host;
-    std::string _port;
-    std::string _dbname;
-    std::string _user;
-    std::string _password;
-    std::string _conn_string;
+//     std::string _host;
+//     std::string _port;
+//     std::string _dbname;
+//     std::string _user;
+//     std::string _password;
+//     std::string _conn_string;
 
-    /// Table manipulation options
-    bool _table_manipulation;
-    std::string _table;
-    bool _parse_urls;
+//     /// Table manipulation options
+//     bool _table_manipulation;
+//     std::string _table;
+//     bool _parse_urls;
 
-    /// Features
-    bool _feature_ip_address;
-    bool _feature_url_length;
+//     /// Features
+//     bool _feature_ip_address;
+//     bool _feature_url_length;
 
-    uint64_t _feature_flags;
+//     uint64_t _feature_flags;
 
-    /// Training data
-    std::string _training_data_url;
-    bool _training_data_stdin;
-    std::string _training_data_input_file;
-    std::string _training_data_output_name;
-    double _training_data_class_value;
-    bool _missing_training_data_class_value;
+//     /// Training data
+//     std::string _training_data_url;
+//     bool _training_data_stdin;
+//     std::string _training_data_input_file;
+//     std::string _training_data_output_name;
+//     double _training_data_class_value;
+//     bool _missing_training_data_class_value;
 
 
-    const char* on_off(bool feature);
-};
+//     const char* on_off(bool feature);
+// };
 
-#endif // PHISHSVC_PROGRAM_H
+// #endif // PHISHSVC_PROGRAM_H

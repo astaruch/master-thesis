@@ -23,7 +23,7 @@ build-debug:
 	cd Debug && \
 		cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake
 	cd Debug && \
-		make -j 4
+		make -j 1
 
 feature1: build-debug
 	Debug/phishsvc \

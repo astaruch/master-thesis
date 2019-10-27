@@ -1,9 +1,9 @@
 #include "training_data.h"
 
-#include <algorithm>
+// #include <algorithm>
 #include <numeric>
 
-#include <spdlog/spdlog.h>
+// #include <spdlog/spdlog.h>
 
 #include "features/feature_base.h"
 #include "features/ip_address.h"
@@ -33,15 +33,15 @@ void training_data::set_output_name(std::string name)
 bool training_data::create_training_data()
 {
 
-    fmt::print("-- file '{}':\n", _output_name);
+    //fmt::print("-- file '{}':\n", _output_name);
     std::string csv_header = create_csv_header();
-    fmt::print("{}\n", csv_header);
+    //fmt::print("{}\n", csv_header);
 
     std::vector<std::string> lines = transform_urls_to_training_data();
     for (const std::string& line: lines) {
-        fmt::print("{}\n", line);
+        //fmt::print("{}\n", line);
     }
-    fmt::print("--\n");
+    //fmt::print("--\n");
 
     return true;
 }
@@ -70,19 +70,19 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
     // takes vector of doubles and transform it to the string separated by comma
     // input: [0., 1., 0.5]
     // output: "0.,1.,0.5"
-    auto combine_doubles = [](std::string a, double b) -> std::string {
-        return std::move(a) + "," + fmt::format("{}", b);
-    };
+    // auto combine_doubles = [](std::string a, double b) -> std::string {
+    //     return std::move(a) + "," + fmt::format("{}", b);
+    // };
 
     std::vector<std::string> lines;
-    for (const auto& url: _urls) {
-        auto fvec = compute_feature_vector(url);
-        std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
-                                           fmt::format("{}", fvec[0]),
-                                           combine_doubles);
-        lines.push_back(line);
-        _training_data.push_back(std::move(fvec));
-    }
+    // for (const auto& url: _urls) {
+    //     auto fvec = compute_feature_vector(url);
+    //     std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
+    //                                        fmt::format("{}", fvec[0]),
+    //                                        combine_doubles);
+    //     lines.push_back(line);
+    //     _training_data.push_back(std::move(fvec));
+    // }
     return lines;
 }
 

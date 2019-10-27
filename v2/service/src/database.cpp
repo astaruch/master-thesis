@@ -1,9 +1,8 @@
-#include <algorithm>
+// #include <algorithm>
 
 #include <pqxx/except>
 #include <pqxx/pqxx>
-#include <spdlog/spdlog.h>
-
+// #include <//spdlog///spdlog.h>
 #include "database.h"
 
 using std::set;
@@ -73,7 +72,7 @@ std::vector<database::db_record> database::get_all_records(const std::string& ta
 {
     pqxx::work txn(_conn);
     try {
-        spdlog::info("Obtaining all records from table '{}'. Parsing on the fly", table_name);
+        //spdlog::info("Obtaining all records from table '{}'. Parsing on the fly", table_name);
         auto rows = txn.exec("SELECT id, url FROM " + txn.esc(table_name));
         std::vector<db_record> records;
         for (const auto& row: rows) {
@@ -87,22 +86,22 @@ std::vector<database::db_record> database::get_all_records(const std::string& ta
                     record.url_obj = Poco::URI(full_url);
                     record.ok = true;
                 } catch (const Poco::SyntaxException& ex) {
-                    spdlog::error("Malformed URL: {}", full_url);
+                    //spdlog::error("Malformed URL: {}", full_url);
                     record.url_obj = Poco::URI();
                     record.ok = false;
                 }
                 records.push_back(record);
             }
         }
-        spdlog::info("Number of URLs in table: {}", rows.size());
-        spdlog::info("Number of parsed URLs: {}", std::count_if(records.begin(),
-            records.end(), [&](const auto& rec) { return rec.ok; }));
+        //spdlog::info("Number of URLs in table: {}", rows.size());
+        //spdlog::info("Number of parsed URLs: {}", std::count_if(records.begin(),
+            // records.end(), [&](const auto& rec) { return rec.ok; }));
         return records;
     } catch (const pqxx::sql_error& ex) {
-        spdlog::error("Error: {}", ex.what());
-        spdlog::error("Query: {}", ex.query());
+        //spdlog::error("Error: {}", ex.what());
+        //spdlog::error("Query: {}", ex.query());
     } catch (const pqxx::usage_error& ex) {
-        spdlog::error("Error: {}", ex.what());
+        //spdlog::error("Error: {}", ex.what());
     }
     return {};
 }
@@ -111,16 +110,16 @@ bool database::fill_db_with_url_parts(const std::string& table_name,
     std::vector<database::db_record>& records)
 {
     pqxx::work txn(_conn);
-    spdlog::info("Inserting parsed records into database");
+    //spdlog::info("Inserting parsed records into database");
     prepare_update_url_parts(table_name, txn);
     for (auto& record: records) {
         try {
             execute_update_url_parts(txn, record.id, record.url_obj);
         } catch (const pqxx::data_exception& ex) {
-            spdlog::error("{}", ex.what());
-            // spdlog::error("Malformed data (error in encoding in Poco::URI::Parse())");
-            spdlog::error("Removing this URL from records: {}", record.full_url);
-            spdlog::info("Rollbacking the transaction");
+            //spdlog::error("{}", ex.what());
+            // //spdlog::error("Malformed data (error in encoding in Poco::URI::Parse())");
+            //spdlog::error("Removing this URL from records: {}", record.full_url);
+            //spdlog::info("Rollbacking the transaction");
             debug_record(record);
             record.url_obj = Poco::URI();
             throw pqxx::transaction_rollback("Removing malformed URL");
@@ -132,22 +131,22 @@ bool database::fill_db_with_url_parts(const std::string& table_name,
 
 void database::debug_record(const database::db_record& record)
 {
-    spdlog::debug("url = {}", record.url_obj.toString());
-    spdlog::debug("scheme = {}", record.url_obj.getScheme());
-    spdlog::debug("user_info = {}", record.url_obj.getUserInfo());
-    spdlog::debug("host = {}", record.url_obj.getHost());
-    spdlog::debug("port = {}", record.url_obj.getPort());
-    spdlog::debug("path = {}", record.url_obj.getPath());
-    spdlog::debug("raw query = {}", record.url_obj.getRawQuery());
-    spdlog::debug("query = {}", record.url_obj.getQuery());
-    spdlog::debug("fragment = {}", record.url_obj.getFragment());
+    //spdlog::debug("url = {}", record.url_obj.toString());
+    //spdlog::debug("scheme = {}", record.url_obj.getScheme());
+    //spdlog::debug("user_info = {}", record.url_obj.getUserInfo());
+    //spdlog::debug("host = {}", record.url_obj.getHost());
+    //spdlog::debug("port = {}", record.url_obj.getPort());
+    //spdlog::debug("path = {}", record.url_obj.getPath());
+    //spdlog::debug("raw query = {}", record.url_obj.getRawQuery());
+    //spdlog::debug("query = {}", record.url_obj.getQuery());
+    //spdlog::debug("fragment = {}", record.url_obj.getFragment());
 }
 
 void database::add_url_columns(const std::string& table_name)
 {
     pqxx::work txn(_conn);
     try {
-        spdlog::info("Adding columns 'scheme', 'user_info', 'host', 'port', 'path', 'query', 'fragment'");
+        //spdlog::info("Adding columns 'scheme', 'user_info', 'host', 'port', 'path', 'query', 'fragment'");
         txn.exec("ALTER TABLE " + txn.esc(table_name) + " ADD COLUMN IF NOT EXISTS scheme VARCHAR");
         txn.exec("ALTER TABLE " + txn.esc(table_name) + " ADD COLUMN IF NOT EXISTS user_info VARCHAR");
         txn.exec("ALTER TABLE " + txn.esc(table_name) + " ADD COLUMN IF NOT EXISTS host VARCHAR");
@@ -157,8 +156,8 @@ void database::add_url_columns(const std::string& table_name)
         txn.exec("ALTER TABLE " + txn.esc(table_name) + " ADD COLUMN IF NOT EXISTS fragment VARCHAR");
         txn.commit();
     } catch (const pqxx::sql_error& ex) {
-        spdlog::error("Error: {}", ex.what());
-        spdlog::error("Query: {}", ex.query());
+        //spdlog::error("Error: {}", ex.what());
+        //spdlog::error("Query: {}", ex.query());
     }
 }
 
@@ -184,43 +183,43 @@ void database::test_connection()
     try {
         txn.exec1("SELECT '1'");
     } catch (const std::exception& ex) {
-        spdlog::error("There is a problem with connection: {}", ex.what());
+        //spdlog::error("There is a problem with connection: {}", ex.what());
         exit(1);
     }
-    spdlog::info("Connected");
+    //spdlog::info("Connected");
 }
 
 void database::process_table_and_parse_urls(const std::string& table_name)
 {
-    spdlog::info("Checking if table '{}' exists", table_name); // TODO: change to debug after implementation
+    //spdlog::info("Checking if table '{}' exists", table_name); // TODO: change to debug after implementation
     if (table_name.empty()) {
-        spdlog::error("Invalid empty name. Stopping");
+        //spdlog::error("Invalid empty name. Stopping");
         return;
     }
     try {
         pqxx::work txn(_conn);
         auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<string>();
-        spdlog::info("Table '{}' exists", str);
+        //spdlog::info("Table '{}' exists", str);
     } catch (const pqxx::conversion_error& ex) {
-        spdlog::error("Table '{}' doesn't exist", table_name);
+        //spdlog::error("Table '{}' doesn't exist", table_name);
         return;
     }
 
-    spdlog::info("Checking if table has needed input columns: 'id', 'url'");
+    //spdlog::info("Checking if table has needed input columns: 'id', 'url'");
     {
         auto columns = get_column_names(table_name);
         if (columns.count("id") == 0) {
-            spdlog::error("Missing column 'id'");
+            //spdlog::error("Missing column 'id'");
             return;
         }
         if (columns.count("url") == 0) {
-            spdlog::error("Missing column 'url'");
+            //spdlog::error("Missing column 'url'");
             return;
         }
     }
-    spdlog::info("OK");
+    //spdlog::info("OK");
 
-    spdlog::info("Checking if table has columns for URL parts");
+    //spdlog::info("Checking if table has columns for URL parts");
     {
         auto columns = get_column_names(table_name);
         if (columns.count("scheme") == 0 || columns.count("user_info") == 0 ||
@@ -228,11 +227,11 @@ void database::process_table_and_parse_urls(const std::string& table_name)
             columns.count("path") == 0 || columns.count("query") == 0 ||
             columns.count("fragment") == 0)
         {
-            spdlog::info("Missing some columns");
+            //spdlog::info("Missing some columns");
             add_url_columns(table_name);
         }
     }
-    spdlog::info("OK");
+    //spdlog::info("OK");
 
     auto records = get_all_records(table_name);
 
@@ -253,17 +252,17 @@ void database::process_table_and_parse_urls(const std::string& table_name)
         }
         std::vector<db_record> subvector(records.begin() + first, records.begin() + last);
         const auto& update_callback = [this, &table_name, &subvector, &tries]() {
-            spdlog::info("Retry {}", tries++);
+            //spdlog::info("Retry {}", tries++);
             return fill_db_with_url_parts(table_name, subvector);
         };
         bool updated_ok = pqxx::perform(update_callback, max_tries);
         if (updated_ok) {
             num_of_vectors++;
-            spdlog::info("OK. Inserted {} records", subvector.size());
+            //spdlog::info("OK. Inserted {} records", subvector.size());
         } else {
-            spdlog::error("ERROR. Can't insert records after {} tries", max_tries);
+            //spdlog::error("ERROR. Can't insert records after {} tries", max_tries);
             return;
         }
     }
-    spdlog::info("Everything OK");
+    //spdlog::info("Everything OK");
 }

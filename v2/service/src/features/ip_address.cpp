@@ -1,10 +1,10 @@
 #include "ip_address.h"
 
-#include <algorithm>
-#include <regex>
+// #include <algorithm>
+// #include <regex>
 #include <string>
 
-#include <fmt/format.h>
+// #include <fmt/format.h>
 
 namespace feature {
 
@@ -80,9 +80,9 @@ double ip_address::compute_value()
           4[01]\d{8}|[1-3]\d{0,9}|[4-9]\d{0,8}
         )$
     )";
-    pattern.erase(remove_if(pattern.begin(), pattern.end(), isspace), pattern.end());
-    const std::regex ip_regex(pattern);
-    _value = std::regex_match(_url_obj.getHost(), ip_regex) ? 1. : 0.;
+    // pattern.erase(remove_if(pattern.begin(), pattern.end(), isspace), pattern.end());
+    // const std::regex ip_regex(pattern);
+    // _value = std::regex_match(_url_obj.getHost(), ip_regex) ? 1. : 0.;
     return _value;
 }
 
