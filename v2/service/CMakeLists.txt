@@ -7,9 +7,6 @@ project(phishsvc VERSION 0.0.1 LANGUAGES CXX)
 
 ### PostgreSQL - https://github.com/microsoft/vcpkg/tree/master/ports/libpqxx ===========##
 find_package(PostgreSQL REQUIRED)
-set(PQ_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/libpq)
-set(PQXX_INCLUDE_DIR ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/pqxx)
-
 set(PQXX_LIB ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/liblibpqxx_static.a)
 set(PQ_LIB ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/libpq.a)
 message(STATUS "Found libpqxx: ${PQXX_LIB}")
@@ -138,12 +135,6 @@ target_compile_features(project_options INTERFACE cxx_std_17)
 ## Executable
 ## ======================================================================================##
 add_executable(phishsvc ${SOURCES})
-
-target_include_directories(phishsvc
-  PRIVATE
-  ${PQXX_INCLUDE_DIR}
-  ${PQ_INCLUDE_DIR}
-)
 
 target_link_libraries(phishsvc
   PRIVATE
