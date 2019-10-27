@@ -137,7 +137,8 @@ target_compile_features(project_options INTERFACE cxx_std_17)
 ## ======================================================================================##
 ## Executable
 ## ======================================================================================##
-add_executable(phishsvc ${SOURCES})
+# add_executable(phishsvc ${SOURCES})
+add_executable(phishsvc src/main.cpp)
 
 target_include_directories(phishsvc
   PRIVATE
