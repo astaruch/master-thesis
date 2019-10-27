@@ -132,7 +132,7 @@ endif()
 ## Project options
 ## ======================================================================================##
 add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE cxx_std_14)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 ## ======================================================================================##
 ## Executable
