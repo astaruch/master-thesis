@@ -1,17 +1,17 @@
-#include <array>
-#include <iostream>
-#include <set>
-#include <string>
-#include <vector>
+// #include <array>
+// #include <iostream>
+// #include <set>
+// #include <string>
+// #include <vector>
 
-// #include <spdlog/spdlog.h>
-#include <pqxx/pqxx>
-#include <Poco/URI.h>
-#include <Poco/Exception.h>
+// // #include <spdlog/spdlog.h>
+// #include <pqxx/pqxx>
+// #include <Poco/URI.h>
+// #include <Poco/Exception.h>
 
-#include "database.h"
-// #include "program.h"
-#include "training_data.h"
+// #include "database.h"
+// // #include "program.h"
+// #include "training_data.h"
 
 int main(int argc, char* argv[]) {
     // program app(argc, argv);
