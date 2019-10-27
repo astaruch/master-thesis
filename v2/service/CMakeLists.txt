@@ -129,10 +129,15 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif()
 
 ## ======================================================================================##
+## Project options
+## ======================================================================================##
+add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_14)
+
+## ======================================================================================##
 ## Executable
 ## ======================================================================================##
 add_executable(phishsvc ${SOURCES})
-target_compile_features(phishsvc PUBLIC cxx_std_14)
 
 target_include_directories(phishsvc
   PRIVATE
@@ -144,10 +149,8 @@ target_link_libraries(phishsvc
   PRIVATE
   ${ALL_LIBRARIES}
   project_warnings
+  project_options
 )
-
-
-
 
 ## ======================================================================================##
 ## Tests
