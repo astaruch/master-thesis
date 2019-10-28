@@ -13,6 +13,10 @@ test: build-debug
 	@echo $@
 	Debug/test/all_tests
 
+ctest: build-debug
+	@echo $@
+	cd Debug && ctest
+
 clean:
 	@echo $@
 	rm -rf Debug Release

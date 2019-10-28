@@ -18,7 +18,7 @@ set(SOURCES "${APP_SOURCES};${TEST_SOURCES}")
 ## Google test
 ## ======================================================================================##
 find_package(GTest CONFIG REQUIRED)
-add_test(NAME all_tests COMMAND all_tests)
+include(GoogleTest)
 
 ## ======================================================================================##
 ## Executable
@@ -36,3 +36,8 @@ target_link_libraries(all_tests
   GTest::gmock_main
   ${ALL_LIBRARIES}
 )
+
+## ======================================================================================##
+## CTest
+## ======================================================================================##
+gtest_discover_tests(all_tests)
