@@ -1,0 +1,6 @@
+[
+    {
+        "name": "vcpkg",
+        "toolchainFile": "/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    }
+]
