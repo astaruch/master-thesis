@@ -9,11 +9,11 @@ build:
 run: feature2
 	@$(MAKE) -f $(THIS_FILE) feature-all
 
-test: build-debug
+test: build-tests
 	@echo $@
 	Debug/test/all_tests
 
-ctest: build-debug
+ctest: build-tests
 	@echo $@
 	cd Debug && ctest
 
@@ -21,11 +21,24 @@ clean:
 	@echo $@
 	rm -rf Debug Release
 
+build-tests:
+	@echo $@ # print target name
+	mkdir -p Debug
+	cd Debug && cmake \
+		-D CMAKE_BUILD_TYPE:STRING=Debug \
+		-D CMAKE_TOOLCHAIN_FILE:STRING=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake \
+		-D RUN_TESTS:BOOL=ON \
+		..
+	cd Debug && \
+		make -j 4
+
 build-debug:
 	@echo $@ # print target name
 	mkdir -p Debug
-	cd Debug && \
-		cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake
+	cd Debug && cmake \
+		-D CMAKE_BUILD_TYPE:STRING=Debug \
+		-D CMAKE_TOOLCHAIN_FILE:STRING=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake \
+		..
 	cd Debug && \
 		make -j 4
 
