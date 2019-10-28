@@ -71,6 +71,7 @@ private:
     bool _feature_path_length;
     bool _feature_query_length;
     bool _feature_fragment_length;
+    bool _feature_user_info;
 
     uint64_t _feature_flags;
 

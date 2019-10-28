@@ -42,6 +42,7 @@ program::program(int argc, char** argv)
         ("feat-path-length", "Check logness of the path", cxxopts::value<bool>(_feature_path_length))
         ("feat-query-length", "Check logness of the query", cxxopts::value<bool>(_feature_query_length))
         ("feat-fragment-length", "Check logness of the fragment", cxxopts::value<bool>(_feature_fragment_length))
+        ("feat-user-info", "Check wether URL contains user info", cxxopts::value<bool>(_feature_user_info))
     ;
 
     _options.add_options("Training data")
@@ -107,6 +108,10 @@ void program::check_options()
         fmt::print("-- fragment length - {}\n", on_off(_feature_fragment_length));
         if (_feature_fragment_length) {
             _feature_flags |= feature_name::fragment_length;
+        }
+        fmt::print("-- user info - {}\n", on_off(_feature_user_info));
+        if (_feature_user_info) {
+            _feature_flags |= feature_name::user_info;
         }
     }
 

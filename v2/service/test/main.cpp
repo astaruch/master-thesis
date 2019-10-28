@@ -1,12 +1,8 @@
 #include <iostream>
 #include "gtest/gtest.h"
 
-#include "features/ip_address.h"
-#include "features/url_length.h"
-#include "features/host_length.h"
-#include "features/path_length.h"
-#include "features/query_length.h"
-#include "features/fragment_length.h"
+#include "features/all_features.h"
+
 
 TEST(HostIPAddress, NoIPAddress)
 {
@@ -84,6 +80,27 @@ TEST(FragmentLength, NoFragment)
     feature::fragment_length f;
     f.set_url("http://abielonline.com/");
     EXPECT_GT(0.01, f.compute_value());
+}
+
+TEST(UserInfo, HasUserInfo)
+{
+    feature::user_info f;
+    f.set_url("http://postgres:password@www.pgadmin.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(UserInfo, PhishingUserInfo)
+{
+    feature::user_info f;
+    f.set_url("http://paypal.com@phishing-site.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(UserInfo, NoUserInfo)
+{
+    feature::user_info f;
+    f.set_url("http://google.com");
+    EXPECT_EQ(0, f.compute_value());
 }
 
 int main(int argc, char **argv) {

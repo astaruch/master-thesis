@@ -14,6 +14,7 @@ enum feature_name: uint64_t {
     path_length = 0x8,
     query_length = 0x10,
     fragment_length = 0x20,
+    user_info = 0x40,
 };
 
 namespace feature {
