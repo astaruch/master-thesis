@@ -3,12 +3,15 @@
 #ifndef PHISHSVC_PROGRAM_H
 #define PHISHSVC_PROGRAM_H
 
+#include <string_view>
+
 #include <cxxopts.hpp>
 
 #include "features/feature_base.h"
 
 class program {
 public:
+
     program(int argc, char** argv);
 
     /// Performs general operations from user input
@@ -87,6 +90,7 @@ private:
 
 
     const char* on_off(bool feature);
+    void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
 };
 
 #endif // PHISHSVC_PROGRAM_H
