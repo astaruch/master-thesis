@@ -24,6 +24,7 @@ enum id: uint64_t {
     https_used = 0x100,
     extra_https = 0x200,
     shortening_service = 0x400,
+    non_std_port = 0x800,
 };
 
 static const id all[] = {
@@ -38,6 +39,7 @@ static const id all[] = {
     https_used,
     extra_https,
     shortening_service,
+    non_std_port,
 };
 
 }

@@ -49,6 +49,7 @@ program::program(int argc, char** argv)
         ("feat-https-used", "Check wether site is using HTTPS", cxxopts::value<bool>(_feature_https_used))
         ("feat-extra-https", "Check wether URL contains extra HTTPS token", cxxopts::value<bool>(_feature_extra_https))
         ("feat-shortening-service", "Check wether URL uses shortening service", cxxopts::value<bool>(_feature_shortening_service))
+        ("feat-non-std-port", "Check wether used port is standard", cxxopts::value<bool>(_feature_non_std_port))
     ;
 
     _options.add_options("Training data")
@@ -110,6 +111,7 @@ void program::check_options()
         check_feature_option(_feature_https_used, feature_enum::id::https_used, "HTTPS used"sv);
         check_feature_option(_feature_extra_https, feature_enum::id::extra_https, "extra HTTPS"sv);
         check_feature_option(_feature_shortening_service, feature_enum::id::shortening_service, "shortening service"sv);
+        check_feature_option(_feature_non_std_port, feature_enum::id::non_std_port, "non standard port"sv);
     }
 
     if (_enable_training_data) {

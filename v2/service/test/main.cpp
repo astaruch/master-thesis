@@ -272,6 +272,49 @@ TEST(ShorteningService, normal)
     EXPECT_EQ(0, f.compute_value());
 }
 
+TEST(NonSTDPort, Implicit80)
+{
+    feature::non_std_port f;
+    f.set_url("http://google.com/GH874$ag");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(NonSTDPort, Explicit80)
+{
+    feature::non_std_port f;
+    f.set_url("http://google.com:80/GH874$ag");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(NonSTDPort, Implicit443)
+{
+    feature::non_std_port f;
+    f.set_url("https://google.com/GH874$ag");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(NonSTDPort, Explicit443)
+{
+    feature::non_std_port f;
+    f.set_url("https://google.com:443/GH874$ag");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(NonSTDPort, NonSTDPort)
+{
+    feature::non_std_port f;
+    f.set_url("http://google.com:81/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(NonSTDPort, NonSTDPort2)
+{
+    feature::non_std_port f;
+    f.set_url("http://google.com:22/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

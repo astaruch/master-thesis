@@ -38,6 +38,7 @@ build-debug:
 	cd Debug && cmake \
 		-D CMAKE_BUILD_TYPE:STRING=Debug \
 		-D CMAKE_TOOLCHAIN_FILE:STRING=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake \
+		-D RUN_TESTS:BOOL=OFF \
 		..
 	cd Debug && \
 		make -j 4
@@ -75,4 +76,5 @@ feature-all: build-debug
 		--feat-domain-count \
 		--feat-https-used \
 		--feat-extra-https \
-		--feat-shortening-service
+		--feat-shortening-service \
+		--feat-non-std-port

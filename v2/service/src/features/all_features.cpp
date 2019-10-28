@@ -27,6 +27,8 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
         return std::make_unique<feature::extra_https>();
     case feature_enum::id::shortening_service:
         return std::make_unique<feature::shortening_service>();
+    case feature_enum::id::non_std_port:
+        return std::make_unique<feature::non_std_port>();
     }
     return nullptr;
 }

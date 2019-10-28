@@ -79,6 +79,7 @@ private:
     bool _feature_https_used;
     bool _feature_extra_https;
     bool _feature_shortening_service;
+    bool _feature_non_std_port;
 
     uint64_t _feature_flags;
 
