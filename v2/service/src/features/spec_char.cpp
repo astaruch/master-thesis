@@ -33,5 +33,17 @@ double spec_char_fragment::compute_value()
     return normalize_value(0, count, 5);
 }
 
+double spec_char_host::compute_value()
+{
+    if (!_url_is_ok) {
+        return _value;
+    }
+    const auto& path = _url_obj.getHost();
+    int count = static_cast<int>(std::count_if(path.begin(), path.end(), [](const char c) {
+        return c == '_' || c == '-';
+    }));
+    return normalize_value(0, count, 2);
+}
+
 } // namespace feature
 

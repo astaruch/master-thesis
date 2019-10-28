@@ -80,4 +80,5 @@ feature-all: build-debug
 		--feat-non-std-port \
 		--feat-spec-chars-path \
 		--feat-spec-chars-query \
-		--feat-spec-chars-fragment
+		--feat-spec-chars-fragment \
+		--feat-spec-chars-host

@@ -53,6 +53,7 @@ program::program(int argc, char** argv)
         ("feat-spec-chars-path", "Check occurences of special characters in a path", cxxopts::value<bool>(_feature_spec_chars_path))
         ("feat-spec-chars-query", "Check occurences of special characters in a query", cxxopts::value<bool>(_feature_spec_chars_query))
         ("feat-spec-chars-fragment", "Check occurences of special characters in a fragment", cxxopts::value<bool>(_feature_spec_chars_fragment))
+        ("feat-spec-chars-host", "Check occurences of dash and underscore a host", cxxopts::value<bool>(_feature_spec_chars_host))
     ;
 
     _options.add_options("Training data")
@@ -118,6 +119,7 @@ void program::check_options()
         check_feature_option(_feature_spec_chars_path, feature_enum::id::spec_chars_path, "special chars path"sv);
         check_feature_option(_feature_spec_chars_query, feature_enum::id::spec_chars_query, "special chars query"sv);
         check_feature_option(_feature_spec_chars_fragment, feature_enum::id::spec_chars_fragment, "special chars fragment"sv);
+        check_feature_option(_feature_spec_chars_host, feature_enum::id::spec_chars_host, "special chars host"sv);
     }
 
     if (_enable_training_data) {

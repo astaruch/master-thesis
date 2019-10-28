@@ -83,6 +83,7 @@ private:
     bool _feature_spec_chars_path;
     bool _feature_spec_chars_query;
     bool _feature_spec_chars_fragment;
+    bool _feature_spec_chars_host;
 
     uint64_t _feature_flags;
 

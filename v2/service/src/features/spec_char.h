@@ -35,6 +35,15 @@ public:
     }
 };
 
+class spec_char_host: public base {
+public:
+    double compute_value() override;
+    std::string column_name() override
+    {
+        return "spec_char_host";
+    }
+};
+
 } // namespace feature
 
 #endif // PHISHSVC_FEATURE_SPEC_CHAR_H

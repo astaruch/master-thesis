@@ -377,6 +377,28 @@ TEST(SpecialChars, FragmentBig)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(SpecialChars, HostZero)
+{
+    feature::spec_char_host f;
+    f.set_url("http://google.com/");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(SpecialChars, HostSmall)
+{
+    feature::spec_char_host f;
+    f.set_url("http://goo-gle.com/");
+    EXPECT_GT(0.6, f.compute_value());
+}
+
+TEST(SpecialChars, HostBig)
+{
+    feature::spec_char_host f;
+    f.set_url("http://paypal-yandex-seznam-google.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
