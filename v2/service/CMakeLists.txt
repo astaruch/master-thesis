@@ -5,14 +5,11 @@ project(phishsvc VERSION 0.0.1 LANGUAGES CXX)
 ## Dependencies
 ## ======================================================================================##
 
-### PostgreSQL - https://github.com/microsoft/vcpkg/tree/master/ports/libpqxx ===========##
+### PostgreSQL - C++ - https://github.com/microsoft/vcpkg/tree/master/ports/libpqxx =====##
 find_package(PostgreSQL REQUIRED)
-set(PQXX_LIB ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/liblibpqxx_static.a)
-set(PQ_LIB ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/libpq.a)
-message(STATUS "Found libpqxx: ${PQXX_LIB}")
-
-find_library(PQXX_LIB pqxx)
-find_library(PQ_LIB pq)
+find_library(LIBPQXX libpqxx_static ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib)
+### PostgreSQL - C - https://github.com/microsoft/vcpkg/tree/master/ports/libpq =========##
+find_library(LIBPQ pq ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/)
 
 ### OpenSSL - https://github.com/microsoft/vcpkg/tree/master/ports/openssl ==============##
 find_package(OpenSSL REQUIRED)
@@ -46,18 +43,14 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 # due to unknown and unreadable reasons. God bless C++!
 set(ALL_LIBRARIES
   spdlog::spdlog
-
   # First we need to link pqxx, then pq (otherwise linker will throw lot of errors)
-  ${PQXX_LIB}
-  ${PQ_LIB}
-
+  ${LIBPQXX}
+  ${LIBPQ}
   # We need manually link openssl **after** linking postgres (otherwise there will be shit tone of weird errors)
   OpenSSL::SSL
   OpenSSL::Crypto
-
   # Threads come after ssl
   Threads::Threads
-
   Poco::Foundation
   Poco::Net
   cxxopts::cxxopts
