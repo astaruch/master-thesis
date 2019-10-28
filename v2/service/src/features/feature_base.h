@@ -9,7 +9,7 @@
 
 namespace feature_enum {
 
-enum name: uint64_t {
+enum id: uint64_t {
     ip_address = 0x1,
     url_length = 0x2,
     host_length = 0x4,
@@ -23,7 +23,7 @@ enum name: uint64_t {
     https_used = 0x100,
 };
 
-static const name all[] = {
+static const id all[] = {
     ip_address,
     url_length,
     host_length,

@@ -97,15 +97,15 @@ void program::check_options()
 
     if (_enable_features) {
         fmt::print("Features:\n");
-        check_feature_option(_feature_ip_address, feature_enum::name::ip_address, "IP address"sv);
-        check_feature_option(_feature_url_length, feature_enum::name::url_length, "URL length"sv);
-        check_feature_option(_feature_host_length, feature_enum::name::host_length, "host length"sv);
-        check_feature_option(_feature_path_length, feature_enum::name::path_length, "path length"sv);
-        check_feature_option(_feature_query_length, feature_enum::name::query_length, "query length"sv);
-        check_feature_option(_feature_fragment_length, feature_enum::name::fragment_length, "fragment length"sv);
-        check_feature_option(_feature_user_info, feature_enum::name::user_info, "user info"sv);
-        check_feature_option(_feature_domain_count, feature_enum::name::domain_count, "domain count"sv);
-        check_feature_option(_feature_https_used, feature_enum::name::https_used, "HTTPS used"sv);
+        check_feature_option(_feature_ip_address, feature_enum::id::ip_address, "IP address"sv);
+        check_feature_option(_feature_url_length, feature_enum::id::url_length, "URL length"sv);
+        check_feature_option(_feature_host_length, feature_enum::id::host_length, "host length"sv);
+        check_feature_option(_feature_path_length, feature_enum::id::path_length, "path length"sv);
+        check_feature_option(_feature_query_length, feature_enum::id::query_length, "query length"sv);
+        check_feature_option(_feature_fragment_length, feature_enum::id::fragment_length, "fragment length"sv);
+        check_feature_option(_feature_user_info, feature_enum::id::user_info, "user info"sv);
+        check_feature_option(_feature_domain_count, feature_enum::id::domain_count, "domain count"sv);
+        check_feature_option(_feature_https_used, feature_enum::id::https_used, "HTTPS used"sv);
     }
 
     if (_enable_training_data) {
