@@ -115,60 +115,12 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 std::vector<double> training_data::compute_feature_vector(const std::string& url)
 {
     std::vector<double> fvec; // feature vector
-    if ((_feature_flags & feature_enum::id::ip_address) == feature_enum::id::ip_address) {
-        feature::ip_address f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::url_length) == feature_enum::id::url_length) {
-        feature::url_length f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::host_length) == feature_enum::id::host_length) {
-        feature::host_length f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::path_length) == feature_enum::id::path_length) {
-        feature::path_length f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::query_length) == feature_enum::id::query_length) {
-        feature::query_length f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::fragment_length) == feature_enum::id::fragment_length) {
-        feature::fragment_length f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::user_info) == feature_enum::id::user_info) {
-        feature::user_info f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::domain_count) == feature_enum::id::domain_count) {
-        feature::domain_count f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::https_used) == feature_enum::id::https_used) {
-        feature::https_used f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::extra_https) == feature_enum::id::extra_https) {
-        feature::extra_https f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
-    }
-    if ((_feature_flags & feature_enum::id::shortening_service) == feature_enum::id::shortening_service) {
-        feature::shortening_service f;
-        f.set_url(url);
-        fvec.push_back(f.compute_value());
+    for (const auto id: feature_enum::all) {
+        if ((_feature_flags & id) == id) {
+            auto f = feature::creator::create_feature_from_flag(id);
+            f->set_url(url);
+            fvec.push_back(f->compute_value());
+        }
     }
     fvec.push_back(_label);
     return fvec;
