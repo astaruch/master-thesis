@@ -60,5 +60,6 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "bit": "cpp"
-    }
+    },
+    "C_Cpp.intelliSenseCacheSize": 512
 }
