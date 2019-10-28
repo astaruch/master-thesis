@@ -314,6 +314,69 @@ TEST(NonSTDPort, NonSTDPort2)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(SpecialChars, PathZero)
+{
+    feature::spec_char_path f;
+    f.set_url("http://google.com/GH874ag");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(SpecialChars, PathSmall)
+{
+    feature::spec_char_path f;
+    f.set_url("http://google.com/GH87$$@#4ag");
+    EXPECT_GT(0.5, f.compute_value());
+}
+
+TEST(SpecialChars, PathBig)
+{
+    feature::spec_char_path f;
+    f.set_url("http://google.com/GH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!874ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(SpecialChars, QueryZero)
+{
+    feature::spec_char_query f;
+    f.set_url("http://google.com/GH874ag?asgoihao34");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(SpecialChars, QuerySmall)
+{
+    feature::spec_char_query f;
+    f.set_url("http://google.com/GH874ag?asgoihao34");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(SpecialChars, QueryBig)
+{
+    feature::spec_char_query f;
+    f.set_url("http://google.com/GH874ag?asgoihao34!@%20%20^*^*&");
+    EXPECT_LT(0.5, f.compute_value());
+}
+
+TEST(SpecialChars, FragmentZero)
+{
+    feature::spec_char_fragment f;
+    f.set_url("http://google.com/GH874ag?asgoihao34#agagag");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(SpecialChars, FragmentSmall)
+{
+    feature::spec_char_fragment f;
+    f.set_url("http://google.com/GH874ag?asgoihao34#ajg*gagagaga(");
+    EXPECT_GT(0.5, f.compute_value());
+}
+
+TEST(SpecialChars, FragmentBig)
+{
+    feature::spec_char_fragment f;
+    f.set_url("http://google.com/GH874ag?asgoih#gjakgj#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$");
+    EXPECT_EQ(1, f.compute_value());
+}
+
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

@@ -25,6 +25,10 @@ enum id: uint64_t {
     extra_https = 0x200,
     shortening_service = 0x400,
     non_std_port = 0x800,
+    // 12 bits
+    spec_chars_path = 0x1000,
+    spec_chars_query = 0x2000,
+    spec_chars_fragment = 0x4000,
 };
 
 static const id all[] = {
@@ -40,6 +44,9 @@ static const id all[] = {
     extra_https,
     shortening_service,
     non_std_port,
+    spec_chars_path,
+    spec_chars_query,
+    spec_chars_fragment,
 };
 
 }
@@ -52,6 +59,8 @@ public:
     virtual double compute_value() = 0;
     virtual std::string column_name() = 0;
     void set_url(const std::string& url);
+    // compute normalized value that goes into [0, 1] interval
+    double normalize_value(int min, int value, int max);
 protected:
     double _value;
     std::string _url;

@@ -50,6 +50,9 @@ program::program(int argc, char** argv)
         ("feat-extra-https", "Check wether URL contains extra HTTPS token", cxxopts::value<bool>(_feature_extra_https))
         ("feat-shortening-service", "Check wether URL uses shortening service", cxxopts::value<bool>(_feature_shortening_service))
         ("feat-non-std-port", "Check wether used port is standard", cxxopts::value<bool>(_feature_non_std_port))
+        ("feat-spec-chars-path", "Check occurences of special characters in a path", cxxopts::value<bool>(_feature_spec_chars_path))
+        ("feat-spec-chars-query", "Check occurences of special characters in a query", cxxopts::value<bool>(_feature_spec_chars_query))
+        ("feat-spec-chars-fragment", "Check occurences of special characters in a fragment", cxxopts::value<bool>(_feature_spec_chars_fragment))
     ;
 
     _options.add_options("Training data")
@@ -112,6 +115,9 @@ void program::check_options()
         check_feature_option(_feature_extra_https, feature_enum::id::extra_https, "extra HTTPS"sv);
         check_feature_option(_feature_shortening_service, feature_enum::id::shortening_service, "shortening service"sv);
         check_feature_option(_feature_non_std_port, feature_enum::id::non_std_port, "non standard port"sv);
+        check_feature_option(_feature_spec_chars_path, feature_enum::id::spec_chars_path, "special chars path"sv);
+        check_feature_option(_feature_spec_chars_query, feature_enum::id::spec_chars_query, "special chars query"sv);
+        check_feature_option(_feature_spec_chars_fragment, feature_enum::id::spec_chars_fragment, "special chars fragment"sv);
     }
 
     if (_enable_training_data) {

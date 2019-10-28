@@ -29,6 +29,12 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
         return std::make_unique<feature::shortening_service>();
     case feature_enum::id::non_std_port:
         return std::make_unique<feature::non_std_port>();
+    case feature_enum::id::spec_chars_path:
+        return std::make_unique<feature::spec_char_path>();
+    case feature_enum::id::spec_chars_query:
+        return std::make_unique<feature::spec_char_query>();
+    case feature_enum::id::spec_chars_fragment:
+        return std::make_unique<feature::spec_char_fragment>();
     }
     return nullptr;
 }

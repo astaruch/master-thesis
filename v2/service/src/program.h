@@ -80,6 +80,9 @@ private:
     bool _feature_extra_https;
     bool _feature_shortening_service;
     bool _feature_non_std_port;
+    bool _feature_spec_chars_path;
+    bool _feature_spec_chars_query;
+    bool _feature_spec_chars_fragment;
 
     uint64_t _feature_flags;
 

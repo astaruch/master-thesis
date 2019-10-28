@@ -77,4 +77,7 @@ feature-all: build-debug
 		--feat-https-used \
 		--feat-extra-https \
 		--feat-shortening-service \
-		--feat-non-std-port
+		--feat-non-std-port \
+		--feat-spec-chars-path \
+		--feat-spec-chars-query \
+		--feat-spec-chars-fragment
