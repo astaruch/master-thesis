@@ -60,4 +60,5 @@ feature-all: build-debug
 		--feat-fragment-length \
 		--feat-user-info \
 		--feat-domain-count \
-		--feat-https-used
+		--feat-https-used \
+		--feat-extra-https

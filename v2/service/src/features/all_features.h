@@ -12,5 +12,6 @@
 #include "user_info.h"
 #include "domain_count.h"
 #include "https_used.h"
+#include "extra_https.h"
 
 #endif // PHISHSVC_ALL_FEATURES_H

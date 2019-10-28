@@ -21,6 +21,7 @@ enum id: uint64_t {
     domain_count = 0x80,
     // 8 bits
     https_used = 0x100,
+    extra_https = 0x200,
 };
 
 static const id all[] = {
@@ -33,6 +34,7 @@ static const id all[] = {
     user_info,
     domain_count,
     https_used,
+    extra_https
 };
 
 }

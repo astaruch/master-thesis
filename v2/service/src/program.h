@@ -77,6 +77,7 @@ private:
     bool _feature_user_info;
     bool _feature_domain_count;
     bool _feature_https_used;
+    bool _feature_extra_https;
 
     uint64_t _feature_flags;
 

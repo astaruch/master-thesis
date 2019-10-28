@@ -47,6 +47,7 @@ program::program(int argc, char** argv)
         ("feat-user-info", "Check wether URL contains user info", cxxopts::value<bool>(_feature_user_info))
         ("feat-domain-count", "Check number of domains", cxxopts::value<bool>(_feature_domain_count))
         ("feat-https-used", "Check wether site is using HTTPS", cxxopts::value<bool>(_feature_https_used))
+        ("feat-extra-https", "Check wether URL contains extra HTTPS token", cxxopts::value<bool>(_feature_extra_https))
     ;
 
     _options.add_options("Training data")
@@ -106,6 +107,7 @@ void program::check_options()
         check_feature_option(_feature_user_info, feature_enum::id::user_info, "user info"sv);
         check_feature_option(_feature_domain_count, feature_enum::id::domain_count, "domain count"sv);
         check_feature_option(_feature_https_used, feature_enum::id::https_used, "HTTPS used"sv);
+        check_feature_option(_feature_extra_https, feature_enum::id::extra_https, "extra HTTPS"sv);
     }
 
     if (_enable_training_data) {
