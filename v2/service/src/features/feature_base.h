@@ -7,7 +7,9 @@
 
 #include <Poco/URI.h>
 
-enum feature_name: uint64_t {
+namespace feature_enum {
+
+enum name: uint64_t {
     ip_address = 0x1,
     url_length = 0x2,
     host_length = 0x4,
@@ -20,6 +22,20 @@ enum feature_name: uint64_t {
     // 8 bits
     https_used = 0x100,
 };
+
+static const name all[] = {
+    ip_address,
+    url_length,
+    host_length,
+    path_length,
+    query_length,
+    fragment_length,
+    user_info,
+    domain_count,
+    https_used,
+};
+
+}
 
 namespace feature {
 

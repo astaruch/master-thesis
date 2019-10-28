@@ -89,39 +89,39 @@ void program::check_options()
         fmt::print("Features:\n");
         fmt::print("-- IP address - {}\n", on_off(_feature_ip_address));
         if (_feature_ip_address) {
-            _feature_flags |= feature_name::ip_address;
+            _feature_flags |= feature_enum::name::ip_address;
         }
         fmt::print("-- URL length - {}\n", on_off(_feature_url_length));
         if (_feature_url_length) {
-            _feature_flags |= feature_name::url_length;
+            _feature_flags |= feature_enum::name::url_length;
         }
         fmt::print("-- host length - {}\n", on_off(_feature_host_length));
         if (_feature_host_length) {
-            _feature_flags |= feature_name::host_length;
+            _feature_flags |= feature_enum::name::host_length;
         }
         fmt::print("-- path length - {}\n", on_off(_feature_path_length));
         if (_feature_path_length) {
-            _feature_flags |= feature_name::path_length;
+            _feature_flags |= feature_enum::name::path_length;
         }
         fmt::print("-- query length - {}\n", on_off(_feature_query_length));
         if (_feature_query_length) {
-            _feature_flags |= feature_name::query_length;
+            _feature_flags |= feature_enum::name::query_length;
         }
         fmt::print("-- fragment length - {}\n", on_off(_feature_fragment_length));
         if (_feature_fragment_length) {
-            _feature_flags |= feature_name::fragment_length;
+            _feature_flags |= feature_enum::name::fragment_length;
         }
         fmt::print("-- user info - {}\n", on_off(_feature_user_info));
         if (_feature_user_info) {
-            _feature_flags |= feature_name::user_info;
+            _feature_flags |= feature_enum::name::user_info;
         }
         fmt::print("-- domain count - {}\n", on_off(_feature_domain_count));
         if (_feature_domain_count) {
-            _feature_flags |= feature_name::domain_count;
+            _feature_flags |= feature_enum::name::domain_count;
         }
         fmt::print("-- HTTPS used - {}\n", on_off(_feature_https_used));
         if (_feature_https_used) {
-            _feature_flags |= feature_name::https_used;
+            _feature_flags |= feature_enum::name::https_used;
         }
     }
 

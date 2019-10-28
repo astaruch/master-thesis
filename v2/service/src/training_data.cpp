@@ -49,31 +49,31 @@ std::string training_data::create_csv_header()
 {
     std::vector<std::string> columns;
 
-    if ((_feature_flags & feature_name::ip_address) == feature_name::ip_address) {
+    if ((_feature_flags & feature_enum::name::ip_address) == feature_enum::name::ip_address) {
         columns.push_back(feature::ip_address::name());
     }
-    if ((_feature_flags & feature_name::url_length) == feature_name::url_length) {
+    if ((_feature_flags & feature_enum::name::url_length) == feature_enum::name::url_length) {
         columns.push_back(feature::url_length::name());
     }
-    if ((_feature_flags & feature_name::host_length) == feature_name::host_length) {
+    if ((_feature_flags & feature_enum::name::host_length) == feature_enum::name::host_length) {
         columns.push_back(feature::host_length::name());
     }
-    if ((_feature_flags & feature_name::path_length) == feature_name::path_length) {
+    if ((_feature_flags & feature_enum::name::path_length) == feature_enum::name::path_length) {
         columns.push_back(feature::path_length::name());
     }
-    if ((_feature_flags & feature_name::query_length) == feature_name::query_length) {
+    if ((_feature_flags & feature_enum::name::query_length) == feature_enum::name::query_length) {
         columns.push_back(feature::query_length::name());
     }
-    if ((_feature_flags & feature_name::fragment_length) == feature_name::fragment_length) {
+    if ((_feature_flags & feature_enum::name::fragment_length) == feature_enum::name::fragment_length) {
         columns.push_back(feature::fragment_length::name());
     }
-    if ((_feature_flags & feature_name::user_info) == feature_name::user_info) {
+    if ((_feature_flags & feature_enum::name::user_info) == feature_enum::name::user_info) {
         columns.push_back(feature::user_info::name());
     }
-    if ((_feature_flags & feature_name::domain_count) == feature_name::domain_count) {
+    if ((_feature_flags & feature_enum::name::domain_count) == feature_enum::name::domain_count) {
         columns.push_back(feature::domain_count::name());
     }
-    if ((_feature_flags & feature_name::https_used) == feature_name::https_used) {
+    if ((_feature_flags & feature_enum::name::https_used) == feature_enum::name::https_used) {
         columns.push_back(feature::https_used::name());
     }
     columns.push_back("label");
@@ -109,47 +109,47 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 std::vector<double> training_data::compute_feature_vector(const std::string& url)
 {
     std::vector<double> fvec; // feature vector
-    if ((_feature_flags & feature_name::ip_address) == feature_name::ip_address) {
+    if ((_feature_flags & feature_enum::name::ip_address) == feature_enum::name::ip_address) {
         feature::ip_address f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::url_length) == feature_name::url_length) {
+    if ((_feature_flags & feature_enum::name::url_length) == feature_enum::name::url_length) {
         feature::url_length f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::host_length) == feature_name::host_length) {
+    if ((_feature_flags & feature_enum::name::host_length) == feature_enum::name::host_length) {
         feature::host_length f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::path_length) == feature_name::path_length) {
+    if ((_feature_flags & feature_enum::name::path_length) == feature_enum::name::path_length) {
         feature::path_length f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::query_length) == feature_name::query_length) {
+    if ((_feature_flags & feature_enum::name::query_length) == feature_enum::name::query_length) {
         feature::query_length f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::fragment_length) == feature_name::fragment_length) {
+    if ((_feature_flags & feature_enum::name::fragment_length) == feature_enum::name::fragment_length) {
         feature::fragment_length f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::user_info) == feature_name::user_info) {
+    if ((_feature_flags & feature_enum::name::user_info) == feature_enum::name::user_info) {
         feature::user_info f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::domain_count) == feature_name::domain_count) {
+    if ((_feature_flags & feature_enum::name::domain_count) == feature_enum::name::domain_count) {
         feature::domain_count f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-    if ((_feature_flags & feature_name::https_used) == feature_name::https_used) {
+    if ((_feature_flags & feature_enum::name::https_used) == feature_enum::name::https_used) {
         feature::https_used f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
