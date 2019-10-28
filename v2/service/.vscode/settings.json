@@ -59,7 +59,8 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "binarystring": "cpp"
     },
     "C_Cpp.intelliSenseCacheSize": 512
 }

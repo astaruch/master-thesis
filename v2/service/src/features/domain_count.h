@@ -14,7 +14,10 @@ public:
      * This feature is checking wether URL contains user info
      */
     double compute_value() override;
-    static std::string name();
+    std::string column_name() override
+    {
+        return "domain_count";
+    }
 private:
     int _min_count{1};
     int _max_count{21};

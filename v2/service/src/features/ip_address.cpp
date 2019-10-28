@@ -86,9 +86,4 @@ double ip_address::compute_value()
     return _value;
 }
 
-std::string ip_address::name()
-{
-    return "ip_address";
-}
-
 } // namespace feature

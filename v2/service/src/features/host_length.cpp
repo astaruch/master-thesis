@@ -12,10 +12,5 @@ double host_length::compute_value()
     return static_cast<double>(len - _min_length) / static_cast<double>(_max_length - _min_length);
 }
 
-std::string host_length::name()
-{
-    return "host_length";
-}
-
 } // namespace feature
 

@@ -16,7 +16,10 @@ public:
      * v = ((query length) - (query min length)) / ((query max length) - (query min length))
      */
     double compute_value() override;
-    static std::string name();
+    std::string column_name() override
+    {
+        return "query_length";
+    }
 private:
 
     size_t _min_length{6};

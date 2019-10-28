@@ -15,10 +15,5 @@ double domain_count::compute_value()
     return static_cast<double>(count - _min_count) / static_cast<double>(_max_count - _min_count);
 }
 
-std::string domain_count::name()
-{
-    return "domain_count";
-}
-
 } // namespace feature
 

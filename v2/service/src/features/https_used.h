@@ -14,7 +14,10 @@ public:
      * This feature is checking wether URL is usingi https
      */
     double compute_value() override;
-    static std::string name();
+    std::string column_name() override
+    {
+        return "https_used";
+    }
 };
 
 } // namespace feature

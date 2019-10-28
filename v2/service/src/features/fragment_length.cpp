@@ -12,10 +12,5 @@ double fragment_length::compute_value()
     return static_cast<double>(len - _min_length) / static_cast<double>(_max_length - _min_length);
 }
 
-std::string fragment_length::name()
-{
-    return "fragment_length";
-}
-
 } // namespace feature
 

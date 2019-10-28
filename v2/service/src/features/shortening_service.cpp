@@ -15,10 +15,5 @@ double shortening_service::compute_value()
     return _value;
 }
 
-std::string shortening_service::name()
-{
-    return "shortening_service";
-}
-
 } // namespace feature
 

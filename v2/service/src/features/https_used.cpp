@@ -14,10 +14,5 @@ double https_used::compute_value()
     return scheme == "https" ? 0 : 1;
 }
 
-std::string https_used::name()
-{
-    return "https_used";
-}
-
 } // namespace feature
 

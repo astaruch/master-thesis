@@ -49,38 +49,11 @@ std::string training_data::create_csv_header()
 {
     std::vector<std::string> columns;
 
-    if ((_feature_flags & feature_enum::id::ip_address) == feature_enum::id::ip_address) {
-        columns.push_back(feature::ip_address::name());
-    }
-    if ((_feature_flags & feature_enum::id::url_length) == feature_enum::id::url_length) {
-        columns.push_back(feature::url_length::name());
-    }
-    if ((_feature_flags & feature_enum::id::host_length) == feature_enum::id::host_length) {
-        columns.push_back(feature::host_length::name());
-    }
-    if ((_feature_flags & feature_enum::id::path_length) == feature_enum::id::path_length) {
-        columns.push_back(feature::path_length::name());
-    }
-    if ((_feature_flags & feature_enum::id::query_length) == feature_enum::id::query_length) {
-        columns.push_back(feature::query_length::name());
-    }
-    if ((_feature_flags & feature_enum::id::fragment_length) == feature_enum::id::fragment_length) {
-        columns.push_back(feature::fragment_length::name());
-    }
-    if ((_feature_flags & feature_enum::id::user_info) == feature_enum::id::user_info) {
-        columns.push_back(feature::user_info::name());
-    }
-    if ((_feature_flags & feature_enum::id::domain_count) == feature_enum::id::domain_count) {
-        columns.push_back(feature::domain_count::name());
-    }
-    if ((_feature_flags & feature_enum::id::https_used) == feature_enum::id::https_used) {
-        columns.push_back(feature::https_used::name());
-    }
-    if ((_feature_flags & feature_enum::id::extra_https) == feature_enum::id::extra_https) {
-        columns.push_back(feature::extra_https::name());
-    }
-    if ((_feature_flags & feature_enum::id::shortening_service) == feature_enum::id::shortening_service) {
-        columns.push_back(feature::shortening_service::name());
+    for (const auto id: feature_enum::all) {
+        if ((_feature_flags & id) == id) {
+            auto f = feature::creator::create_feature_from_flag(id);
+            columns.push_back(f->column_name());
+        }
     }
     columns.push_back("label");
 

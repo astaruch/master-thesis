@@ -20,10 +20,5 @@ double extra_https::compute_value()
     return 0;
 }
 
-std::string extra_https::name()
-{
-    return "extra_https";
-}
-
 } // namespace feature
 

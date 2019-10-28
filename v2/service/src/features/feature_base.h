@@ -4,6 +4,7 @@
 #define PHISHSVC_BASE_FEATURE_H
 
 #include <string>
+#include <string_view>
 
 #include <Poco/URI.h>
 
@@ -47,6 +48,7 @@ class base {
 public:
     virtual ~base() = default;
     virtual double compute_value() = 0;
+    virtual std::string column_name() = 0;
     void set_url(const std::string& url);
 protected:
     double _value;

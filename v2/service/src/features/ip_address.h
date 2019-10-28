@@ -21,7 +21,10 @@ public:
      * In case that IP address is found, feature returns 1. Otherwise 0.
      */
     double compute_value() override;
-    static std::string name();
+    std::string column_name() override
+    {
+        return "ip_address";
+    }
 private:
 
 };

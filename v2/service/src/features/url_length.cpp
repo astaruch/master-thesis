@@ -12,10 +12,5 @@ double url_length::compute_value()
     return static_cast<double>(len - _min_length) / static_cast<double>(_max_length - _min_length);
 }
 
-std::string url_length::name()
-{
-    return "url_length";
-}
-
 } // namespace feature
 

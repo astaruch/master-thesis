@@ -16,7 +16,10 @@ public:
      * v = ((host length) - (host min length)) / ((host max length) - (host min length))
      */
     double compute_value() override;
-    static std::string name();
+    std::string column_name() override
+    {
+        return "host_length";
+    }
 private:
 
     size_t _min_length{10};
