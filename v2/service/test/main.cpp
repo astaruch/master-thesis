@@ -103,6 +103,13 @@ TEST(UserInfo, NoUserInfo)
     EXPECT_EQ(0, f.compute_value());
 }
 
+TEST(UserInfo, RealURL)
+{
+    feature::user_info f;
+    f.set_url("ftp://cust-r2:Alpc2p3O@update.symantec.com/opt/content/onramp/minitri.flg");
+    EXPECT_EQ(1, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
