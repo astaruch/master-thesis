@@ -180,7 +180,97 @@ TEST(ExtraHTTPS, NoToken)
     EXPECT_EQ(0, f.compute_value());
 }
 
+TEST(ShorteningService, bitlycom)
+{
+    feature::shortening_service f;
+    f.set_url("http://bitly.com/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
 
+TEST(ShorteningService, bitlygg)
+{
+    feature::shortening_service f;
+    f.set_url("http://bitly.gg/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, bitly)
+{
+    feature::shortening_service f;
+    f.set_url("http://bit.ly/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+
+TEST(ShorteningService, BITly)
+{
+    feature::shortening_service f;
+    f.set_url("http://BIT.ly/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, google)
+{
+    feature::shortening_service f;
+    f.set_url("http://goo.gl/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, tinyurl)
+{
+    feature::shortening_service f;
+    f.set_url("http://tinyurl.com/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, tinycc)
+{
+    feature::shortening_service f;
+    f.set_url("http://tiny.cc/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, livechatinc)
+{
+    feature::shortening_service f;
+    f.set_url("http://livechatinc.com/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, isgd)
+{
+    feature::shortening_service f;
+    f.set_url("http://is.gd/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, soogd)
+{
+    feature::shortening_service f;
+    f.set_url("http://soo.gd/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, clickme)
+{
+    feature::shortening_service f;
+    f.set_url("http://clicky.me/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, cuttly)
+{
+    feature::shortening_service f;
+    f.set_url("http://cutt.ly/GH874$ag");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(ShorteningService, normal)
+{
+    feature::shortening_service f;
+    f.set_url("http://google.com/GH874$ag");
+    EXPECT_EQ(0, f.compute_value());
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

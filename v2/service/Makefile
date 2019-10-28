@@ -61,4 +61,5 @@ feature-all: build-debug
 		--feat-user-info \
 		--feat-domain-count \
 		--feat-https-used \
-		--feat-extra-https
+		--feat-extra-https \
+		--feat-shortening-service

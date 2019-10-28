@@ -78,6 +78,7 @@ private:
     bool _feature_domain_count;
     bool _feature_https_used;
     bool _feature_extra_https;
+    bool _feature_shortening_service;
 
     uint64_t _feature_flags;
 

@@ -13,5 +13,6 @@
 #include "domain_count.h"
 #include "https_used.h"
 #include "extra_https.h"
+#include "shortening_service.h"
 
 #endif // PHISHSVC_ALL_FEATURES_H

@@ -79,6 +79,9 @@ std::string training_data::create_csv_header()
     if ((_feature_flags & feature_enum::id::extra_https) == feature_enum::id::extra_https) {
         columns.push_back(feature::extra_https::name());
     }
+    if ((_feature_flags & feature_enum::id::shortening_service) == feature_enum::id::shortening_service) {
+        columns.push_back(feature::shortening_service::name());
+    }
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
@@ -159,6 +162,11 @@ std::vector<double> training_data::compute_feature_vector(const std::string& url
     }
     if ((_feature_flags & feature_enum::id::extra_https) == feature_enum::id::extra_https) {
         feature::extra_https f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+    if ((_feature_flags & feature_enum::id::shortening_service) == feature_enum::id::shortening_service) {
+        feature::shortening_service f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
