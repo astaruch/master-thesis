@@ -43,6 +43,7 @@ program::program(int argc, char** argv)
         ("feat-query-length", "Check logness of the query", cxxopts::value<bool>(_feature_query_length))
         ("feat-fragment-length", "Check logness of the fragment", cxxopts::value<bool>(_feature_fragment_length))
         ("feat-user-info", "Check wether URL contains user info", cxxopts::value<bool>(_feature_user_info))
+        ("feat-domain-count", "Check number of domains", cxxopts::value<bool>(_feature_domain_count))
     ;
 
     _options.add_options("Training data")
@@ -112,6 +113,10 @@ void program::check_options()
         fmt::print("-- user info - {}\n", on_off(_feature_user_info));
         if (_feature_user_info) {
             _feature_flags |= feature_name::user_info;
+        }
+        fmt::print("-- domain count - {}\n", on_off(_feature_domain_count));
+        if (_feature_domain_count) {
+            _feature_flags |= feature_name::domain_count;
         }
     }
 

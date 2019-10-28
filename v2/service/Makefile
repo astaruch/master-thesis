@@ -58,4 +58,5 @@ feature-all: build-debug
 		--feat-path-length \
 		--feat-query-length \
 		--feat-fragment-length \
-		--feat-user-info
+		--feat-user-info \
+		--feat-domain-count

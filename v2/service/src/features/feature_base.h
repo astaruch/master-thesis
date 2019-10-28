@@ -15,6 +15,7 @@ enum feature_name: uint64_t {
     query_length = 0x10,
     fragment_length = 0x20,
     user_info = 0x40,
+    domain_count = 0x80,
 };
 
 namespace feature {

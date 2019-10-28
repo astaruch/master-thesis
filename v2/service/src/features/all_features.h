@@ -10,5 +10,6 @@
 #include "query_length.h"
 #include "fragment_length.h"
 #include "user_info.h"
+#include "domain_count.h"
 
 #endif // PHISHSVC_ALL_FEATURES_H

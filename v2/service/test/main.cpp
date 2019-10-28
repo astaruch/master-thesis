@@ -110,6 +110,27 @@ TEST(UserInfo, RealURL)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(DomainCount, NormalURL)
+{
+    feature::domain_count f;
+    f.set_url("http://google.com");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(DomainCount, LotsOfSubdomain)
+{
+    feature::domain_count f;
+    f.set_url("http://a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.com");
+    EXPECT_LT(0.5, f.compute_value());
+}
+
+TEST(DomainCount, InfinitySubdomains)
+{
+    feature::domain_count f;
+    f.set_url("http://a.b.c.d.e.f.g.h.i.j.k.b.c.d.e.f.g.h.i.j.k.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
