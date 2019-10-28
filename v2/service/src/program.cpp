@@ -44,6 +44,7 @@ program::program(int argc, char** argv)
         ("feat-fragment-length", "Check logness of the fragment", cxxopts::value<bool>(_feature_fragment_length))
         ("feat-user-info", "Check wether URL contains user info", cxxopts::value<bool>(_feature_user_info))
         ("feat-domain-count", "Check number of domains", cxxopts::value<bool>(_feature_domain_count))
+        ("feat-https-used", "Check wether site is using HTTPS", cxxopts::value<bool>(_feature_https_used))
     ;
 
     _options.add_options("Training data")
@@ -117,6 +118,10 @@ void program::check_options()
         fmt::print("-- domain count - {}\n", on_off(_feature_domain_count));
         if (_feature_domain_count) {
             _feature_flags |= feature_name::domain_count;
+        }
+        fmt::print("-- HTTPS used - {}\n", on_off(_feature_https_used));
+        if (_feature_https_used) {
+            _feature_flags |= feature_name::https_used;
         }
     }
 

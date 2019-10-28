@@ -59,4 +59,5 @@ feature-all: build-debug
 		--feat-query-length \
 		--feat-fragment-length \
 		--feat-user-info \
-		--feat-domain-count
+		--feat-domain-count \
+		--feat-https-used

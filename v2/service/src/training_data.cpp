@@ -73,6 +73,9 @@ std::string training_data::create_csv_header()
     if ((_feature_flags & feature_name::domain_count) == feature_name::domain_count) {
         columns.push_back(feature::domain_count::name());
     }
+    if ((_feature_flags & feature_name::https_used) == feature_name::https_used) {
+        columns.push_back(feature::https_used::name());
+    }
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
@@ -143,6 +146,11 @@ std::vector<double> training_data::compute_feature_vector(const std::string& url
     }
     if ((_feature_flags & feature_name::domain_count) == feature_name::domain_count) {
         feature::domain_count f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+    if ((_feature_flags & feature_name::https_used) == feature_name::https_used) {
+        feature::https_used f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }

@@ -12,10 +12,13 @@ enum feature_name: uint64_t {
     url_length = 0x2,
     host_length = 0x4,
     path_length = 0x8,
+    // 4 bits
     query_length = 0x10,
     fragment_length = 0x20,
     user_info = 0x40,
     domain_count = 0x80,
+    // 8 bits
+    https_used = 0x100,
 };
 
 namespace feature {

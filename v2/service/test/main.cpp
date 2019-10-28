@@ -131,6 +131,35 @@ TEST(DomainCount, InfinitySubdomains)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(HTTPSProtocol, Used)
+{
+    feature::https_used f;
+    f.set_url("https://google.com");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(HTTPSProtocol, Unused)
+{
+    feature::https_used f;
+    f.set_url("http://google.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+
+TEST(HTTPSProtocol, FTP)
+{
+    feature::https_used f;
+    f.set_url("ftp://google.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(HTTPSProtocol, HTTPSCaps)
+{
+    feature::https_used f;
+    f.set_url("HTTPS://google.com");
+    EXPECT_EQ(0, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
