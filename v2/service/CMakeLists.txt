@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 3.10)
 project(phishsvc VERSION 0.0.1 LANGUAGES CXX)
 
 ## ======================================================================================##
+## Options
+## ======================================================================================##
+option(ONLY_COVERAGE "Build only tests necessary for coverage" FALSE)
+option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" FALSE)
+option(ENABLE_FUZZERS "Enable fuzz testing tools" FALSE)
+option(ENABLE_CLANG_TIDY "Enable testing with clang-tidy" FALSE)
+option(ENABLE_CPPCHECK "Enable testing with cppcheck" FALSE)
+
+## ======================================================================================##
 ## Dependencies
 ## ======================================================================================##
 
@@ -116,6 +125,19 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
               -Wuseless-cast # warn if you perform a cast
                             # to the same type
     )
+endif()
+
+## ======================================================================================##
+## Options handling
+## ======================================================================================##
+
+if(ENABLE_CLANG_TIDY)
+  find_program(CLANGTIDY clang-tidy)
+  if(CLANGTIDY)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
+  else()
+    message(SEND_ERROR "clang-tidy requested but executable not found")
+  endif()
 endif()
 
 ## ======================================================================================##

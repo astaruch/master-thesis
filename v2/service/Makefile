@@ -46,3 +46,14 @@ feature2: build-debug
 		--feat-ip-address \
 		--feat-url-length
 
+clang-tidy:
+	- mkdir -p Debug
+	- cd Debug && \
+		cmake \
+			-D CLANGTIDY:PATH=`which clang-tidy` \
+			-D ENABLE_CLANG_TIDY:BOOL=ON \
+			-D CMAKE_BUILD_TYPE:STRING=Debug \
+			-D CMAKE_TOOLCHAIN_FILE:STRING=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake \
+			..
+	- cd Debug && \
+		VERBOSE=0 cmake --build . -- -j2
