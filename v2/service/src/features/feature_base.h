@@ -8,8 +8,12 @@
 #include <Poco/URI.h>
 
 enum feature_name: uint64_t {
-    ip_address = 1,
-    url_length = 2,
+    ip_address = 0x1,
+    url_length = 0x2,
+    host_length = 0x4,
+    path_length = 0x8,
+    query_length = 0x10,
+    fragment_length = 0x20,
 };
 
 namespace feature {

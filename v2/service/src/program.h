@@ -67,6 +67,10 @@ private:
     /// Features
     bool _feature_ip_address;
     bool _feature_url_length;
+    bool _feature_host_length;
+    bool _feature_path_length;
+    bool _feature_query_length;
+    bool _feature_fragment_length;
 
     uint64_t _feature_flags;
 

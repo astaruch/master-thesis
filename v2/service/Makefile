@@ -7,7 +7,7 @@ build:
 	@$(MAKE) -f $(THIS_FILE) build-debug # invoke other target
 
 run: feature2
-	@$(MAKE) -f $(THIS_FILE) feature2
+	@$(MAKE) -f $(THIS_FILE) feature-all
 
 test: build-debug
 	@echo $@
@@ -46,3 +46,15 @@ feature2: build-debug
 		--feat-ip-address \
 		--feat-url-length
 
+feature-all: build-debug
+	Debug/phishsvc \
+		--enable-training-data \
+		--td-url "http://google.com" \
+		--td-class-value 0 \
+		--enable-features \
+		--feat-ip-address \
+		--feat-url-length \
+		--feat-host-length \
+		--feat-path-length \
+		--feat-query-length \
+		--feat-fragment-length

@@ -38,6 +38,10 @@ program::program(int argc, char** argv)
         ("enable-features", "Enter mode with features", cxxopts::value<bool>(_enable_features))
         ("feat-ip-address", "Check wether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
         ("feat-url-length", "Check logness of the URL", cxxopts::value<bool>(_feature_url_length))
+        ("feat-host-length", "Check logness of the hostname", cxxopts::value<bool>(_feature_host_length))
+        ("feat-path-length", "Check logness of the path", cxxopts::value<bool>(_feature_path_length))
+        ("feat-query-length", "Check logness of the query", cxxopts::value<bool>(_feature_query_length))
+        ("feat-fragment-length", "Check logness of the fragment", cxxopts::value<bool>(_feature_fragment_length))
     ;
 
     _options.add_options("Training data")
@@ -81,12 +85,28 @@ void program::check_options()
     if (_enable_features) {
         fmt::print("Features:\n");
         fmt::print("-- IP address - {}\n", on_off(_feature_ip_address));
-        fmt::print("-- URL length - {}\n", on_off(_feature_url_length));
         if (_feature_ip_address) {
             _feature_flags |= feature_name::ip_address;
         }
+        fmt::print("-- URL length - {}\n", on_off(_feature_url_length));
         if (_feature_url_length) {
             _feature_flags |= feature_name::url_length;
+        }
+        fmt::print("-- host length - {}\n", on_off(_feature_host_length));
+        if (_feature_host_length) {
+            _feature_flags |= feature_name::host_length;
+        }
+        fmt::print("-- path length - {}\n", on_off(_feature_path_length));
+        if (_feature_path_length) {
+            _feature_flags |= feature_name::path_length;
+        }
+        fmt::print("-- query length - {}\n", on_off(_feature_query_length));
+        if (_feature_query_length) {
+            _feature_flags |= feature_name::query_length;
+        }
+        fmt::print("-- fragment length - {}\n", on_off(_feature_fragment_length));
+        if (_feature_fragment_length) {
+            _feature_flags |= feature_name::fragment_length;
         }
     }
 

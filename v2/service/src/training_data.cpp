@@ -8,6 +8,10 @@
 #include "features/feature_base.h"
 #include "features/ip_address.h"
 #include "features/url_length.h"
+#include "features/host_length.h"
+#include "features/path_length.h"
+#include "features/query_length.h"
+#include "features/fragment_length.h"
 
 
 void training_data::set_feature_flags(uint64_t flags)
@@ -56,6 +60,18 @@ std::string training_data::create_csv_header()
     if ((_feature_flags & feature_name::url_length) == feature_name::url_length) {
         columns.push_back(feature::url_length::name());
     }
+    if ((_feature_flags & feature_name::host_length) == feature_name::host_length) {
+        columns.push_back(feature::host_length::name());
+    }
+    if ((_feature_flags & feature_name::path_length) == feature_name::path_length) {
+        columns.push_back(feature::path_length::name());
+    }
+    if ((_feature_flags & feature_name::query_length) == feature_name::query_length) {
+        columns.push_back(feature::query_length::name());
+    }
+    if ((_feature_flags & feature_name::fragment_length) == feature_name::fragment_length) {
+        columns.push_back(feature::fragment_length::name());
+    }
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
@@ -94,9 +110,28 @@ std::vector<double> training_data::compute_feature_vector(const std::string& url
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }
-
     if ((_feature_flags & feature_name::url_length) == feature_name::url_length) {
         feature::url_length f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+    if ((_feature_flags & feature_name::host_length) == feature_name::host_length) {
+        feature::host_length f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+    if ((_feature_flags & feature_name::path_length) == feature_name::path_length) {
+        feature::path_length f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+    if ((_feature_flags & feature_name::query_length) == feature_name::query_length) {
+        feature::query_length f;
+        f.set_url(url);
+        fvec.push_back(f.compute_value());
+    }
+    if ((_feature_flags & feature_name::fragment_length) == feature_name::fragment_length) {
+        feature::fragment_length f;
         f.set_url(url);
         fvec.push_back(f.compute_value());
     }

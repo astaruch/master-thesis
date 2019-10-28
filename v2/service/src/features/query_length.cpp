@@ -1,20 +1,20 @@
-#include "url_length.h"
+#include "query_length.h"
 
 namespace feature {
 
-double url_length::compute_value()
+double query_length::compute_value()
 {
     if (!_url_is_ok) {
         return _value;
     }
-    auto len = std::min(_url.length(), _max_length);
+    auto len = std::min(_url_obj.getQuery().length(), _max_length);
     len = std::max(len, _min_length);
     return static_cast<double>(len - _min_length) / static_cast<double>(_max_length - _min_length);
 }
 
-std::string url_length::name()
+std::string query_length::name()
 {
-    return "url_length";
+    return "query_length";
 }
 
 } // namespace feature
