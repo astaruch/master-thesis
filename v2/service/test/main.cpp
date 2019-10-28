@@ -92,7 +92,7 @@ TEST(UserInfo, HasUserInfo)
 TEST(UserInfo, PhishingUserInfo)
 {
     feature::user_info f;
-    f.set_url("http://paypal.com@phishing-site.com");
+    f.set_url("https://support.microsoft.com@2782399.azureedge.net");
     EXPECT_EQ(1, f.compute_value());
 }
 
