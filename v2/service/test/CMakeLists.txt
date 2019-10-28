@@ -25,7 +25,7 @@ include(GoogleTest)
 ## ======================================================================================##
 add_executable(all_tests ${SOURCES})
 target_include_directories(all_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
-target_compile_features(all_tests PUBLIC cxx_std_14)
+target_compile_features(all_tests PUBLIC cxx_std_17)
 add_dependencies(all_tests phishsvc)
 target_link_libraries(all_tests
   PRIVATE
