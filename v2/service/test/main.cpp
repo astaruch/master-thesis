@@ -39,21 +39,21 @@ TEST(HostIPAddress, HexadecimalForm)
     EXPECT_EQ(1., f.compute_value());
 }
 
-TEST(URLLength, ShortURL)
+TEST(Length, ShortURL)
 {
     feature::url_length f;
     f.set_url("https://google.com");
     EXPECT_GT(0.1, f.compute_value());
 }
 
-TEST(URLLength, LongURL)
+TEST(Length, LongURL)
 {
     feature::url_length f;
     f.set_url("http://abielonline.com/wp-includes/alibaba/vqcr8bp0gud&amp;lc=1033&amp;id=64855&amp;mkt=en-us&amp;cbcxt=mai&amp;snsc.php?email=santmmafs@etttbt.com%20&amp;?email=rxeitsie@sbeilmep.com%20");
     EXPECT_EQ(1, f.compute_value());
 }
 
-TEST(HostLength, Short)
+TEST(Length, ShortHost)
 {
     feature::host_length f;
     f.set_url("http://google.com");
@@ -61,21 +61,21 @@ TEST(HostLength, Short)
 }
 
 
-TEST(PathLength, NoPath)
+TEST(Length, NoPath)
 {
     feature::path_length f;
     f.set_url("http://abielonline.com/");
     EXPECT_GT(0.01, f.compute_value());
 }
 
-TEST(QueryLength, NoQuery)
+TEST(Length, NoQuery)
 {
     feature::query_length f;
     f.set_url("http://abielonline.com");
     EXPECT_GT(0.01, f.compute_value());
 }
 
-TEST(FragmentLength, NoFragment)
+TEST(Length, NoFragment)
 {
     feature::fragment_length f;
     f.set_url("http://abielonline.com/");
