@@ -43,7 +43,9 @@ WORKDIR /project
 
 RUN mkdir out \
     && cd out \
-    && cmake .. -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    && cmake .. -DCMAKE_TOOLCHAIN_FILE:STRING=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
+                -DRUN_TESTS:BOOL=ON \
+                -DCMAKE_BUILD_TYPE:STRING=Debug
     && make -j 4
 
 CMD ["bash"]
