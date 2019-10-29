@@ -37,6 +37,8 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
         return std::make_unique<feature::spec_char_fragment>();
     case feature_enum::id::spec_chars_host:
         return std::make_unique<feature::spec_char_host>();
+    case feature_enum::id::gtld:
+        return std::make_unique<feature::gtld>();
     }
     return nullptr;
 }

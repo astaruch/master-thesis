@@ -11,6 +11,7 @@
 namespace feature_enum {
 
 enum id: uint64_t {
+    // 0 bits
     ip_address = 0x1,
     url_length = 0x2,
     host_length = 0x4,
@@ -30,6 +31,8 @@ enum id: uint64_t {
     spec_chars_query = 0x2000,
     spec_chars_fragment = 0x4000,
     spec_chars_host = 0x8000,
+    // 16 bits
+    gtld = 0x10000
 };
 
 static const id all[] = {
@@ -49,6 +52,7 @@ static const id all[] = {
     spec_chars_query,
     spec_chars_fragment,
     spec_chars_host,
+    gtld,
 };
 
 }

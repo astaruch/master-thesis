@@ -398,7 +398,33 @@ TEST(SpecialChars, HostBig)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(gTLD, com)
+{
+    feature::gtld f;
+    f.set_url("http://google.com");
+    EXPECT_EQ(0, f.compute_value());
+}
 
+TEST(gTLD, cz)
+{
+    feature::gtld f;
+    f.set_url("http://google.cz");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(gTLD, sk)
+{
+    feature::gtld f;
+    f.set_url("http://google.sk");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(gTLD, hu)
+{
+    feature::gtld f;
+    f.set_url("http://google.hu");
+    EXPECT_EQ(1, f.compute_value());
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

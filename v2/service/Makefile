@@ -81,4 +81,5 @@ feature-all: build-debug
 		--feat-spec-chars-path \
 		--feat-spec-chars-query \
 		--feat-spec-chars-fragment \
-		--feat-spec-chars-host
+		--feat-spec-chars-host \
+		--feat-gtld
