@@ -27,7 +27,14 @@ public:
     }
 };
 
-
+class four_numbers: public base {
+public:
+    double compute_value() override;
+    std::string column_name() override
+    {
+        return "four_numbers";
+    }
+};
 
 } // namespace feature
 

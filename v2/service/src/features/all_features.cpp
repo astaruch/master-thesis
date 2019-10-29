@@ -41,6 +41,8 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
         return std::make_unique<feature::gtld>();
     case feature_enum::id::www_prefix:
         return std::make_unique<feature::www_prefix>();
+    case feature_enum::id::four_numbers:
+        return std::make_unique<feature::four_numbers>();
     }
     return nullptr;
 }

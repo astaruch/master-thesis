@@ -25,5 +25,15 @@ double www_prefix::compute_value()
     return _value;
 }
 
+double four_numbers::compute_value()
+{
+    if (!_url_is_ok) {
+        return _value;
+    }
+    const std::regex reg("[[:digit:]]{4}");
+    _value = std::regex_search(_url_obj.getHost(), reg) ? 1. : 0.;
+    return _value;
+}
+
 } // namespace feature
 

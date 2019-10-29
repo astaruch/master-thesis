@@ -56,6 +56,7 @@ program::program(int argc, char** argv)
         ("feat-spec-chars-host", "Check occurences of dash and underscore a host", cxxopts::value<bool>(_feature_spec_chars_host))
         ("feat-gtld", "Check wether TLD is global or othery", cxxopts::value<bool>(_feature_gtld))
         ("feat-www-prefix", "Check wether hostname has extra 'www-' prefix", cxxopts::value<bool>(_feature_www_prefix))
+        ("feat-four-numbers", "Check wether hostname has 4 consecutive numbers", cxxopts::value<bool>(_feature_four_numbers))
     ;
 
     _options.add_options("Training data")
@@ -124,6 +125,7 @@ void program::check_options()
         check_feature_option(_feature_spec_chars_host, feature_enum::id::spec_chars_host, "special chars host"sv);
         check_feature_option(_feature_gtld, feature_enum::id::gtld, "gTLD"sv);
         check_feature_option(_feature_www_prefix, feature_enum::id::www_prefix, "www- prefix"sv);
+        check_feature_option(_feature_four_numbers, feature_enum::id::four_numbers, "four consecutive numbers in host"sv);
     }
 
     if (_enable_training_data) {

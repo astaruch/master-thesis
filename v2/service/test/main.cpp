@@ -440,6 +440,20 @@ TEST(WWWPrefix, Prefix)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(FourNumbers, HasFourNumbers)
+{
+    feature::four_numbers f;
+    f.set_url("http://1511300s.hol.es/1000655841.html");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(FourNumbers, DoesntHave)
+{
+    feature::four_numbers f;
+    f.set_url("http://seznam.hol.es/1000655841.html");
+    EXPECT_EQ(0, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

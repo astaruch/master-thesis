@@ -34,6 +34,7 @@ enum id: uint64_t {
     // 16 bits
     gtld = 0x10000,
     www_prefix = 0x20000,
+    four_numbers = 0x40000,
 };
 
 static const id all[] = {
@@ -55,6 +56,7 @@ static const id all[] = {
     spec_chars_host,
     gtld,
     www_prefix,
+    four_numbers,
 };
 
 }

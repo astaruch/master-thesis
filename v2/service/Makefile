@@ -83,4 +83,5 @@ feature-all: build-debug
 		--feat-spec-chars-fragment \
 		--feat-spec-chars-host \
 		--feat-gtld \
-		--feat-www-prefix
+		--feat-www-prefix \
+		--feat-four-numbers
