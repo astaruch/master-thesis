@@ -50,7 +50,7 @@ std::string training_data::create_csv_header()
     std::vector<std::string> columns;
 
     for (const auto id: feature_enum::all) {
-        if ((_feature_flags & id) == id) {
+        if (_feature_flags & id) {
             auto f = feature::creator::create_feature_from_flag(id);
             columns.push_back(f->column_name());
         }
@@ -89,7 +89,7 @@ std::vector<double> training_data::compute_feature_vector(const std::string& url
 {
     std::vector<double> fvec; // feature vector
     for (const auto id: feature_enum::all) {
-        if ((_feature_flags & id) == id) {
+        if (_feature_flags & id) {
             auto f = feature::creator::create_feature_from_flag(id);
             f->set_url(url);
             fvec.push_back(f->compute_value());
