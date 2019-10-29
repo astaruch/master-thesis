@@ -85,6 +85,7 @@ private:
     bool _feature_spec_chars_fragment;
     bool _feature_spec_chars_host;
     bool _feature_gtld;
+    bool _feature_www_prefix;
 
     uint64_t _feature_flags;
 

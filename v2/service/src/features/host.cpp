@@ -15,5 +15,15 @@ double gtld::compute_value()
     return _value;
 }
 
+double www_prefix::compute_value()
+{
+    if (!_url_is_ok) {
+        return _value;
+    }
+    const std::regex reg("^(www-)");
+    _value = std::regex_search(_url_obj.getHost(), reg) ? 1. : 0.;
+    return _value;
+}
+
 } // namespace feature
 

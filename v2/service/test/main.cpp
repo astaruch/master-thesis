@@ -426,6 +426,20 @@ TEST(gTLD, hu)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(WWWPrefix, NoPrefix)
+{
+    feature::www_prefix f;
+    f.set_url("http://google.hu");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(WWWPrefix, Prefix)
+{
+    feature::www_prefix f;
+    f.set_url("http://www-google.hu");
+    EXPECT_EQ(1, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

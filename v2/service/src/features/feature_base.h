@@ -32,7 +32,8 @@ enum id: uint64_t {
     spec_chars_fragment = 0x4000,
     spec_chars_host = 0x8000,
     // 16 bits
-    gtld = 0x10000
+    gtld = 0x10000,
+    www_prefix = 0x20000,
 };
 
 static const id all[] = {
@@ -53,6 +54,7 @@ static const id all[] = {
     spec_chars_fragment,
     spec_chars_host,
     gtld,
+    www_prefix,
 };
 
 }

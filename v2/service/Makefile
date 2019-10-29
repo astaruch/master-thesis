@@ -82,4 +82,5 @@ feature-all: build-debug
 		--feat-spec-chars-query \
 		--feat-spec-chars-fragment \
 		--feat-spec-chars-host \
-		--feat-gtld
+		--feat-gtld \
+		--feat-www-prefix
