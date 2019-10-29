@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PHISHSVC_FEATURE_TLD_H
-#define PHISHSVC_FEATURE_TLD_H
+#ifndef PHISHSVC_FEATURE_HOST_H
+#define PHISHSVC_FEATURE_HOST_H
 
 #include <string>
 
@@ -19,4 +19,4 @@ public:
 
 } // namespace feature
 
-#endif // PHISHSVC_FEATURE_TLD_H
+#endif // PHISHSVC_FEATURE_HOST_H
