@@ -454,6 +454,27 @@ TEST(FourNumbers, DoesntHave)
     EXPECT_EQ(0, f.compute_value());
 }
 
+TEST(SpecialKeywords, ZeroKeywords)
+{
+    feature::spec_keywords f;
+    f.set_url("http://www.jingau.com.tw/it/webstaticmktg2014designfontPP/SansPayPalSansBig-Bold.woff/d6c14aa74fbcfee1d1f8ed7eab33f6ca/");
+    EXPECT_EQ(0, f.compute_value());
+}
+
+TEST(SpecialKeywords, OneKeyword)
+{
+    feature::spec_keywords f;
+    f.set_url("http://roadtracksway.com/updatemailserversecurity/login.php");
+    EXPECT_EQ(0.1, f.compute_value());
+}
+
+TEST(SpecialKeywords, ManyKeywords)
+{
+    feature::spec_keywords f;
+    f.set_url("http://www.quartier.com.ar/easyflexa/wallate/update_accounting/assetsfontsproductsaccountmyaccountwebsc_loginaccountmyaccountwebsc_logincountry/account/myaccount/websc_login/?country.x=");
+    EXPECT_EQ(1, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

@@ -20,6 +20,7 @@
 #include "non_std_port.h"
 #include "spec_char.h"
 #include "host.h"
+#include "spec_keywords.h"
 
 namespace feature {
 
