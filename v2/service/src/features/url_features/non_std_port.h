@@ -1,14 +1,14 @@
 #pragma once
 
-#ifndef PHISHSVC_FEATURE_USER_INFO_H
-#define PHISHSVC_FEATURE_USER_INFO_H
+#ifndef PHISHSVC_FEATURE_NONSTD_PORT_H
+#define PHISHSVC_FEATURE_NONSTD_PORT_H
 
 #include <string>
 
-#include "feature_base.h"
+#include "../feature_base.h"
 
 namespace feature {
-class user_info: public base {
+class non_std_port: public base {
 public:
     /**
      * This feature is checking wether URL contains user info
@@ -16,10 +16,10 @@ public:
     double compute_value() override;
     std::string column_name() override
     {
-        return "user_info";
+        return "non_std_port";
     }
 };
 
 } // namespace feature
 
-#endif // PHISHSVC_FEATURE_USER_INFO_H
+#endif // PHISHSVC_FEATURE_NONSTD_PORT_H

@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "feature_base.h"
+#include "../feature_base.h"
 
 namespace feature {
 class shortening_service: public base {

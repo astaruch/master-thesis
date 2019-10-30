@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "feature_base.h"
+#include "../feature_base.h"
 
 namespace feature {
 class ip_address: public base {
