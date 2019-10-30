@@ -68,27 +68,27 @@ private:
     bool _parse_urls;
 
     /// Features
-    bool _feature_ip_address;
-    bool _feature_url_length;
-    bool _feature_host_length;
-    bool _feature_path_length;
-    bool _feature_query_length;
-    bool _feature_fragment_length;
-    bool _feature_user_info;
-    bool _feature_domain_count;
-    bool _feature_https_used;
-    bool _feature_extra_https;
-    bool _feature_shortening_service;
-    bool _feature_non_std_port;
-    bool _feature_spec_chars_path;
-    bool _feature_spec_chars_query;
-    bool _feature_spec_chars_fragment;
-    bool _feature_spec_chars_host;
-    bool _feature_gtld;
-    bool _feature_www_prefix;
-    bool _feature_four_numbers;
-    bool _feature_spec_keywords;
-    bool _feature_punycode;
+    bool _feature_ip_address{false};
+    bool _feature_url_length{false};
+    bool _feature_host_length{false};
+    bool _feature_path_length{false};
+    bool _feature_query_length{false};
+    bool _feature_fragment_length{false};
+    bool _feature_user_info{false};
+    bool _feature_domain_count{false};
+    bool _feature_https_used{false};
+    bool _feature_extra_https{false};
+    bool _feature_shortening_service{false};
+    bool _feature_non_std_port{false};
+    bool _feature_spec_chars_path{false};
+    bool _feature_spec_chars_query{false};
+    bool _feature_spec_chars_fragment{false};
+    bool _feature_spec_chars_host{false};
+    bool _feature_gtld{false};
+    bool _feature_www_prefix{false};
+    bool _feature_four_numbers{false};
+    bool _feature_spec_keywords{false};
+    bool _feature_punycode{false};
 
     uint64_t _feature_flags;
 
