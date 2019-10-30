@@ -36,6 +36,8 @@ enum id: uint64_t {
     www_prefix =    0x20000,
     four_numbers =  0x40000,
     spec_keywords = 0x80000,
+    // 20 bits
+    punycode = 0x100000
 };
 
 static const id all[] = {
@@ -59,6 +61,7 @@ static const id all[] = {
     www_prefix,
     four_numbers,
     spec_keywords,
+    punycode,
 };
 
 }

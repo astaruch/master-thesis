@@ -36,6 +36,15 @@ public:
     }
 };
 
+class punycode: public base {
+public:
+    double compute_value() override;
+    std::string column_name() override
+    {
+        return "punycode";
+    }
+};
+
 } // namespace feature
 
 #endif // PHISHSVC_FEATURE_HOST_H

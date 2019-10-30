@@ -88,6 +88,7 @@ private:
     bool _feature_www_prefix;
     bool _feature_four_numbers;
     bool _feature_spec_keywords;
+    bool _feature_punycode;
 
     uint64_t _feature_flags;
 

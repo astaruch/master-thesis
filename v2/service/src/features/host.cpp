@@ -35,5 +35,13 @@ double four_numbers::compute_value()
     return _value;
 }
 
+double punycode::compute_value()
+{
+    if (!_url_is_ok) {
+        return _value;
+    }
+    return _url_obj.getHost().find("xn--") == std::string::npos ? 0 : 1;
+}
+
 } // namespace feature
 

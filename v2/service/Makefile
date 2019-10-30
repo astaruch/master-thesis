@@ -85,4 +85,5 @@ feature-all: build-debug
 		--feat-gtld \
 		--feat-www-prefix \
 		--feat-four-numbers \
-		--feat-spec-keywords
+		--feat-spec-keywords \
+		--feat-punycode

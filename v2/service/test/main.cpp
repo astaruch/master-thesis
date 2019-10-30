@@ -475,6 +475,27 @@ TEST(SpecialKeywords, ManyKeywords)
     EXPECT_EQ(1, f.compute_value());
 }
 
+TEST(Punycode, StartswithPunycode)
+{
+    feature::punycode f;
+    f.set_url("http://xn--mytherwalliet-4o2g.com");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(Punycode, ContainsPunycode)
+{
+    feature::punycode f;
+    f.set_url("http://appleid.apple.com.setup.ca-icloud.xn--q9jyb4c");
+    EXPECT_EQ(1, f.compute_value());
+}
+
+TEST(Punycode, NoPunycode)
+{
+    feature::punycode f;
+    f.set_url("http://google.com");
+    EXPECT_EQ(0, f.compute_value());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
