@@ -40,10 +40,11 @@ COPY ./src /project/src
 COPY ./test /project/test
 COPY ./CMakeLists.txt /project/CMakeLists.txt
 WORKDIR /project
+ENV CMAKE_VCPKG_TOOLCHAIN=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 RUN mkdir out \
     && cd out \
-    && cmake .. -DCMAKE_TOOLCHAIN_FILE:STRING=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    && cmake .. -DCMAKE_TOOLCHAIN_FILE:STRING=$CMAKE_VCPKG_TOOLCHAIN \
                 -DRUN_TESTS:BOOL=ON \
                 -DCMAKE_BUILD_TYPE:STRING=Debug \
     && make -j 4

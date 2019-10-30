@@ -19,14 +19,14 @@ ctest: build-tests
 
 clean:
 	@echo $@
-	rm -rf Debug Release
+	rm -rf Debug Release build
 
 build-tests:
 	@echo $@ # print target name
 	mkdir -p Debug
 	cd Debug && cmake \
 		-D CMAKE_BUILD_TYPE:STRING=Debug \
-		-D CMAKE_TOOLCHAIN_FILE:STRING=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake \
+		-D CMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_VCPKG_TOOLCHAIN} \
 		-D RUN_TESTS:BOOL=ON \
 		..
 	cd Debug && \
@@ -37,7 +37,7 @@ build-debug:
 	mkdir -p Debug
 	cd Debug && cmake \
 		-D CMAKE_BUILD_TYPE:STRING=Debug \
-		-D CMAKE_TOOLCHAIN_FILE:STRING=/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake \
+		-D CMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_VCPKG_TOOLCHAIN} \
 		-D RUN_TESTS:BOOL=OFF \
 		..
 	cd Debug && \

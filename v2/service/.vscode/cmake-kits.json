@@ -1,6 +1,9 @@
 [
     {
         "name": "vcpkg",
-        "toolchainFile": "/home/xstaruch/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        "toolchainFile": "${CMAKE_VCPKG_TOOLCHAIN}",
+        "environmentVariables": {
+            "CMAKE_VCPKG_TOOLCHAIN": "${env:CMAKE_VCPKG_TOOLCHAIN}"
+        }
     }
 ]

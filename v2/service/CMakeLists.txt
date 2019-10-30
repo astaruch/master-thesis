@@ -5,6 +5,12 @@ project(phishsvc VERSION 0.0.1 LANGUAGES CXX)
 ## User options
 ## ======================================================================================##
 option(RUN_TESTS "Build and run tests" FALSE)
+if(CMAKE_TOOLCHAIN_FILE)
+  message(STATUS "Using toolchain ${CMAKE_TOOLCHAIN_FILE}")
+else()
+  message(FATAL_ERROR "Undefined CMAKE_TOOLCHAIN_FILE var")
+endif()
+
 
 
 ## ======================================================================================##
