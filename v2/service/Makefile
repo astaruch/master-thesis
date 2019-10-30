@@ -87,3 +87,31 @@ feature-all: build-debug
 		--feat-four-numbers \
 		--feat-spec-keywords \
 		--feat-punycode
+
+valgrind: build-debug
+	valgrind --tool=memcheck --leak-check=yes Debug/phishsvc \
+		--enable-training-data \
+		--td-url "http://google.com" \
+		--td-class-value 0 \
+		--enable-features \
+		--feat-ip-address \
+		--feat-url-length \
+		--feat-host-length \
+		--feat-path-length \
+		--feat-query-length \
+		--feat-fragment-length \
+		--feat-user-info \
+		--feat-domain-count \
+		--feat-https-used \
+		--feat-extra-https \
+		--feat-shortening-service \
+		--feat-non-std-port \
+		--feat-spec-chars-path \
+		--feat-spec-chars-query \
+		--feat-spec-chars-fragment \
+		--feat-spec-chars-host \
+		--feat-gtld \
+		--feat-www-prefix \
+		--feat-four-numbers \
+		--feat-spec-keywords \
+		--feat-punycode
