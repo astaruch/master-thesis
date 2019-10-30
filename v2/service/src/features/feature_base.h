@@ -12,29 +12,29 @@ namespace feature_enum {
 
 enum id: uint64_t {
     // 0 bits
-    ip_address = 0x1,
-    url_length = 0x2,
-    host_length = 0x4,
-    path_length = 0x8,
+    ip_address =    0x1,
+    url_length =    0x2,
+    host_length =   0x4,
+    path_length =   0x8,
     // 4 bits
-    query_length = 0x10,
-    fragment_length = 0x20,
-    user_info = 0x40,
-    domain_count = 0x80,
+    query_length =      0x10,
+    fragment_length =   0x20,
+    user_info =         0x40,
+    domain_count =      0x80,
     // 8 bits
-    https_used = 0x100,
-    extra_https = 0x200,
-    shortening_service = 0x400,
-    non_std_port = 0x800,
+    https_used =            0x100,
+    extra_https =           0x200,
+    shortening_service =    0x400,
+    non_std_port =          0x800,
     // 12 bits
-    spec_chars_path = 0x1000,
-    spec_chars_query = 0x2000,
-    spec_chars_fragment = 0x4000,
-    spec_chars_host = 0x8000,
+    spec_chars_path =       0x1000,
+    spec_chars_query =      0x2000,
+    spec_chars_fragment =   0x4000,
+    spec_chars_host =       0x8000,
     // 16 bits
-    gtld = 0x10000,
-    www_prefix = 0x20000,
-    four_numbers = 0x40000,
+    gtld =          0x10000,
+    www_prefix =    0x20000,
+    four_numbers =  0x40000,
     spec_keywords = 0x80000,
 };
 
