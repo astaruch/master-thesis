@@ -58,7 +58,7 @@ program::program(int argc, char** argv)
         ("feat-www-prefix", "Check wether hostname has extra 'www-' prefix", cxxopts::value<bool>(_feature_www_prefix))
         ("feat-four-numbers", "Check wether hostname has 4 consecutive numbers", cxxopts::value<bool>(_feature_four_numbers))
         ("feat-spec-keywords", "Check wether URL contains special keywords", cxxopts::value<bool>(_feature_spec_keywords))
-        ("feat-punycode", "Check wether host is using punycode", cxxopts::value<bool>(_feature_spec_keywords))
+        ("feat-punycode", "Check wether host is using punycode", cxxopts::value<bool>(_feature_punycode))
     ;
 
     _options.add_options("Training data")
