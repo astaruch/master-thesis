@@ -1,12 +1,13 @@
 # Determine this makefile's path.
 # Be sure to place this BEFORE `include` directives, if any.
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
+include .env
 
 build:
 	@echo $@  # print target name
 	@$(MAKE) -f $(THIS_FILE) build-debug # invoke other target
 
-run: feature2
+run: build
 	@$(MAKE) -f $(THIS_FILE) feature-all
 
 test: build-tests
@@ -51,14 +52,13 @@ feature1: build-debug
 		--enable-features \
 		--feat-ip-address
 
-feature2: build-debug
+feature-url: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-url "http://google.com" \
 		--td-class-value 0 \
 		--enable-features \
-		--feat-ip-address \
-		--feat-url-length
+		${URL_FEATURES}
 
 feature-all: build-debug
 	Debug/phishsvc \
@@ -66,27 +66,7 @@ feature-all: build-debug
 		--td-url "http://google.com" \
 		--td-class-value 0 \
 		--enable-features \
-		--feat-ip-address \
-		--feat-url-length \
-		--feat-host-length \
-		--feat-path-length \
-		--feat-query-length \
-		--feat-fragment-length \
-		--feat-user-info \
-		--feat-domain-count \
-		--feat-https-used \
-		--feat-extra-https \
-		--feat-shortening-service \
-		--feat-non-std-port \
-		--feat-spec-chars-path \
-		--feat-spec-chars-query \
-		--feat-spec-chars-fragment \
-		--feat-spec-chars-host \
-		--feat-gtld \
-		--feat-www-prefix \
-		--feat-four-numbers \
-		--feat-spec-keywords \
-		--feat-punycode
+		${URL_FEATURES}
 
 valgrind: build-debug
 	valgrind --tool=memcheck --leak-check=yes Debug/phishsvc \
@@ -94,24 +74,4 @@ valgrind: build-debug
 		--td-url "http://google.com" \
 		--td-class-value 0 \
 		--enable-features \
-		--feat-ip-address \
-		--feat-url-length \
-		--feat-host-length \
-		--feat-path-length \
-		--feat-query-length \
-		--feat-fragment-length \
-		--feat-user-info \
-		--feat-domain-count \
-		--feat-https-used \
-		--feat-extra-https \
-		--feat-shortening-service \
-		--feat-non-std-port \
-		--feat-spec-chars-path \
-		--feat-spec-chars-query \
-		--feat-spec-chars-fragment \
-		--feat-spec-chars-host \
-		--feat-gtld \
-		--feat-www-prefix \
-		--feat-four-numbers \
-		--feat-spec-keywords \
-		--feat-punycode
+		${URL_FEATURES}
