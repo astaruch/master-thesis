@@ -41,6 +41,19 @@ find_package(fmt CONFIG REQUIRED)
 ### threading ===========================================================================##
 find_package(Threads REQUIRED)
 
+find_package(CURL CONFIG REQUIRED)
+find_package(unofficial-curlpp CONFIG REQUIRED)
+# find_package(pugixml CONFIG REQUIRED)
+
+## ======================================================================================##
+## Fix libcurl filename
+## ======================================================================================##
+configure_file(
+  ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/libcurl-d.a
+  ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/libcurl.a
+  COPYONLY
+)
+
 ## ======================================================================================##
 ## Subdirectories and source files
 ## ======================================================================================##
@@ -68,6 +81,10 @@ set(ALL_LIBRARIES
   cxxopts::cxxopts
   fmt::fmt
   fmt::fmt-header-only
+
+  CURL::libcurl
+  unofficial::curlpp::curlpp
+  # pugixml
 )
 
 ## ======================================================================================##

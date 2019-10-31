@@ -8,6 +8,7 @@
 
 #include <Poco/URI.h>
 
+
 namespace feature_enum {
 
 enum id: uint64_t {
@@ -74,6 +75,7 @@ public:
     virtual double compute_value() = 0;
     virtual std::string column_name() = 0;
     void set_url(const std::string& url);
+    void get_page();
     // compute normalized value that goes into [0, 1] interval
     double normalize_value(int min, int value, int max);
 protected:
