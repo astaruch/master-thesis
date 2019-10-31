@@ -1,0 +1,24 @@
+{
+  "name": "html_features_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "lint": "eslint --ext js,ts,jsx,tsx ./src",
+    "fix-lint": "eslint --ext js,ts,jsx,tsx ./src --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@strv/eslint-config-node": "^2.1.2",
+    "eslint": "^6.6.0"
+  },
+  "dependencies": {
+    "jsdom": "^15.2.0",
+    "jsdom-devtools-formatter": "^1.0.0",
+    "node-fetch": "^2.6.0",
+    "yargs": "^14.2.0"
+  }
+}
