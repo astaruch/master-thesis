@@ -35,7 +35,7 @@ class Page {
   }
 
   featureInputTag(dom) {
-    return dom.window.document.querySelectorAll('input').length > 0 ? 1 : 0
+    return dom.window.document.querySelectorAll('input').length
   }
 }
 

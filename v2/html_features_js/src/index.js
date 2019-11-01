@@ -9,8 +9,13 @@ const main = async () => {
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
     .help('help').alias('help', 'h')
-    .option('url', { description: 'Enter one escaped URL as parameter'})
-    .option('feat-input-tag', {description: 'Path containing Phishtank csv files'})
+    .group(['url'], 'Input:')
+    .describe('url', 'Enter one URL as parameter' )
+    .group(['output-json', 'output-lines'], 'Output formats:')
+    .describe('output-json', 'Return results as escaped JSON' )
+    .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
+    .group(['feat-input-tag'], 'Features:')
+    .describe('feat-input-tag', 'Flag wether check how many input tags has page')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -24,8 +29,19 @@ const main = async () => {
       features.inputTag = 'inputTag'
     }
     const results = await page.performTests(features)
-    console.log((results))
-    // console.log(JSON.stringify(results))
+
+    if (argv.argv.outputJson) {
+      console.log(JSON.stringify(results))
+      return
+    }
+    if (argv.argv.outputLines) {
+      Object.keys(results).forEach(feature => {
+        console.log(`${feature} ${results[feature]}`)
+      })
+      return
+    }
+    console.error('You need to set output format')
+    process.exit(1)
 }
 
 if (require.main === module) {
