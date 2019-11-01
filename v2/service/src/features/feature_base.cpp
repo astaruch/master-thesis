@@ -5,6 +5,16 @@
 
 namespace feature {
 
+const std::unordered_map<feature_enum::id, std::string_view> base::column_names = base::create_column_names();
+
+std::unordered_map<feature_enum::id, std::string_view> base::create_column_names()
+{
+    std::unordered_map<feature_enum::id, std::string_view> map{
+        {feature_enum::input_tag, "input_tag"}
+    };
+    return map;
+}
+
 void base::set_url(const std::string& url)
 {
     _url = url;

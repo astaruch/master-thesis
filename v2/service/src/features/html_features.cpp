@@ -1,8 +1,10 @@
 #include "html_features.h"
 
+#include "feature_base.h"
+
+#include <cstdio>
 #include <fmt/format.h>
 
-#include "feature_base.h"
 
 namespace feature {
 
@@ -20,9 +22,51 @@ html_features::html_features(std::string_view node_bin,
     // fmt::print("{}\n", cmd);
 }
 
-void html_features::compute_values()
+std::tuple<std::string, std::string> html_features::split_by_space(const std::string& str)
 {
+    auto found = str.find(' ');
+    return {str.substr(0, found), str.substr(found + 1)};
+}
 
+std::vector<double> html_features::compute_values()
+{
+    // fmt::print("Executing cmd: {}\n", _cmd);
+    std::FILE* output_stream = popen(_cmd.c_str(), "r");
+    if (output_stream == nullptr) {
+        fmt::print(stderr, "There was an error executing command: {}\n", _cmd);
+        return {};
+    }
+    char line[256];
+    std::vector<double> f_vec;
+    while (fgets(line, 256, output_stream) != nullptr) {
+        std::string line_str(line);
+        auto [column, value] = split_by_space(line_str);
+        auto it = std::find_if(html_feature_column.begin(), html_feature_column.end(), [&](const auto& el) {
+            return el.second == column;
+        });
+        if (it == html_feature_column.end()) {
+            continue;
+        }
+        auto feature_id = it->first;
+        auto computed_value = compute_value(feature_id, std::stoi(value));
+        f_vec.push_back(computed_value);
+    }
+    pclose(output_stream);
+    return f_vec;
+}
+
+double html_features::compute_value(uint64_t fid, int value)
+{
+    switch (fid) {
+    case feature_enum::input_tag:
+        return compute_value_input_tag(value);
+    }
+    return 0;
+}
+
+double html_features::compute_value_input_tag(int value)
+{
+    return value > 0 ? 1 : 0;
 }
 
 std::string html_features::create_args()

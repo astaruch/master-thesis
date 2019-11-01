@@ -5,6 +5,7 @@
 
 #include <string>
 #include <string_view>
+#include <unordered_map>
 
 #include <Poco/URI.h>
 
@@ -82,6 +83,9 @@ public:
     void set_url(const std::string& url);
     // compute normalized value that goes into [0, 1] interval
     double normalize_value(int min, int value, int max);
+
+    static std::unordered_map<feature_enum::id, std::string_view> create_column_names();
+    static const std::unordered_map<feature_enum::id, std::string_view> column_names;
 protected:
     double _value;
     std::string _url;

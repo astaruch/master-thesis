@@ -70,6 +70,12 @@ std::string training_data::create_csv_header()
             columns.push_back(f->column_name());
         }
     }
+
+    for (const auto id: feature_enum::html) {
+        if (_html_feature_flags & id) {
+            columns.push_back(std::string(feature::base::column_names.at(id)));
+        }
+    }
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
@@ -112,7 +118,10 @@ std::vector<double> training_data::compute_feature_vector(const std::string& url
     }
     {
         auto html_feat = feature::html_features(_node_bin, _html_script, url, _html_feature_flags);
-        html_feat.compute_values();
+        // TODO: make more robust version with mapping column - value
+        // we have computed values in same order like we have columns
+        auto html_values = html_feat.compute_values();
+        fvec.insert(fvec.end(), html_values.begin(), html_values.end());
     }
 
     fvec.push_back(_label);
