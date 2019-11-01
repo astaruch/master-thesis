@@ -12,6 +12,9 @@ public:
     /// Sets the feature flags
     void set_feature_flags(uint64_t flags);
 
+    /// Sets the html feature flags
+    void set_html_feature_flags(uint64_t flags);
+
     /// Sets the source input data
     void set_input_data(std::vector<std::string> urls);
 
@@ -21,11 +24,15 @@ public:
     /// Sets the output name of the training data
     void set_output_name(std::string name);
 
+    void set_node_bin(std::string_view node_bin);
+    void set_html_script(std::string_view html_script);
+
     /// Method for generating the training data
     bool create_training_data();
 private:
     /// Flags used to determine which features are enabled. See class \a feature_base
     uint64_t _feature_flags;
+    uint64_t _html_feature_flags;
 
     /// Input data that will be transformed to training data
     std::vector<std::string> _urls;
@@ -35,6 +42,9 @@ private:
 
     /// Name of the output filename
     std::string _output_name;
+
+    std::string_view _node_bin;
+    std::string_view _html_script;
 
     /// Training data containing feature
     std::vector<std::vector<double>> _training_data;

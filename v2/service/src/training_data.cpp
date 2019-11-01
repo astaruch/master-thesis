@@ -14,6 +14,11 @@ void training_data::set_feature_flags(uint64_t flags)
     _feature_flags = flags;
 }
 
+void training_data::set_html_feature_flags(uint64_t flags)
+{
+    _html_feature_flags = flags;
+}
+
 void training_data::set_input_data(std::vector<std::string> urls)
 {
     _urls.swap(urls);
@@ -27,6 +32,16 @@ void training_data::set_label(double label)
 void training_data::set_output_name(std::string name)
 {
     _output_name = name;
+}
+
+void training_data::set_node_bin(std::string_view node_bin)
+{
+    _node_bin = node_bin;
+}
+
+void training_data::set_html_script(std::string_view html_script)
+{
+    _html_script = html_script;
 }
 
 bool training_data::create_training_data()
@@ -49,7 +64,7 @@ std::string training_data::create_csv_header()
 {
     std::vector<std::string> columns;
 
-    for (const auto id: feature_enum::all) {
+    for (const auto id: feature_enum::url) {
         if (_feature_flags & id) {
             auto f = feature::creator::create_feature_from_flag(id);
             columns.push_back(f->column_name());
@@ -88,13 +103,18 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 std::vector<double> training_data::compute_feature_vector(const std::string& url)
 {
     std::vector<double> fvec; // feature vector
-    for (const auto id: feature_enum::all) {
+    for (const auto id: feature_enum::url) {
         if (_feature_flags & id) {
             auto f = feature::creator::create_feature_from_flag(id);
             f->set_url(url);
             fvec.push_back(f->compute_value());
         }
     }
+    {
+        auto html_feat = feature::html_features(_node_bin, _html_script, url, _html_feature_flags);
+        html_feat.compute_values();
+    }
+
     fvec.push_back(_label);
     return fvec;
 }

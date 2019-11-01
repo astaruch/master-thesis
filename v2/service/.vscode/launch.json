@@ -10,9 +10,11 @@
                 "--td-url", "http://google.com",
                 "--td-class-value", "0",
                 "--enable-features",
-                "--feat-ip-address"],
+                "--feat-input-tag",
+                "--node-bin", "/home/xstaruch/.nvm/versions/node/v12.13.0/bin/node",
+                "--html-script", "/home/xstaruch/master-thesis/v2/html_features_js/src/index.js"
+            ],
             "cwd": "${workspaceFolder}",
-            "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

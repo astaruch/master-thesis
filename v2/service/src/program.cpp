@@ -1,9 +1,12 @@
 #include "program.h"
 
+#include <filesystem>
 #include <cxxopts.hpp>
 #include <spdlog/spdlog.h>
 
+
 using namespace std::string_view_literals;
+namespace fs = std::filesystem;
 
 program::program(int argc, char** argv)
     : _options("phishsvc", "Application for phishing defence")
@@ -36,6 +39,11 @@ program::program(int argc, char** argv)
         ("parse-urls", "Parse URLs from the given table into new columns", cxxopts::value<bool>(_parse_urls))
     ;
 
+    _options.add_options("HTML feature settings")
+        ("node-bin", "Path to the node.js executable", cxxopts::value<std::string>(_node_bin))
+        ("html-script", "Path to the script containing HTML feature checks", cxxopts::value<std::string>(_html_script))
+    ;
+
     _options.add_options("Features")
         ("enable-features", "Enter mode with features", cxxopts::value<bool>(_enable_features))
         ("feat-ip-address", "Check wether hostname is IP address", cxxopts::value<bool>(_feature_ip_address))
@@ -59,6 +67,7 @@ program::program(int argc, char** argv)
         ("feat-four-numbers", "Check wether hostname has 4 consecutive numbers", cxxopts::value<bool>(_feature_four_numbers))
         ("feat-spec-keywords", "Check wether URL contains special keywords", cxxopts::value<bool>(_feature_spec_keywords))
         ("feat-punycode", "Check wether host is using punycode", cxxopts::value<bool>(_feature_punycode))
+        ("feat-input-tag", "Check wether page contains <input> tag", cxxopts::value<bool>(_feature_input_tag))
     ;
 
     _options.add_options("Training data")
@@ -95,10 +104,18 @@ void program::check_feature_option(bool feature_on, uint64_t feature_id, std::st
     }
 }
 
+void program::check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    check_feature_option(feature_on, feature_id, feature_name);
+    if (feature_on) {
+        _html_feature_flags |= feature_id;
+    }
+}
+
 void program::check_options()
 {
     if (_help) {
-        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "Training data"}));
+        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "HTML feature settings", "Training data"}));
         exit(0);
     }
 
@@ -130,11 +147,13 @@ void program::check_options()
         check_feature_option(_feature_four_numbers, feature_enum::id::four_numbers, "four consecutive numbers in host"sv);
         check_feature_option(_feature_spec_keywords, feature_enum::id::spec_keywords, "special keywords"sv);
         check_feature_option(_feature_punycode, feature_enum::id::punycode, "punycode"sv);
+        // html
+        check_html_feature_option(_feature_input_tag, feature_enum::id::input_tag, "<input> tag"sv);
     }
 
     if (_enable_training_data) {
         if (_training_data_url.empty() && !_training_data_stdin && _training_data_input_file.empty()) {
-            fmt::print(stderr, "You have to provide one source for data\n");
+            fmt::print(stderr, "You have to provide one source for a data (e.g. --tld-url <URL>)\n");
             exit(1);
         }
 
@@ -144,8 +163,28 @@ void program::check_options()
         }
 
         if (_missing_training_data_class_value) {
-            fmt::print(stderr, "You need to set classification value for the input set\n");
+            fmt::print(stderr, "You need to set classification value for the input set (--td-class-value <N>)\n");
             exit(1);
+        }
+
+        if (_html_feature_flags) {
+            if (_node_bin.empty()) {
+                fmt::print(stderr, "You have request HTML features. Please set path to node.js (--node-bin <path>)\n");
+                exit(1);
+            }
+            std::error_code ec;
+            if (!fs::exists(_node_bin, ec)) {
+                fmt::print(stderr, "No such file (--node-bin <path>): {}\n", _node_bin);
+                exit(1);
+            }
+            if (_html_script.empty()) {
+                fmt::print(stderr, "You have request HTML features. Please set path to the script containing HTML features (--html-script <path>)\n");
+                exit(1);
+            }
+            if (!fs::exists(_html_script, ec)) {
+                fmt::print(stderr, "No such file (--html-script): {}\n", _html_script);
+                exit(1);
+            }
         }
 
         if (_feature_flags == 0) {
@@ -207,6 +246,21 @@ uint64_t program::feature_flags()
     return _feature_flags;
 }
 
+uint64_t program::html_feature_flags()
+{
+    return _html_feature_flags;
+}
+
+std::string_view program::node_bin()
+{
+    return _node_bin;
+}
+
+std::string_view program::html_script()
+{
+    return _html_script;
+}
+
 std::string program::training_data_url()
 {
     return _training_data_url;
@@ -226,3 +280,4 @@ double program::training_data_class_value()
 {
     return _training_data_class_value;
 }
+

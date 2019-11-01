@@ -7,6 +7,7 @@
 
 #include "feature_base.h"
 #include "url_features/url_features.h"
+#include "html_features.h"
 
 namespace feature {
 

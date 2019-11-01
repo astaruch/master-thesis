@@ -38,10 +38,11 @@ enum id: uint64_t {
     four_numbers =  0x40000,
     spec_keywords = 0x80000,
     // 20 bits
-    punycode = 0x100000
+    punycode =  0x100000,
+    input_tag = 0x200000,
 };
 
-static const id all[] = {
+static const id url[] = {
     ip_address,
     url_length,
     host_length,
@@ -65,6 +66,10 @@ static const id all[] = {
     punycode,
 };
 
+static const id html[] = {
+    input_tag
+};
+
 }
 
 namespace feature {
@@ -75,7 +80,6 @@ public:
     virtual double compute_value() = 0;
     virtual std::string column_name() = 0;
     void set_url(const std::string& url);
-    void get_page();
     // compute normalized value that goes into [0, 1] interval
     double normalize_value(int min, int value, int max);
 protected:

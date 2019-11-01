@@ -47,6 +47,9 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
         return std::make_unique<feature::spec_keywords>();
     case feature_enum::id::punycode:
         return std::make_unique<feature::punycode>();
+    // we are returning nothing because HTML features are handling in another way
+    case feature_enum::id::input_tag:
+        return nullptr;
     }
     return nullptr;
 }

@@ -60,13 +60,26 @@ feature-url: build-debug
 		--enable-features \
 		${URL_FEATURES}
 
+feature-html: build-debug
+	Debug/phishsvc \
+		--enable-training-data \
+		--td-url "http://google.com" \
+		--td-class-value 0 \
+		--enable-features \
+		${HTML_FEATURES} \
+		--node-bin ${NODE_BIN} \
+		--html-script ${HTML_FEATURES_SCRIPT}
+
 feature-all: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-url "http://google.com" \
 		--td-class-value 0 \
 		--enable-features \
-		${URL_FEATURES}
+		${URL_FEATURES} \
+		${HTML_FEATURES} \
+		--node-bin ${NODE_BIN} \
+		--html-script ${HTML_FEATURES_SCRIPT}
 
 valgrind: build-debug
 	valgrind --tool=memcheck --leak-check=yes Debug/phishsvc \

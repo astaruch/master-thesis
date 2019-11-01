@@ -33,6 +33,11 @@ public:
 
     /// Return flags with features
     uint64_t feature_flags();
+    uint64_t html_feature_flags();
+
+    /// HTML features options
+    std::string_view node_bin();
+    std::string_view html_script();
 
     /// Training data options
     std::string training_data_url();
@@ -68,6 +73,7 @@ private:
     bool _parse_urls;
 
     /// Features
+    // url
     bool _feature_ip_address{false};
     bool _feature_url_length{false};
     bool _feature_host_length{false};
@@ -89,8 +95,15 @@ private:
     bool _feature_four_numbers{false};
     bool _feature_spec_keywords{false};
     bool _feature_punycode{false};
+    // html
+    bool _feature_input_tag{false};
 
-    uint64_t _feature_flags;
+    uint64_t _feature_flags{0};
+    uint64_t _html_feature_flags{0};
+
+    /// HTML features settings
+    std::string _node_bin;
+    std::string _html_script;
 
     /// Training data
     std::string _training_data_url;
@@ -103,6 +116,7 @@ private:
 
     const char* on_off(bool feature);
     void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
+    void check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
 };
 
 #endif // PHISHSVC_PROGRAM_H

@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
     app.check_options();
 
     auto features_to_check = app.feature_flags();
+    auto html_features_to_check = app.html_feature_flags();
 
     if (app.create_training_data()) {
         auto url = app.training_data_url();
@@ -29,9 +30,14 @@ int main(int argc, char* argv[]) {
         std::vector<std::string> urls{url};
         training_data td;
         td.set_feature_flags(features_to_check);
+        td.set_html_feature_flags(html_features_to_check);
         td.set_input_data(urls);
         td.set_label(value);
         td.set_output_name(output_name);
+        if (html_features_to_check) {
+            td.set_node_bin(app.node_bin());
+            td.set_html_script(app.html_script());
+        }
         if (!td.create_training_data()) {
             fmt::print(stderr, "Not finished correctly.\n");
             return 1;
@@ -42,11 +48,10 @@ int main(int argc, char* argv[]) {
     auto db_string = app.get_conn_string();
 
     try {
-        spdlog::info("Connecting to a database..");
-        spdlog::debug("Connection string: {}", db_string);
-        database db(db_string);
-
         if (app.table_manipulation()) {
+            spdlog::info("Connecting to a database..");
+            spdlog::debug("Connection string: {}", db_string);
+            database db(db_string);
             if (app.parse_urls()) {
                 db.process_table_and_parse_urls(app.table_name());
                 return 0;
