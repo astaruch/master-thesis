@@ -6,22 +6,26 @@ project(phishsvc VERSION 0.0.1 LANGUAGES CXX)
 ## ======================================================================================##
 option(RUN_TESTS "Build and run tests" FALSE)
 if(CMAKE_TOOLCHAIN_FILE)
-  message(STATUS "Using toolchain ${CMAKE_TOOLCHAIN_FILE}")
+  message(STATUS "Using cmake toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 else()
   message(FATAL_ERROR "Undefined CMAKE_TOOLCHAIN_FILE var")
 endif()
-
 
 
 ## ======================================================================================##
 ## Dependencies
 ## ======================================================================================##
 
-### PostgreSQL - C++ - https://github.com/microsoft/vcpkg/tree/master/ports/libpqxx =====##
-find_package(PostgreSQL REQUIRED)
-find_library(LIBPQXX libpqxx_static ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib)
 ### PostgreSQL - C - https://github.com/microsoft/vcpkg/tree/master/ports/libpq =========##
-find_library(LIBPQ pq ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/)
+find_package(PostgreSQL REQUIRED)
+
+### PostgreSQL - C++ - https://github.com/microsoft/vcpkg/tree/master/ports/libpqxx =====##
+find_library(LIBPQXX libpqxx_static ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/$<$<CONFIG:Debug>:debug/>lib)
+if(LIBPQXX)
+  message(STATUS "Found libpqxx: ${LIBPQXX}")
+else()
+  message(FATAL_ERROR "Can't find LIBPQXX")
+endif()
 
 ### OpenSSL - https://github.com/microsoft/vcpkg/tree/master/ports/openssl ==============##
 find_package(OpenSSL REQUIRED)
@@ -41,19 +45,6 @@ find_package(fmt CONFIG REQUIRED)
 ### threading ===========================================================================##
 find_package(Threads REQUIRED)
 
-find_package(CURL CONFIG REQUIRED)
-find_package(unofficial-curlpp CONFIG REQUIRED)
-# find_package(pugixml CONFIG REQUIRED)
-
-## ======================================================================================##
-## Fix libcurl filename
-## ======================================================================================##
-configure_file(
-  ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/libcurl-d.a
-  ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib/libcurl.a
-  COPYONLY
-)
-
 ## ======================================================================================##
 ## Subdirectories and source files
 ## ======================================================================================##
@@ -70,7 +61,7 @@ set(ALL_LIBRARIES
   spdlog::spdlog
   # First we need to link pqxx, then pq (otherwise linker will throw lot of errors)
   ${LIBPQXX}
-  ${LIBPQ}
+  ${PostgreSQL_LIBRARIES}
   # We need manually link openssl **after** linking postgres (otherwise there will be shit tone of weird errors)
   OpenSSL::SSL
   OpenSSL::Crypto
@@ -81,10 +72,6 @@ set(ALL_LIBRARIES
   cxxopts::cxxopts
   fmt::fmt
   fmt::fmt-header-only
-
-  CURL::libcurl
-  unofficial::curlpp::curlpp
-  # pugixml
 )
 
 ## ======================================================================================##
