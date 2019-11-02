@@ -50,31 +50,9 @@ std::vector<double> html_features::compute_values()
     std::vector<double> f_vec;
     for (const auto& line: lines) {
         auto [column, value] = split_by_space(line);
-        auto it = std::find_if(html_feature_column.begin(), html_feature_column.end(), [&](const auto& el) {
-            return el.second == column;
-        });
-        if (it == html_feature_column.end()) {
-            continue;
-        }
-        auto feature_id = it->first;
-        auto computed_value = compute_value(feature_id, std::stoi(value));
-        f_vec.push_back(computed_value);
+        f_vec.push_back(std::stod(value));
     }
     return f_vec;
-}
-
-double html_features::compute_value(uint64_t fid, int value)
-{
-    switch (fid) {
-    case feature_enum::input_tag:
-        return compute_value_input_tag(value);
-    }
-    return 0;
-}
-
-double html_features::compute_value_input_tag(int value)
-{
-    return value > 0 ? 1 : 0;
 }
 
 std::string html_features::create_args()

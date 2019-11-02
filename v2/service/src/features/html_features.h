@@ -33,13 +33,9 @@ public:
     void set_flags(uint64_t flags);
 
     void set_url(std::string_view url);
-    double compute_value_input_tag(int value);
     std::vector<std::string> get_output_from_program(const char* cmd);
 private:
     std::string create_args();
-    double compute_value(uint64_t fid, int value);
-
-
 
     std::string_view _node_bin;
     std::string_view _html_script;
