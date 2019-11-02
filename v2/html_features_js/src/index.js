@@ -6,6 +6,9 @@ const Page = require('./page')
 const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
 
 const main = async () => {
+  const featureStrings = [
+    'feat-input-tag', 'feat-src-link', 'feat-form-handler'
+  ]
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
     .help('help').alias('help', 'h')
@@ -14,9 +17,10 @@ const main = async () => {
     .group(['output-json', 'output-lines'], 'Output formats:')
     .describe('output-json', 'Return results as escaped JSON' )
     .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
-    .group(['feat-input-tag', 'feat-src-link'], 'Features:')
-    .describe('feat-input-tag', 'Flag wether check how many input tags has page')
-    .describe('feat-src-link', 'Flag wether check if src=<link> is matching hostname')
+    .group(featureStrings, 'Features:')
+    .describe(featureStrings[0], 'Flag wether check how many input tags has page')
+    .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
+    .describe(featureStrings[2], 'Flag wether check <form> handlers')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -31,6 +35,9 @@ const main = async () => {
     }
     if (argv.argv.featSrcLink) {
       features.srcLink = 'srcLink'
+    }
+    if (argv.argv.featFormHandler) {
+      features.formHandler = 'formHandler'
     }
     const results = await page.performTests(features)
 

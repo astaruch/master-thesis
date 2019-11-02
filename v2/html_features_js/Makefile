@@ -10,7 +10,7 @@ clean:
 	rm -rf node_modules
 
 run:
-	node src/index.js --url http://google.cz --output-lines ${HTML_FEATURES}
+	node src/index.js ${HTML_FEATURES} --output-lines --url http://seznam.cz
 
 input-tag:
 	node src/index.js --url http://google.cz --feat-input-tag --output-lines

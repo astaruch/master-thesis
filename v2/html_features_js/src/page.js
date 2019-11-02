@@ -8,12 +8,14 @@ class Page {
     this.url = url
     this.columns = {
       inputTag: 'input_tag',
-      srcLink: 'src_link'
+      srcLink: 'src_link',
+      formHandler: 'form_handler',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
       inputTag: this.featureInputTagTest.bind(this),
-      srcLink: this.featureSrcLinkTest.bind(this)
+      srcLink: this.featureSrcLinkTest.bind(this),
+      formHandler: this.featureFormHandlerTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -101,6 +103,27 @@ class Page {
   featureSrcLinkTest(dom, url) {
     const result = this.featureSrcLink(dom, url)
     return result > 0.8 ? 1 : 0
+  }
+
+  featureFormHandler(dom) {
+    let count = 0
+    const suspiciousActions = ['', 'about:blank', 'blank', '#skip', '#', 'javascript:true' ]
+    dom.window.document.querySelectorAll('form').forEach(node => {
+      const action = node.attributes.getNamedItem('action')
+      if (!action) {
+        return
+      }
+      if (suspiciousActions.includes(action)) {
+        count++
+      }
+      console.log(action.value)
+    })
+    return count
+  }
+
+  featureFormHandlerTest(dom) {
+    const result = this.featureFormHandler(dom)
+    return result > 1 ? 1 : 0
   }
 }
 
