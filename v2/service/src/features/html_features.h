@@ -13,8 +13,11 @@ namespace feature {
 
 class html_features {
 public:
+    html_features() = default;
     html_features(std::string_view node_bin, std::string_view html_script,
         std::string_view url, uint64_t flags);
+
+    virtual ~html_features() = default;
     std::vector<double> compute_values();
 
     const std::unordered_map<feature_enum::id, std::string_view> html_feature_column{
@@ -26,11 +29,17 @@ public:
     };
 
     std::tuple<std::string, std::string> split_by_space(const std::string& str);
+
+    void set_flags(uint64_t flags);
+
+    void set_url(std::string_view url);
+    double compute_value_input_tag(int value);
 private:
     std::string create_args();
     double compute_value(uint64_t fid, int value);
 
-    double compute_value_input_tag(int value);
+
+    std::vector<std::string> get_output_from_program(const char* cmd);
 
     std::string_view _node_bin;
     std::string_view _html_script;
