@@ -107,6 +107,7 @@ class Page {
 
   featureFormHandler(dom) {
     let count = 0
+    // eslint-disable-next-line no-script-url
     const suspiciousActions = ['', 'about:blank', 'blank', '#skip', '#', 'javascript:true' ]
     dom.window.document.querySelectorAll('form').forEach(node => {
       const action = node.attributes.getNamedItem('action')
