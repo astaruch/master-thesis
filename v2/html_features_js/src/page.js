@@ -10,12 +10,14 @@ class Page {
       inputTag: 'input_tag',
       srcLink: 'src_link',
       formHandler: 'form_handler',
+      invisibleIframe: 'invisible_iframe'
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
       inputTag: this.featureInputTagTest.bind(this),
       srcLink: this.featureSrcLinkTest.bind(this),
       formHandler: this.featureFormHandlerTest.bind(this),
+      invisibleIframe: this.featureInvisibleIframeTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -117,7 +119,6 @@ class Page {
       if (suspiciousActions.includes(action)) {
         count++
       }
-      console.log(action.value)
     })
     return count
   }
@@ -126,6 +127,31 @@ class Page {
     const result = this.featureFormHandler(dom)
     return result > 1 ? 1 : 0
   }
+
+  featureInvisibleIframe(dom) {
+    let count = 0
+    dom.window.document.querySelectorAll('iframe').forEach(node => {
+      // https://www.w3schools.com/tags/att_iframe_seamless.asp
+      const seamless = node.attributes.getNamedItem('seamless')
+      if (seamless) {
+        count++
+        return
+      }
+      // 0x0 dimensions
+      const height = node.attributes.getNamedItem('height')
+      const width = node.attributes.getNamedItem('width')
+      if (height && height.value === 0 && width && width.value === 0) {
+        count++
+      }
+    })
+    return count
+  }
+
+  featureInvisibleIframeTest(dom) {
+    const iframes = this.featureInvisibleIframe(dom)
+    return iframes > 0 ? 1 : 0
+  }
+
 }
 
 module.exports = Page

@@ -7,7 +7,7 @@ const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
 
 const main = async () => {
   const featureStrings = [
-    'feat-input-tag', 'feat-src-link', 'feat-form-handler'
+    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'invisible-iframe'
   ]
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
@@ -21,6 +21,7 @@ const main = async () => {
     .describe(featureStrings[0], 'Flag wether check how many input tags has page')
     .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
     .describe(featureStrings[2], 'Flag wether check <form> handlers')
+    .describe(featureStrings[3], 'Flag wether check invisible <iframe> elements')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -39,6 +40,10 @@ const main = async () => {
     if (argv.argv.featFormHandler) {
       features.formHandler = 'formHandler'
     }
+    if (argv.argv.featInvisibleIframe) {
+      features.invisibleIframe = 'invisibleIframe'
+    }
+
     const results = await page.performTests(features)
 
     if (argv.argv.outputJson) {
