@@ -63,20 +63,36 @@ RUN apt-get update \
 
 CMD ["bash"]
 
+############################################
+FROM node:12.13.0 as thesis-nodejs-builder
+
+COPY ./html_features_js/src /nodejsapp/src
+COPY ./html_features_js/package.json /nodejsapp/package.json
+COPY ./html_features_js/package-lock.json /nodejsapp/package-lock.json
+WORKDIR /nodejsapp
+RUN npm install \
+    && npm install -g pkg \
+    && pkg -t node12-linux-x64 -o htmlfeatures src/index.js
 
 ##########################################
 FROM astaruch/thesis-runtime as thesis-app
 
 COPY --from=thesis-builder  /phishsvc/out/phishsvc /app/phishsvc
+COPY --from=thesis-nodejs-builder /nodejsapp/htmlfeatures /app/htmlfeatures
+
 WORKDIR /app
 
 CMD ["/app/phishsvc", "--help"]
-
 
 ############################################
 FROM astaruch/thesis-runtime as thesis-tests
 
 COPY --from=thesis-builder  /phishsvc/out/test/all_tests /app/all_tests
+COPY --from=thesis-nodejs-builder /nodejsapp/htmlfeatures /app/htmlfeatures
 WORKDIR /app
 
 CMD ["/app/all_tests"]
+
+
+
+    

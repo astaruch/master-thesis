@@ -6,11 +6,13 @@ build-travis:
 	docker pull astaruch/thesis-deps || true
 	docker-compose build thesis-builder
 	docker pull astaruch/thesis-runtime || true
+	docker-compose build thesis-nodejs-builder
 	docker-compose build thesis-app
 	docker-compose build thesis-tests
 
 build:
 	docker-compose build thesis-builder
+	docker-compose build thesis-nodejs-builder
 	docker-compose build thesis-app
 	docker-compose build thesis-tests
 
