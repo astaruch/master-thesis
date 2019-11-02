@@ -7,7 +7,7 @@ const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
 
 const main = async () => {
   const featureStrings = [
-    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'invisible-iframe'
+    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'invisible-iframe', 'rewrite-statusbar'
   ]
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
@@ -22,6 +22,7 @@ const main = async () => {
     .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
     .describe(featureStrings[2], 'Flag wether check <form> handlers')
     .describe(featureStrings[3], 'Flag wether check invisible <iframe> elements')
+    .describe(featureStrings[4], 'Flag wether check rewriting a status bar')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -31,18 +32,11 @@ const main = async () => {
 
     const page = new Page(argv.argv.url)
     const features = {}
-    if (argv.argv.featInputTag) {
-      features.inputTag = 'inputTag'
-    }
-    if (argv.argv.featSrcLink) {
-      features.srcLink = 'srcLink'
-    }
-    if (argv.argv.featFormHandler) {
-      features.formHandler = 'formHandler'
-    }
-    if (argv.argv.featInvisibleIframe) {
-      features.invisibleIframe = 'invisibleIframe'
-    }
+    if (argv.argv.featInputTag) features.inputTag = 'inputTag'
+    if (argv.argv.featSrcLink) features.srcLink = 'srcLink'
+    if (argv.argv.featFormHandler) features.formHandler = 'formHandler'
+    if (argv.argv.featInvisibleIframe) features.invisibleIframe = 'invisibleIframe'
+    if (argv.argv.featRewriteStatusbar) features.rewriteStatusbar = 'rewriteStatusbar'
 
     const results = await page.performTests(features)
 

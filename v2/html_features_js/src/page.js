@@ -10,7 +10,8 @@ class Page {
       inputTag: 'input_tag',
       srcLink: 'src_link',
       formHandler: 'form_handler',
-      invisibleIframe: 'invisible_iframe'
+      invisibleIframe: 'invisible_iframe',
+      rewriteStatusbar: 'rewrite_statusbar',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -18,6 +19,7 @@ class Page {
       srcLink: this.featureSrcLinkTest.bind(this),
       formHandler: this.featureFormHandlerTest.bind(this),
       invisibleIframe: this.featureInvisibleIframeTest.bind(this),
+      rewriteStatusbar: this.featureRewriteStatusbarTest.bind(this)
     }
     this.parsed = new URL(url)
   }
@@ -152,6 +154,23 @@ class Page {
     return iframes > 0 ? 1 : 0
   }
 
+  featureRewriteStatusbar(dom) {
+    let rewriting = false
+    dom.window.document.querySelectorAll('a').forEach(node => {
+      const onmouseover = node.attributes.getNamedItem('onmouseover')
+      const onmouseout = node.attributes.getNamedItem('onmouseout')
+      if ((onmouseover && onmouseover.value.startsWith('window.status')) ||
+          (onmouseout && onmouseout.value.startsWith('window.status')))
+      {
+        rewriting = true
+      }
+    })
+    return Number(rewriting)
+  }
+
+  featureRewriteStatusbarTest(dom) {
+    return this.featureRewriteStatusbar(dom)
+  }
 }
 
 module.exports = Page
