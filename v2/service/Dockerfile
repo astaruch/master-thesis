@@ -1,4 +1,5 @@
-FROM ubuntu:18.04 as thesis-deps
+FROM ubuntu:bionic-20191029 as thesis-deps
+#    ubuntu:18.04.2
 
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
@@ -52,7 +53,8 @@ RUN mkdir out \
 CMD ["bash"]
 
 ###################################
-FROM ubuntu:18.04 as thesis-runtime
+FROM ubuntu:bionic-20191029  as thesis-runtime
+#    ubuntu:18.04.2
 
 RUN apt-get update \
     && apt-get -y install software-properties-common \
