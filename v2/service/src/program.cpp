@@ -68,6 +68,7 @@ program::program(int argc, char** argv)
         ("feat-spec-keywords", "Check wether URL contains special keywords", cxxopts::value<bool>(_feature_spec_keywords))
         ("feat-punycode", "Check wether host is using punycode", cxxopts::value<bool>(_feature_punycode))
         ("feat-input-tag", "Check wether page contains <input> tag", cxxopts::value<bool>(_feature_input_tag))
+        ("feat-src-link", "Check wether links in src=<LINK> are pointing to other host", cxxopts::value<bool>(_feature_src_link))
     ;
 
     _options.add_options("Training data")
@@ -149,6 +150,7 @@ void program::check_options()
         check_feature_option(_feature_punycode, feature_enum::id::punycode, "punycode"sv);
         // html
         check_html_feature_option(_feature_input_tag, feature_enum::id::input_tag, "<input> tag"sv);
+        check_html_feature_option(_feature_src_link, feature_enum::id::src_link, "links to outer world"sv);
     }
 
     if (_enable_training_data) {

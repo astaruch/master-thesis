@@ -41,6 +41,7 @@ enum id: uint64_t {
     // 20 bits
     punycode =  0x100000,
     input_tag = 0x200000,
+    src_link =  0x400000,
 };
 
 static const id url[] = {
@@ -68,7 +69,8 @@ static const id url[] = {
 };
 
 static const id html[] = {
-    input_tag
+    input_tag,
+    src_link
 };
 
 }

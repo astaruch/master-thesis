@@ -20,12 +20,9 @@ public:
     virtual ~html_features() = default;
     std::vector<double> compute_values();
 
-    const std::unordered_map<feature_enum::id, std::string_view> html_feature_column{
-        { feature_enum::input_tag, "input_tag" }
-    };
-
     const std::unordered_map<feature_enum::id, std::string_view> html_feature_arg{
-        { feature_enum::input_tag, "--feat-input-tag" }
+        { feature_enum::input_tag, "--feat-input-tag" },
+        { feature_enum::src_link, "--feat-src-link" }
     };
 
     std::tuple<std::string, std::string> split_by_space(const std::string& str);

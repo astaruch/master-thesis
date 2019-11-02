@@ -97,6 +97,7 @@ private:
     bool _feature_punycode{false};
     // html
     bool _feature_input_tag{false};
+    bool _feature_src_link{false};
 
     uint64_t _feature_flags{0};
     uint64_t _html_feature_flags{0};
