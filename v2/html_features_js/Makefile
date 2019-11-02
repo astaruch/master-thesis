@@ -7,10 +7,13 @@ build:
 	npm install
 
 clean:
-	rm -rf node_modules
+	rm -rf node_modules bin
 
 run:
 	node src/index.js ${HTML_FEATURES} --output-lines --url http://seznam.cz
 
 input-tag:
 	node src/index.js --url http://google.cz --feat-input-tag --output-lines
+
+pack: build
+	pkg src/index.js --targets node12-linux-x64 --output bin/htmlfeatures
