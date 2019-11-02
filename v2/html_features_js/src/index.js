@@ -14,8 +14,9 @@ const main = async () => {
     .group(['output-json', 'output-lines'], 'Output formats:')
     .describe('output-json', 'Return results as escaped JSON' )
     .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
-    .group(['feat-input-tag'], 'Features:')
+    .group(['feat-input-tag', 'feat-src-link'], 'Features:')
     .describe('feat-input-tag', 'Flag wether check how many input tags has page')
+    .describe('feat-src-link', 'Flag wether check if src=<link> is matching hostname')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -27,6 +28,9 @@ const main = async () => {
     const features = {}
     if (argv.argv.featInputTag) {
       features.inputTag = 'inputTag'
+    }
+    if (argv.argv.featSrcLink) {
+      features.srcLink = 'srcLink'
     }
     const results = await page.performTests(features)
 

@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/src/index.js",
-            "args": ["--url", "http://google.cz"],
+            "args": ["--url", "http://seznam.cz", "--output-lines", "--feat-src-link"],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ],

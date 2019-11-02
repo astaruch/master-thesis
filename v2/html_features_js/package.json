@@ -9,6 +9,9 @@
     "lint": "eslint --ext js,ts,jsx,tsx ./src",
     "fix-lint": "eslint --ext js,ts,jsx,tsx ./src --fix"
   },
+  "engines": {
+    "node": "12"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
