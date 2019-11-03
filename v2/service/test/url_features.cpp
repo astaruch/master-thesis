@@ -96,23 +96,20 @@ TEST(UserInfo, RealURL)
 
 TEST(DomainCount, NormalURL)
 {
-    feature::domain_count f;
-    f.set_url("http://google.com");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com");
+    EXPECT_EQ(0, f.compute_value_domain_count());
 }
 
 TEST(DomainCount, LotsOfSubdomain)
 {
-    feature::domain_count f;
-    f.set_url("http://a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.com");
-    EXPECT_LT(0.5, f.compute_value());
+    url_features_t f("http://a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.com");
+    EXPECT_LT(0.5, f.compute_value_domain_count());
 }
 
 TEST(DomainCount, InfinitySubdomains)
 {
-    feature::domain_count f;
-    f.set_url("http://a.b.c.d.e.f.g.h.i.j.k.b.c.d.e.f.g.h.i.j.k.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.com");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://a.b.c.d.e.f.g.h.i.j.k.b.c.d.e.f.g.h.i.j.k.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.com");
+    EXPECT_EQ(1, f.compute_value_domain_count());
 }
 
 TEST(HTTPSProtocol, Used)

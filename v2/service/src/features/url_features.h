@@ -30,6 +30,8 @@ public:
     double compute_value_fragment_length() const;
     double compute_value_fragment_length(int min, int max) const;
     double compute_value_user_info() const;
+    double compute_value_domain_count() const;
+    double compute_value_domain_count(int min, int max) const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};

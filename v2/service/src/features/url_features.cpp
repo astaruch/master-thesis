@@ -165,6 +165,18 @@ double url_features_t::compute_value_user_info() const
     return _parsed.getUserInfo().empty()? 0 : 1;
 }
 
+double url_features_t::compute_value_domain_count() const
+{
+    return compute_value_domain_count(1, 21);
+}
+
+double url_features_t::compute_value_domain_count(int min, int max) const
+{
+    const auto& host = _parsed.getHost();
+    int count = static_cast<int>(std::count(host.begin(), host.end(), '.'));
+    return help_functions::normalize_value(min, count, max);
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -179,7 +191,7 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::query_length: return compute_value_query_length();
     case feature_enum::fragment_length: return compute_value_fragment_length();
     case feature_enum::user_info: return compute_value_user_info();
-    case feature_enum::domain_count:
+    case feature_enum::domain_count: return compute_value_domain_count();
     case feature_enum::https_used:
     case feature_enum::extra_https:
     case feature_enum::shortening_service:
