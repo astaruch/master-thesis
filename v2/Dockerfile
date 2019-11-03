@@ -38,7 +38,7 @@ CMD  ["bash"]
 FROM thesis-deps AS thesis-builder
 
 COPY ./service/src /project/src
-COPY ./service /project/test
+COPY ./service/test /project/test
 COPY ./service/CMakeLists.txt /project/CMakeLists.txt
 WORKDIR /project
 ENV CMAKE_VCPKG_TOOLCHAIN=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake
@@ -49,6 +49,8 @@ RUN mkdir out \
                 -DRUN_TESTS:BOOL=ON \
                 -DCMAKE_BUILD_TYPE:STRING=Debug \
     && make -j 4
+
+RUN /project/out/phishsvc --help
 
 CMD ["bash"]
 
@@ -69,16 +71,22 @@ FROM node:12.13.0 as thesis-nodejs-builder
 COPY ./html_features_js/src /nodejsapp/src
 COPY ./html_features_js/package.json /nodejsapp/package.json
 COPY ./html_features_js/package-lock.json /nodejsapp/package-lock.json
+
 WORKDIR /nodejsapp
+
 RUN npm install \
     && npm install -g pkg \
-    && pkg -t node12-linux-x64 -o htmlfeatures src/index.js
+    && pkg -t node12-linux-x64 --output bin/htmlfeatures src/index.js
+
+RUN /nodejsapp/bin/htmlfeatures --help
+
+CMD ["bash"]
 
 ##########################################
 FROM astaruch/thesis-runtime as thesis-app
 
 COPY --from=thesis-builder  /project/out/phishsvc /app/phishsvc
-COPY --from=thesis-nodejs-builder /nodejsapp/htmlfeatures /app/htmlfeatures
+COPY --from=thesis-nodejs-builder /nodejsapp/bin/htmlfeatures /app/htmlfeatures
 
 WORKDIR /app
 
@@ -88,11 +96,11 @@ CMD ["/app/phishsvc", "--help"]
 FROM astaruch/thesis-runtime as thesis-tests
 
 COPY --from=thesis-builder  /project/out/test/all_tests /app/all_tests
-COPY --from=thesis-nodejs-builder /nodejsapp/htmlfeatures /app/htmlfeatures
+COPY --from=thesis-nodejs-builder /nodejsapp/bin/htmlfeatures /app/htmlfeatures
 WORKDIR /app
 
 CMD ["/app/all_tests"]
 
 
 
-    
+

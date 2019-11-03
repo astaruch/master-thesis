@@ -60,6 +60,7 @@ services:
       cache_from:
         - astaruch/thesis-deps
         - thesis-builder
+        - thesis-nodejs-builder
         - astaruch/thesis-runtime
         # - thesis-app
     network_mode: bridge
@@ -76,6 +77,7 @@ services:
       cache_from:
         - astaruch/thesis-deps
         - thesis-builder
+        - thesis-nodejs-builder
         - astaruch/thesis-runtime
     network_mode: bridge
 
