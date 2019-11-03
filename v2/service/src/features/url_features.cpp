@@ -110,14 +110,24 @@ double url_features_t::compute_value_ip_address()
     return std::regex_match(_parsed.getHost(), ip_regex) ? 1. : 0.;
 }
 
-double url_features_t::compute_value_url_length()
+double url_features_t::compute_value_url_length() const
 {
     return compute_value_url_length(14, 161);
 }
 
-double url_features_t::compute_value_url_length(int min, int max)
+double url_features_t::compute_value_url_length(int min, int max) const
 {
     return help_functions::normalize_value(min, _url.length(), max);
+}
+
+double url_features_t::compute_value_host_length() const
+{
+    return compute_value_host_length(10, 37);
+}
+
+double url_features_t::compute_value_host_length(int min, int max) const
+{
+    return help_functions::normalize_value(min, _parsed.getHost().length(), max);
 }
 
 double url_features_t::compute_value(feature_enum::id feature)

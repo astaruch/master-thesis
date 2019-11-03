@@ -46,11 +46,10 @@ TEST(Length, LongURL)
     EXPECT_EQ(1, f.compute_value_url_length());
 }
 
-TEST(Length, ShortHost)
+TEST(Length, LongHost)
 {
-    feature::host_length f;
-    f.set_url("http://google.com");
-    EXPECT_GT(0.01, f.compute_value());
+    url_features_t f("http://googlegooglegooglegoogle.com");
+    EXPECT_LT(0.6, f.compute_value_host_length());
 }
 
 

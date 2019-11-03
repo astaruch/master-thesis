@@ -12,7 +12,6 @@
 
 class url_features_t {
 public:
-    // url_features_t() = default;
     explicit url_features_t(const std::string_view url);
     url_features_t(const std::string_view url, const Poco::URI& parsed, const uint64_t flags,
         const bool url_is_ok);
@@ -20,8 +19,10 @@ public:
     std::unordered_map<feature_enum::id, double> compute_values();
     double compute_value(feature_enum::id feature);
     double compute_value_ip_address();
-    double compute_value_url_length();
-    double compute_value_url_length(int min, int max);
+    double compute_value_url_length() const;
+    double compute_value_url_length(int min, int max) const;
+    double compute_value_host_length() const;
+    double compute_value_host_length(int min, int max) const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};
