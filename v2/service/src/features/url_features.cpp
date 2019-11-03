@@ -1,5 +1,7 @@
 #include "url_features.h"
 
+#include "../help_functions.h"
+
 #include <algorithm>
 #include <regex>
 
@@ -108,6 +110,16 @@ double url_features_t::compute_value_ip_address()
     return std::regex_match(_parsed.getHost(), ip_regex) ? 1. : 0.;
 }
 
+double url_features_t::compute_value_url_length()
+{
+    return compute_value_url_length(14, 161);
+}
+
+double url_features_t::compute_value_url_length(int min, int max)
+{
+    return help_functions::normalize_value(min, _url.length(), max);
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -116,7 +128,7 @@ double url_features_t::compute_value(feature_enum::id feature)
     }
     switch (feature) {
     case feature_enum::ip_address: return compute_value_ip_address();
-    case feature_enum::url_length:
+    case feature_enum::url_length: return compute_value_url_length();
     case feature_enum::host_length:
     case feature_enum::path_length:
     case feature_enum::query_length:
