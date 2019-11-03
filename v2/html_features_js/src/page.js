@@ -18,6 +18,7 @@ class Page {
       faviconLink: 'favicon_link',
       oldTechnologies: 'old_technologies',
       missleadingLink: 'missleading_link',
+      hostnameTitle: 'hostname_title'
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -32,6 +33,7 @@ class Page {
       faviconLink: this.featureFaviconLinkTest.bind(this),
       oldTechnologies: this.featureOldTechnologiesTest.bind(this),
       missleadingLink: this.featureMissleadingLinkTest.bind(this),
+      hostnameTitle: this.featureHostnameTitleTest.bind(this)
     }
     this.parsed = new URL(url)
   }
@@ -359,6 +361,23 @@ class Page {
 
   featureMissleadingLinkTest(dom) {
     return this.featureMissleadingLink(dom) > 0 ? 1 : 0
+  }
+
+  featureHostnameTitle(dom) {
+    const title = dom.window.document.title.toLowerCase()
+    let hostname = this.parsed.hostname.match(/(?:www\.)?(?<HOST>.*)(?:\..*)/u)
+    if (!hostname) {
+      return 0
+    }
+    hostname = hostname.groups['HOST'].toLowerCase()
+    if (title.includes(hostname)) {
+      return 0
+    }
+    return 1
+  }
+
+  featureHostnameTitleTest(dom) {
+    return this.featureHostnameTitle(dom) > 0 ? 1 : 0
   }
 }
 

@@ -10,7 +10,7 @@ const main = async () => {
   const featureStrings = [
     'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
     'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window', 'feat-favicon-link', 'feat-old-technologies',
-    'feat-missleading-link'
+    'feat-missleading-link', 'feat-hostname-title'
   ]
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
@@ -32,6 +32,7 @@ const main = async () => {
     .describe(featureStrings[8], 'Flag wether check if favicon is pointing to another site')
     .describe(featureStrings[9], 'Flag wether check if site is not running new technologies')
     .describe(featureStrings[10], 'Flag wether check if text value of <a> link is same as actual link')
+    .describe(featureStrings[11], 'Flag wether check if hostname is matching title (0: yes, 1: no)')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -52,6 +53,7 @@ const main = async () => {
     if (argv.argv.featFaviconLink) features.faviconLink = 'faviconLink'
     if (argv.argv.featOldTechnologies) features.oldTechnologies = 'oldTechnologies'
     if (argv.argv.featMissleadingLink) features.missleadingLink = 'missleadingLink'
+    if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
 
     const results = await page.performTests(features)
 

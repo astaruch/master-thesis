@@ -12,7 +12,7 @@
             "args": [
               "--url", "https://www.w3schools.com/js/tryit.asp?filename=tryjs_prompt",
               "--output-lines",
-              "--feat-popup-window"
+              "--feat-hostname-title"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
