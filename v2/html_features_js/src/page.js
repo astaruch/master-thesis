@@ -15,6 +15,7 @@ class Page {
       disableRightclick: 'disable_rightclick',
       ahrefLink: 'ahref_link',
       popupWindow: 'popup_window',
+      faviconLink: 'favicon_link',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -26,6 +27,7 @@ class Page {
       disableRightclick: this.featureDisableRightclickTest.bind(this),
       ahrefLink: this.featureAhrefLinkTest.bind(this),
       popupWindow: this.featurePopupWindowTest.bind(this),
+      faviconLink: this.featureFaviconLinkTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -261,6 +263,37 @@ class Page {
     return this.featurePopupWindow(dom)
   }
 
+  featureFaviconLink(dom) {
+    let anotherSite = false
+    dom.window.document.querySelectorAll('link').forEach(node => {
+      const rel = node.attributes.getNamedItem('rel')
+      if (!rel) {
+        return
+      }
+      if (!rel.value.includes('icon')) {
+        return
+      }
+      const href = node.attributes.getNamedItem('href')
+      try {
+        const faviconURL = new URL(href.value)
+        // we constructed faviconURL, need to check if hostname are same
+        if (faviconURL.hostname !== this.parsed.hostname) {
+          anotherSite = true
+          return
+        }
+      } catch (err) {
+        if (err instanceof TypeError) {
+          // favicon URL is relative url => it's poiting to this site
+          // thus it's not phishing
+        }
+      }
+    })
+    return Number(anotherSite)
+  }
+
+  featureFaviconLinkTest(dom) {
+    return this.featureFaviconLink(dom)
+  }
 }
 
 module.exports = Page

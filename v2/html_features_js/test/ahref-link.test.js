@@ -6,7 +6,7 @@ const { JSDOM } = require('jsdom')
 
 
 describe('FeatureTests', function() {
-  describe('srcLink', function() {
+  describe('ahrefLink', function() {
     const url = 'https://google.com'
     const DOM1 = `
 <html>

@@ -6,7 +6,7 @@ const { JSDOM } = require('jsdom')
 
 
 describe('FeatureTests', function() {
-  describe('DisableRightclick', function() {
+  describe('disableRightclick', function() {
     const url = 'https://google.com'
     const DOM1 = `<body oncontextmenu="return false;">`
 

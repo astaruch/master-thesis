@@ -9,7 +9,7 @@ const main = async () => {
   // These strings are used in the specific order in option arguments. Move with a caution!
   const featureStrings = [
     'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
-    'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window'
+    'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window', 'feat-favicon-link'
   ]
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
@@ -28,6 +28,7 @@ const main = async () => {
     .describe(featureStrings[5], 'Flag wether check that page has disabled right-click')
     .describe(featureStrings[6], 'Flag wether check <a href="LINK"> pointing to outer world')
     .describe(featureStrings[7], 'Flag wether check PopUp windows')
+    .describe(featureStrings[8], 'Flag wether check if favicon is pointing to another site')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -45,6 +46,7 @@ const main = async () => {
     if (argv.argv.featDisableRightclick) features.disableRightclick = 'disableRightclick'
     if (argv.argv.featAhrefLink) features.ahrefLink = 'ahrefLink'
     if (argv.argv.featPopupWindow) features.popupWindow = 'popupWindow'
+    if (argv.argv.featFaviconLink) features.faviconLink = 'faviconLink'
 
     const results = await page.performTests(features)
 
