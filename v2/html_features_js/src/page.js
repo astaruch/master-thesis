@@ -184,7 +184,7 @@ class Page {
       return 1
     }
     const oncontextmenu = body.attributes.getNamedItem('oncontextmenu')
-    if (oncontextmenu && oncontextmenu.includes('return false')) {
+    if (oncontextmenu && oncontextmenu.value.includes('return false')) {
       return 1
     }
     return 0
