@@ -107,8 +107,7 @@ class Page {
    * @returns {Number} computed phishing value for this feature
    */
   featureSrcLinkTest(dom, url) {
-    const result = this.featureSrcLink(dom, url)
-    return result > 0.8 ? 1 : 0
+    return this.featureSrcLink(dom, url)
   }
 
   featureFormHandler(dom) {
