@@ -98,6 +98,16 @@ private:
     // html
     bool _feature_input_tag{false};
     bool _feature_src_link{false};
+    bool _feature_form_handler{false};
+    bool _feature_invisible_iframe{false};
+    bool _feature_rewrite_statusbar{false};
+    bool _feature_disable_rightclick{false};
+    bool _feature_ahref_link{false};
+    bool _feature_popup_window{false};
+    bool _feature_favicon_link{false};
+    bool _feature_old_technologies{false};
+    bool _feature_missleading_link{false};
+    bool _feature_hostname_title{false};
 
     uint64_t _feature_flags{0};
     uint64_t _html_feature_flags{0};

@@ -10,8 +10,18 @@ const std::unordered_map<feature_enum::id, std::string_view> base::column_names 
 std::unordered_map<feature_enum::id, std::string_view> base::create_column_names()
 {
     std::unordered_map<feature_enum::id, std::string_view> map{
-        {feature_enum::input_tag, "input_tag"},
-        {feature_enum::src_link, "src_link"}
+        { feature_enum::input_tag, "input_tag" },
+        { feature_enum::src_link, "src_link" },
+        { feature_enum::form_handler, "form_handler" },
+        { feature_enum::invisible_iframe, "invisible_iframe" },
+        { feature_enum::rewrite_statusbar, "rewrite_statusbar" },
+        { feature_enum::disable_rightclick, "disable_rightclick" },
+        { feature_enum::ahref_link, "ahref_link" },
+        { feature_enum::popup_window, "popup_window" },
+        { feature_enum::favicon_link, "favicon_link" },
+        { feature_enum::old_technologies, "old_technologies" },
+        { feature_enum::missleading_link, "missleading_link" },
+        { feature_enum::hostname_title, "hostname_title" },
     };
     return map;
 }

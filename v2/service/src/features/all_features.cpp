@@ -50,6 +50,16 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
     // we are returning nothing because HTML features are handling in another way
     case feature_enum::id::input_tag:
     case feature_enum::id::src_link:
+    case feature_enum::id::form_handler:
+    case feature_enum::id::invisible_iframe:
+    case feature_enum::id::rewrite_statusbar:
+    case feature_enum::id::disable_rightclick:
+    case feature_enum::id::ahref_link:
+    case feature_enum::id::popup_window:
+    case feature_enum::id::favicon_link:
+    case feature_enum::id::old_technologies:
+    case feature_enum::id::missleading_link:
+    case feature_enum::id::hostname_title:
         return nullptr;
     }
     return nullptr;
