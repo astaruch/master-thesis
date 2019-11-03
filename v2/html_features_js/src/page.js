@@ -119,7 +119,7 @@ class Page {
       if (!action) {
         return
       }
-      if (suspiciousActions.includes(action)) {
+      if (suspiciousActions.includes(action.value)) {
         count++
       }
     })
