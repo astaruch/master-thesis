@@ -53,11 +53,10 @@ TEST(Length, LongHost)
 }
 
 
-TEST(Length, NoPath)
+TEST(Length, LongPath)
 {
-    feature::path_length f;
-    f.set_url("http://abielonline.com/");
-    EXPECT_GT(0.01, f.compute_value());
+    url_features_t f("http://abielonline.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    EXPECT_LT(0.8, f.compute_value_path_length());
 }
 
 TEST(Length, NoQuery)
