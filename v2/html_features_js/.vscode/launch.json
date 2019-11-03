@@ -9,7 +9,11 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/src/index.js",
-            "args": ["--url", "http://seznam.cz", "--output-lines", "--feat-disable-rightclick"],
+            "args": [
+              "--url", "https://www.w3schools.com/js/tryit.asp?filename=tryjs_prompt",
+              "--output-lines",
+              "--feat-popup-window"
+            ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ],

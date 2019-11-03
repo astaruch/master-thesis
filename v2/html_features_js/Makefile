@@ -10,7 +10,7 @@ clean:
 	rm -rf node_modules bin
 
 run:
-	node src/index.js ${HTML_FEATURES} --output-lines --url http://seznam.cz
+	node src/index.js ${HTML_FEATURES} --output-lines --url https://www.w3schools.com/js/tryit.asp?filename=tryjs_prompt
 
 input-tag:
 	node src/index.js --url http://google.cz --feat-input-tag --output-lines

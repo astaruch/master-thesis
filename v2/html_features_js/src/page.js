@@ -14,6 +14,7 @@ class Page {
       rewriteStatusbar: 'rewrite_statusbar',
       disableRightclick: 'disable_rightclick',
       ahrefLink: 'ahref_link',
+      popupWindow: 'popup_window',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -24,6 +25,7 @@ class Page {
       rewriteStatusbar: this.featureRewriteStatusbarTest.bind(this),
       disableRightclick: this.featureDisableRightclickTest.bind(this),
       ahrefLink: this.featureAhrefLinkTest.bind(this),
+      popupWindow: this.featurePopupWindowTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -209,7 +211,6 @@ class Page {
         const hrefLink = new URL(href.value)
         if (hrefLink.hostname !== this.parsed.hostname) {
           count += 1
-          console.log(hrefLink.hostname)
         }
       } catch (err) {
         if (err instanceof TypeError) {
@@ -222,6 +223,42 @@ class Page {
 
   featureAhrefLinkTest(dom) {
     return this.featureAhrefLink(dom)
+  }
+
+  featurePopupWindow(dom) {
+    let count = 0
+    const scripts = dom.window.document.querySelectorAll('script')
+    const popupStrings = ['prompt(', 'alert(', 'confirm(']
+    dom.window.document.querySelectorAll('*').forEach(node => {
+      const onclick = node.attributes.getNamedItem('onclick')
+      if (!onclick) {
+        return
+      }
+      for (let popup of popupStrings) {
+        if (onclick.value.includes(popup)) {
+          count++
+          return
+        }
+      }
+      // check each <script></script> tag that if contains popup string.
+      // we are checking only text fields without dowlnoading resources
+      scripts.forEach(script => {
+        if (script.attributes.length > 0) {
+          return
+        }
+        for (let popup of popupStrings) {
+          if (script.text.includes(popup)) {
+            count++
+            return
+          }
+        }
+      })
+    })
+    return count
+  }
+
+  featurePopupWindowTest(dom) {
+    return this.featurePopupWindow(dom)
   }
 
 }
