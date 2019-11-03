@@ -66,8 +66,7 @@ std::string training_data::create_csv_header()
 
     for (const auto id: feature_enum::url) {
         if (_feature_flags & id) {
-            auto f = feature::creator::create_feature_from_flag(id);
-            columns.push_back(f->column_name());
+            columns.push_back(std::string(feature::base::column_names.at(id)));
         }
     }
 
@@ -76,6 +75,7 @@ std::string training_data::create_csv_header()
             columns.push_back(std::string(feature::base::column_names.at(id)));
         }
     }
+
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),

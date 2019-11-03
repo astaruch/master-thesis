@@ -11,10 +11,6 @@ namespace feature {
 class spec_keywords: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "spec_keywords";
-    }
 };
 
 } // namespace feature

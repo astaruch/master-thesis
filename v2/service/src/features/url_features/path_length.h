@@ -16,10 +16,6 @@ public:
      * v = ((path length) - (path min length)) / ((path max length) - (path min length))
      */
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "path_length";
-    }
 private:
 
     size_t _min_length{1};

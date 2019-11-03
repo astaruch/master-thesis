@@ -60,6 +60,8 @@ std::unique_ptr<feature::base> feature::creator::create_feature_from_flag(featur
     case feature_enum::id::old_technologies:
     case feature_enum::id::missleading_link:
     case feature_enum::id::hostname_title:
+    // host based features
+    case feature_enum::id::redirect:
         return nullptr;
     }
     return nullptr;

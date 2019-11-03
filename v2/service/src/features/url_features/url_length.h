@@ -16,10 +16,6 @@ public:
      * v = ((url length) - (url min length)) / ((url max length) - (url min length))
      */
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "url_length";
-    }
 private:
 
     size_t _max_length{161};

@@ -40,6 +40,7 @@ enum id: uint64_t {
     spec_keywords = 0x80000,
     // 20 bits (5)
     punycode =     0x100000,
+    //// HTML FEATURES
     input_tag =    0x200000,
     src_link =     0x400000,
     form_handler = 0x800000,
@@ -55,6 +56,8 @@ enum id: uint64_t {
     missleading_link = 0x80000000,
     // 32 bits (8)
     hostname_title = 0x100000000,
+    //// HOST BASED FEATURES
+    redirect =       0x200000000,
 };
 
 static const id url[] = {
@@ -96,6 +99,10 @@ static const id html[] = {
     hostname_title,
 };
 
+static const id host[] = {
+    redirect,
+};
+
 }
 
 namespace feature {
@@ -104,7 +111,6 @@ class base {
 public:
     virtual ~base() = default;
     virtual double compute_value() = 0;
-    virtual std::string column_name() = 0;
     void set_url(const std::string& url);
     // compute normalized value that goes into [0, 1] interval
     double normalize_value(int min, int value, int max);

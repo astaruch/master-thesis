@@ -11,37 +11,21 @@ namespace feature {
 class spec_char_path: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "spec_char_path";
-    }
 };
 
 class spec_char_query: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "spec_char_query";
-    }
 };
 
 class spec_char_fragment: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "spec_char_fragment";
-    }
 };
 
 class spec_char_host: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "spec_char_host";
-    }
 };
 
 } // namespace feature

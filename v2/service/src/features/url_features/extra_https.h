@@ -14,10 +14,6 @@ public:
      * This feature is checking wether host contains extra https token
      */
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "extra_https";
-    }
 };
 
 } // namespace feature

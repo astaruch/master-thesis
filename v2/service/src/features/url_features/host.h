@@ -11,38 +11,22 @@ namespace feature {
 class gtld: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "gtld";
-    }
 };
 
 
 class www_prefix: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "www_prefix";
-    }
 };
 
 class four_numbers: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "four_numbers";
-    }
 };
 
 class punycode: public base {
 public:
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "punycode";
-    }
 };
 
 } // namespace feature

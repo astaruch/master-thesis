@@ -16,10 +16,6 @@ public:
      * v = ((fragment length) - (fragment min length)) / ((fragment max length) - (fragment min length))
      */
     double compute_value() override;
-    std::string column_name() override
-    {
-        return "fragment_length";
-    }
 private:
 
     size_t _min_length{1};
