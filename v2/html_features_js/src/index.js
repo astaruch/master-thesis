@@ -7,7 +7,8 @@ const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
 
 const main = async () => {
   const featureStrings = [
-    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'invisible-iframe', 'rewrite-statusbar'
+    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
+    'feat-disable-rightclick'
   ]
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
@@ -23,6 +24,7 @@ const main = async () => {
     .describe(featureStrings[2], 'Flag wether check <form> handlers')
     .describe(featureStrings[3], 'Flag wether check invisible <iframe> elements')
     .describe(featureStrings[4], 'Flag wether check rewriting a status bar')
+    .describe(featureStrings[5], 'Flag wether check that page has disabled right-click')
 
     if (!argv.argv.url) {
       console.error('You have to provide URL to check')
@@ -37,6 +39,7 @@ const main = async () => {
     if (argv.argv.featFormHandler) features.formHandler = 'formHandler'
     if (argv.argv.featInvisibleIframe) features.invisibleIframe = 'invisibleIframe'
     if (argv.argv.featRewriteStatusbar) features.rewriteStatusbar = 'rewriteStatusbar'
+    if (argv.argv.featDisableRightclick) features.disableRightclick = 'disableRightclick'
 
     const results = await page.performTests(features)
 

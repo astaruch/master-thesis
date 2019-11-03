@@ -12,6 +12,7 @@ class Page {
       formHandler: 'form_handler',
       invisibleIframe: 'invisible_iframe',
       rewriteStatusbar: 'rewrite_statusbar',
+      disableRightclick: 'disableRightclick',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -19,7 +20,8 @@ class Page {
       srcLink: this.featureSrcLinkTest.bind(this),
       formHandler: this.featureFormHandlerTest.bind(this),
       invisibleIframe: this.featureInvisibleIframeTest.bind(this),
-      rewriteStatusbar: this.featureRewriteStatusbarTest.bind(this)
+      rewriteStatusbar: this.featureRewriteStatusbarTest.bind(this),
+      disableRightclick: this.featureDisableRightclickTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -171,6 +173,23 @@ class Page {
   featureRewriteStatusbarTest(dom) {
     return this.featureRewriteStatusbar(dom)
   }
+
+  featureDisableRightclick(dom) {
+    const body = dom.window.document.body
+    if (!body && !body.attributes) {
+      return 1
+    }
+    const oncontextmenu = body.attributes.getNamedItem('oncontextmenu')
+    if (oncontextmenu && oncontextmenu.includes('return false')) {
+      return 1
+    }
+    return 0
+  }
+
+  featureDisableRightclickTest(dom) {
+    return this.featureDisableRightclick(dom)
+  }
+
 }
 
 module.exports = Page
