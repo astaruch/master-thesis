@@ -52,7 +52,6 @@ TEST(Length, LongHost)
     EXPECT_LT(0.6, f.compute_value_host_length());
 }
 
-
 TEST(Length, LongPath)
 {
     url_features_t f("http://abielonline.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -65,11 +64,10 @@ TEST(Length, LongQuery)
     EXPECT_LT(0.8, f.compute_value_query_length());
 }
 
-TEST(Length, NoFragment)
+TEST(Length, LongFragment)
 {
-    feature::fragment_length f;
-    f.set_url("http://abielonline.com/");
-    EXPECT_GT(0.01, f.compute_value());
+    url_features_t f("http://abielonline.com/?q#abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcaabcabcabcabcabcabcaabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc");
+    EXPECT_LT(0.8, f.compute_value_fragment_length());
 }
 
 TEST(UserInfo, HasUserInfo)
