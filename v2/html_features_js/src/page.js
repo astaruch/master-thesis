@@ -12,7 +12,7 @@ class Page {
       formHandler: 'form_handler',
       invisibleIframe: 'invisible_iframe',
       rewriteStatusbar: 'rewrite_statusbar',
-      disableRightclick: 'disableRightclick',
+      disableRightclick: 'disable_rightclick',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions

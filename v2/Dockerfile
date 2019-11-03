@@ -80,6 +80,8 @@ RUN npm install \
 
 RUN /nodejsapp/bin/htmlfeatures --help
 
+RUN npm test
+
 CMD ["bash"]
 
 ##########################################

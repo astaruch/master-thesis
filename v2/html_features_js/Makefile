@@ -17,3 +17,4 @@ input-tag:
 
 pack: build
 	pkg src/index.js --targets node12-linux-x64 --output bin/htmlfeatures
+

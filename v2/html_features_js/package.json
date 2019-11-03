@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*.test.js --exit",
     "start": "node src/index.js",
-    "lint": "eslint --ext js,ts,jsx,tsx ./src",
-    "fix-lint": "eslint --ext js,ts,jsx,tsx ./src --fix"
+    "lint": "eslint --ext js,ts,jsx,tsx ./src ./test",
+    "fix-lint": "eslint --ext js,ts,jsx,tsx ./src ./test --fix"
   },
   "engines": {
     "node": "12"
@@ -16,7 +16,8 @@
   "license": "ISC",
   "devDependencies": {
     "@strv/eslint-config-node": "^2.1.2",
-    "eslint": "^6.6.0"
+    "eslint": "^6.6.0",
+    "mocha": "^6.2.2"
   },
   "dependencies": {
     "jsdom": "^15.2.0",

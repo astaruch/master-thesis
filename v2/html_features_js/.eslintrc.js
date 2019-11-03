@@ -9,10 +9,15 @@ module.exports = {
   ],
   overrides: [{
     files: [
-      'src/**/*.js'
+      'src/**/*.js',
+      'test/**/*.js',
     ],
     rules: {
       'no-console': 'off',
+    },
+    env: {
+      mocha: true
     }
-  }]
+  }],
+
 }
