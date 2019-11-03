@@ -25,6 +25,8 @@ public:
     double compute_value_host_length(int min, int max) const;
     double compute_value_path_length() const;
     double compute_value_path_length(int min, int max) const;
+    double compute_value_query_length() const;
+    double compute_value_query_length(int min, int max) const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};

@@ -59,11 +59,10 @@ TEST(Length, LongPath)
     EXPECT_LT(0.8, f.compute_value_path_length());
 }
 
-TEST(Length, NoQuery)
+TEST(Length, LongQuery)
 {
-    feature::query_length f;
-    f.set_url("http://abielonline.com");
-    EXPECT_GT(0.01, f.compute_value());
+    url_features_t f("http://abielonline.com/?aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    EXPECT_LT(0.8, f.compute_value_query_length());
 }
 
 TEST(Length, NoFragment)
