@@ -48,6 +48,10 @@ services:
     build:
       context: .
       target: thesis-nodejs-builder
+      cache_from:
+        - astaruch/thesis-deps
+        - thesis-builder
+        - astaruch/thesis-runtime
     network_mode: bridge
 
   thesis-app:
