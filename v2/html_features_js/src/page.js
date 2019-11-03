@@ -141,9 +141,14 @@ class Page {
         return
       }
       // 0x0 dimensions
-      const height = node.attributes.getNamedItem('height')
-      const width = node.attributes.getNamedItem('width')
-      if (height && height.value === 0 && width && width.value === 0) {
+      let height = node.attributes.getNamedItem('height')
+      let width = node.attributes.getNamedItem('width')
+      if (!height || !width) {
+        return
+      }
+      height = Number(height.value)
+      width = Number(width.value)
+      if (height === 0 && width === 0) {
         count++
       }
     })
