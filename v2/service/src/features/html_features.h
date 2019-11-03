@@ -40,7 +40,6 @@ public:
     void set_flags(uint64_t flags);
 
     void set_url(std::string_view url);
-    std::vector<std::string> get_output_from_program(const char* cmd);
 private:
     std::string create_args();
 

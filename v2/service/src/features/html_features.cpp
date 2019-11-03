@@ -1,6 +1,7 @@
 #include "html_features.h"
 
 #include "feature_base.h"
+#include "../help_functions.h"
 
 #include <cstdio>
 #include <fmt/format.h>
@@ -28,25 +29,9 @@ std::tuple<std::string, std::string> html_features::split_by_space(const std::st
     return {str.substr(0, found), str.substr(found + 1)};
 }
 
-std::vector<std::string> html_features::get_output_from_program(const char* cmd)
-{
-    std::FILE* output_stream = popen(cmd, "r");
-    if (output_stream == nullptr) {
-        fmt::print(stderr, "There was an error executing command: {}\n", cmd);
-        return {};
-    }
-    char line[256];
-    std::vector<std::string> lines;
-    while (fgets(line, 256, output_stream) != nullptr) {
-        lines.push_back(std::string(line));
-    }
-    pclose(output_stream);
-    return lines;
-}
-
 std::vector<double> html_features::compute_values()
 {
-    auto lines = get_output_from_program(_cmd.c_str());
+    auto lines = help_functions::get_output_from_program(_cmd.c_str());
     std::vector<double> f_vec;
     for (const auto& line: lines) {
         auto [column, value] = split_by_space(line);
