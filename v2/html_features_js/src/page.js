@@ -13,6 +13,7 @@ class Page {
       invisibleIframe: 'invisible_iframe',
       rewriteStatusbar: 'rewrite_statusbar',
       disableRightclick: 'disable_rightclick',
+      ahrefLink: 'ahref_link',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -22,6 +23,7 @@ class Page {
       invisibleIframe: this.featureInvisibleIframeTest.bind(this),
       rewriteStatusbar: this.featureRewriteStatusbarTest.bind(this),
       disableRightclick: this.featureDisableRightclickTest.bind(this),
+      ahrefLink: this.featureAhrefLinkTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -192,6 +194,34 @@ class Page {
 
   featureDisableRightclickTest(dom) {
     return this.featureDisableRightclick(dom)
+  }
+
+  featureAhrefLink(dom) {
+    let count = 0
+    let allLinks = 0
+    dom.window.document.querySelectorAll('a').forEach(node => {
+      const href = node.attributes.getNamedItem('href')
+      if (!href) {
+        return
+      }
+      try {
+        allLinks += 1
+        const hrefLink = new URL(href.value)
+        if (hrefLink.hostname !== this.parsed.hostname) {
+          count += 1
+          console.log(hrefLink.hostname)
+        }
+      } catch (err) {
+        if (err instanceof TypeError) {
+          // href is relative URL
+        }
+      }
+    })
+    return count / allLinks
+  }
+
+  featureAhrefLinkTest(dom) {
+    return this.featureAhrefLink(dom)
   }
 
 }
