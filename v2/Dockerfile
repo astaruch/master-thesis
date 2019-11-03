@@ -69,6 +69,7 @@ CMD ["bash"]
 FROM node:12.13.0 as thesis-nodejs-builder
 
 COPY ./html_features_js/src /nodejsapp/src
+COPY ./html_features_js/test /nodejsapp/test
 COPY ./html_features_js/package.json /nodejsapp/package.json
 COPY ./html_features_js/package-lock.json /nodejsapp/package-lock.json
 
