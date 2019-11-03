@@ -377,7 +377,7 @@ class Page {
   }
 
   featureHostnameTitleTest(dom) {
-    return this.featureHostnameTitle(dom) > 0 ? 1 : 0
+    return this.featureHostnameTitle(dom)
   }
 }
 
