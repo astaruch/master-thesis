@@ -37,10 +37,10 @@ CMD  ["bash"]
 ##############################################
 FROM thesis-deps AS thesis-builder
 
-COPY ./service/src /phishsvc/src
-COPY ./service /phishsvc/test
-COPY ./service/CMakeLists.txt /phishsvc/CMakeLists.txt
-WORKDIR /phishsvc
+COPY ./service/src /project/src
+COPY ./service /project/test
+COPY ./service/CMakeLists.txt /project/CMakeLists.txt
+WORKDIR /project
 ENV CMAKE_VCPKG_TOOLCHAIN=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 RUN mkdir out \
@@ -77,7 +77,7 @@ RUN npm install \
 ##########################################
 FROM astaruch/thesis-runtime as thesis-app
 
-COPY --from=thesis-builder  /phishsvc/out/phishsvc /app/phishsvc
+COPY --from=thesis-builder  /project/out/phishsvc /app/phishsvc
 COPY --from=thesis-nodejs-builder /nodejsapp/htmlfeatures /app/htmlfeatures
 
 WORKDIR /app
@@ -87,7 +87,7 @@ CMD ["/app/phishsvc", "--help"]
 ############################################
 FROM astaruch/thesis-runtime as thesis-tests
 
-COPY --from=thesis-builder  /phishsvc/out/test/all_tests /app/all_tests
+COPY --from=thesis-builder  /project/out/test/all_tests /app/all_tests
 COPY --from=thesis-nodejs-builder /nodejsapp/htmlfeatures /app/htmlfeatures
 WORKDIR /app
 
