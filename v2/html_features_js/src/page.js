@@ -17,6 +17,7 @@ class Page {
       popupWindow: 'popup_window',
       faviconLink: 'favicon_link',
       oldTechnologies: 'old_technologies',
+      missleadingLink: 'missleading_link',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -30,6 +31,7 @@ class Page {
       popupWindow: this.featurePopupWindowTest.bind(this),
       faviconLink: this.featureFaviconLinkTest.bind(this),
       oldTechnologies: this.featureOldTechnologiesTest.bind(this),
+      missleadingLink: this.featureMissleadingLinkTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -262,7 +264,7 @@ class Page {
   }
 
   featurePopupWindowTest(dom) {
-    return this.featurePopupWindow(dom)
+    return this.featurePopupWindow(dom) > 0 ? 1 : 0
   }
 
   featureFaviconLink(dom) {
@@ -321,6 +323,42 @@ class Page {
 
   featureOldTechnologiesTest(dom) {
     return this.featureOldTechnologies(dom)
+  }
+
+  featureMissleadingLink(dom) {
+    let value = 0
+    dom.window.document.querySelectorAll('a').forEach(node => {
+      let text = node.text
+      const href = node.attributes.getNamedItem('href')
+      if (!text || !href) {
+        return
+      }
+      try {
+        // text may be anything. but if it's web (e.g. www.google.com)
+        // we need to add protocol.
+        if (!text.startsWith('http')) {
+          text = 'http://' + text
+        }
+        // we are expecting that these calls will throw
+        const displayedURL = new URL(text)
+        const actualURL = new URL(href.value)
+        // the links are pointing to different sites
+        if (displayedURL.hostname !== actualURL.hostname) {
+          value++
+          return
+        }
+      } catch (err) {
+        if (err instanceof TypeError) {
+          // the links are either relative links or the text is not URL
+          // we are not interested in them
+        }
+      }
+    })
+    return value
+  }
+
+  featureMissleadingLinkTest(dom) {
+    return this.featureMissleadingLink(dom) > 0 ? 1 : 0
   }
 }
 
