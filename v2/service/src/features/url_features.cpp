@@ -160,6 +160,11 @@ double url_features_t::compute_value_fragment_length(int min, int max) const
     return help_functions::normalize_value(min, _parsed.getFragment().length(), max);
 }
 
+double url_features_t::compute_value_user_info() const
+{
+    return _parsed.getUserInfo().empty()? 0 : 1;
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -173,7 +178,7 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::path_length: return compute_value_path_length();
     case feature_enum::query_length: return compute_value_query_length();
     case feature_enum::fragment_length: return compute_value_fragment_length();
-    case feature_enum::user_info:
+    case feature_enum::user_info: return compute_value_user_info();
     case feature_enum::domain_count:
     case feature_enum::https_used:
     case feature_enum::extra_https:

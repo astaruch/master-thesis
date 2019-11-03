@@ -72,30 +72,26 @@ TEST(Length, LongFragment)
 
 TEST(UserInfo, HasUserInfo)
 {
-    feature::user_info f;
-    f.set_url("http://postgres:password@www.pgadmin.com");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://postgres:password@www.pgadmin.com");
+    EXPECT_EQ(1., f.compute_value_user_info());
 }
 
 TEST(UserInfo, PhishingUserInfo)
 {
-    feature::user_info f;
-    f.set_url("https://support.microsoft.com@2782399.azureedge.net");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("https://support.microsoft.com@2782399.azureedge.net");
+    EXPECT_EQ(1., f.compute_value_user_info());
 }
 
 TEST(UserInfo, NoUserInfo)
 {
-    feature::user_info f;
-    f.set_url("http://google.com");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com");
+    EXPECT_EQ(0., f.compute_value_user_info());
 }
 
 TEST(UserInfo, RealURL)
 {
-    feature::user_info f;
-    f.set_url("ftp://cust-r2:Alpc2p3O@update.symantec.com/opt/content/onramp/minitri.flg");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("ftp://cust-r2:Alpc2p3O@update.symantec.com/opt/content/onramp/minitri.flg");
+    EXPECT_EQ(1., f.compute_value_user_info());
 }
 
 TEST(DomainCount, NormalURL)

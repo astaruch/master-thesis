@@ -29,6 +29,7 @@ public:
     double compute_value_query_length(int min, int max) const;
     double compute_value_fragment_length() const;
     double compute_value_fragment_length(int min, int max) const;
+    double compute_value_user_info() const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};
