@@ -16,6 +16,7 @@ class Page {
       ahrefLink: 'ahref_link',
       popupWindow: 'popup_window',
       faviconLink: 'favicon_link',
+      oldTechnologies: 'old_technologies',
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
@@ -28,6 +29,7 @@ class Page {
       ahrefLink: this.featureAhrefLinkTest.bind(this),
       popupWindow: this.featurePopupWindowTest.bind(this),
       faviconLink: this.featureFaviconLinkTest.bind(this),
+      oldTechnologies: this.featureOldTechnologiesTest.bind(this),
     }
     this.parsed = new URL(url)
   }
@@ -293,6 +295,32 @@ class Page {
 
   featureFaviconLinkTest(dom) {
     return this.featureFaviconLink(dom)
+  }
+
+  featureOldTechnologies(dom) {
+    const window = dom.window
+    const document = dom.window.document
+    if(!!window.React || !!document.querySelector('[data-reactroot], [data-reactid]')) {
+      return 0
+    }
+
+    if(!!window.angular ||
+      !!document.querySelector('.ng-binding, [ng-app], [data-ng-app], [ng-controller], [data-ng-controller], [ng-repeat], [data-ng-repeat]') ||
+      !!document.querySelector('script[src*="angular.js"], script[src*="angular.min.js"]'))
+    {
+      return 0
+    }
+
+    if(!!window.Backbone) return 0
+    if(!!window.Ember) return 0
+    if(!!window.Vue) return 0
+    if(!!window.Meteor) return 0
+
+    return 1
+  }
+
+  featureOldTechnologiesTest(dom) {
+    return this.featureOldTechnologies(dom)
   }
 }
 
