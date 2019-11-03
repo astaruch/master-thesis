@@ -1,39 +1,37 @@
 #include "gtest/gtest.h"
 #include "features/all_features.h"
+#include "features/url_features.h"
+
+
 
 TEST(HostIPAddress, NoIPAddress)
 {
-    feature::ip_address f;
-    f.set_url("http://google.com");
-    EXPECT_EQ(0., f.compute_value());
+    url_features_t f("http://google.com");
+    EXPECT_EQ(0., f.compute_value_ip_address());
 }
 
 TEST(HostIPAddress, ClassicDotForm)
 {
-    feature::ip_address f;
-    f.set_url("http://138.197.136.185/bnc/National\%20Bank\%20Online.html");
-    EXPECT_EQ(1., f.compute_value());
+    url_features_t f("http://138.197.136.185/bnc/National\%20Bank\%20Online.html");
+    EXPECT_EQ(1., f.compute_value_ip_address());
 }
 
 TEST(HostIPAddress, OctalForm)
 {
-    feature::ip_address f;
-    f.set_url("https://0254.0331.027.0356");
-    EXPECT_EQ(1., f.compute_value());
+    url_features_t f("https://0254.0331.027.0356");
+    EXPECT_EQ(1., f.compute_value_ip_address());
 }
 
 TEST(HostIPAddress, DecimalForm)
 {
-    feature::ip_address f;
-    f.set_url("https://2899908590");
-    EXPECT_EQ(1., f.compute_value());
+    url_features_t f("https://2899908590");
+    EXPECT_EQ(1., f.compute_value_ip_address());
 }
 
 TEST(HostIPAddress, HexadecimalForm)
 {
-    feature::ip_address f;
-    f.set_url("http://0x308f647/-credit-agricole-france/");
-    EXPECT_EQ(1., f.compute_value());
+    url_features_t f("http://0x308f647/-credit-agricole-france/");
+    EXPECT_EQ(1., f.compute_value_ip_address());
 }
 
 TEST(Length, ShortURL)

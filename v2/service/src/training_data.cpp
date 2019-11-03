@@ -5,6 +5,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include "features/url_features.h"
 #include "features/feature_base.h"
 #include "features/all_features.h"
 

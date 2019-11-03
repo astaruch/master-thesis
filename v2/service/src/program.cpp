@@ -117,6 +117,14 @@ void program::check_feature_option(bool feature_on, uint64_t feature_id, std::st
     }
 }
 
+void program::check_url_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    check_feature_option(feature_on, feature_id, feature_name);
+    if (feature_on) {
+        _url_feature_flags |= feature_id;
+    }
+}
+
 void program::check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
 {
     check_feature_option(feature_on, feature_id, feature_name);
@@ -139,27 +147,27 @@ void program::check_options()
 
     if (_enable_features) {
         fmt::print("Features:\n");
-        check_feature_option(_feature_ip_address, feature_enum::id::ip_address, "IP address"sv);
-        check_feature_option(_feature_url_length, feature_enum::id::url_length, "URL length"sv);
-        check_feature_option(_feature_host_length, feature_enum::id::host_length, "host length"sv);
-        check_feature_option(_feature_path_length, feature_enum::id::path_length, "path length"sv);
-        check_feature_option(_feature_query_length, feature_enum::id::query_length, "query length"sv);
-        check_feature_option(_feature_fragment_length, feature_enum::id::fragment_length, "fragment length"sv);
-        check_feature_option(_feature_user_info, feature_enum::id::user_info, "user info"sv);
-        check_feature_option(_feature_domain_count, feature_enum::id::domain_count, "domain count"sv);
-        check_feature_option(_feature_https_used, feature_enum::id::https_used, "HTTPS used"sv);
-        check_feature_option(_feature_extra_https, feature_enum::id::extra_https, "extra HTTPS"sv);
-        check_feature_option(_feature_shortening_service, feature_enum::id::shortening_service, "shortening service"sv);
-        check_feature_option(_feature_non_std_port, feature_enum::id::non_std_port, "non standard port"sv);
-        check_feature_option(_feature_spec_chars_path, feature_enum::id::spec_chars_path, "special chars path"sv);
-        check_feature_option(_feature_spec_chars_query, feature_enum::id::spec_chars_query, "special chars query"sv);
-        check_feature_option(_feature_spec_chars_fragment, feature_enum::id::spec_chars_fragment, "special chars fragment"sv);
-        check_feature_option(_feature_spec_chars_host, feature_enum::id::spec_chars_host, "special chars host"sv);
-        check_feature_option(_feature_gtld, feature_enum::id::gtld, "gTLD"sv);
-        check_feature_option(_feature_www_prefix, feature_enum::id::www_prefix, "www- prefix"sv);
-        check_feature_option(_feature_four_numbers, feature_enum::id::four_numbers, "four consecutive numbers in host"sv);
-        check_feature_option(_feature_spec_keywords, feature_enum::id::spec_keywords, "special keywords"sv);
-        check_feature_option(_feature_punycode, feature_enum::id::punycode, "punycode"sv);
+        check_url_feature_option(_feature_ip_address, feature_enum::id::ip_address, "IP address"sv);
+        check_url_feature_option(_feature_url_length, feature_enum::id::url_length, "URL length"sv);
+        check_url_feature_option(_feature_host_length, feature_enum::id::host_length, "host length"sv);
+        check_url_feature_option(_feature_path_length, feature_enum::id::path_length, "path length"sv);
+        check_url_feature_option(_feature_query_length, feature_enum::id::query_length, "query length"sv);
+        check_url_feature_option(_feature_fragment_length, feature_enum::id::fragment_length, "fragment length"sv);
+        check_url_feature_option(_feature_user_info, feature_enum::id::user_info, "user info"sv);
+        check_url_feature_option(_feature_domain_count, feature_enum::id::domain_count, "domain count"sv);
+        check_url_feature_option(_feature_https_used, feature_enum::id::https_used, "HTTPS used"sv);
+        check_url_feature_option(_feature_extra_https, feature_enum::id::extra_https, "extra HTTPS"sv);
+        check_url_feature_option(_feature_shortening_service, feature_enum::id::shortening_service, "shortening service"sv);
+        check_url_feature_option(_feature_non_std_port, feature_enum::id::non_std_port, "non standard port"sv);
+        check_url_feature_option(_feature_spec_chars_path, feature_enum::id::spec_chars_path, "special chars path"sv);
+        check_url_feature_option(_feature_spec_chars_query, feature_enum::id::spec_chars_query, "special chars query"sv);
+        check_url_feature_option(_feature_spec_chars_fragment, feature_enum::id::spec_chars_fragment, "special chars fragment"sv);
+        check_url_feature_option(_feature_spec_chars_host, feature_enum::id::spec_chars_host, "special chars host"sv);
+        check_url_feature_option(_feature_gtld, feature_enum::id::gtld, "gTLD"sv);
+        check_url_feature_option(_feature_www_prefix, feature_enum::id::www_prefix, "www- prefix"sv);
+        check_url_feature_option(_feature_four_numbers, feature_enum::id::four_numbers, "four consecutive numbers in host"sv);
+        check_url_feature_option(_feature_spec_keywords, feature_enum::id::spec_keywords, "special keywords"sv);
+        check_url_feature_option(_feature_punycode, feature_enum::id::punycode, "punycode"sv);
         // html
         check_html_feature_option(_feature_input_tag, feature_enum::id::input_tag, "<input> tag"sv);
         check_html_feature_option(_feature_src_link, feature_enum::id::src_link, "<src> links to outer world"sv);
@@ -265,12 +273,12 @@ const char* program::on_off(bool feature)
     return feature ? "ON" : "OFF";
 }
 
-uint64_t program::feature_flags()
+uint64_t program::feature_flags() const
 {
     return _feature_flags;
 }
 
-uint64_t program::html_feature_flags()
+uint64_t program::html_feature_flags() const
 {
     return _html_feature_flags;
 }

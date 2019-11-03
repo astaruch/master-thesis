@@ -32,8 +32,9 @@ public:
     bool features_enabled();
 
     /// Return flags with features
-    uint64_t feature_flags();
-    uint64_t html_feature_flags();
+    uint64_t feature_flags() const;
+    uint64_t url_feature_flags() const;
+    uint64_t html_feature_flags() const;
 
     /// HTML features options
     std::string_view node_bin();
@@ -110,6 +111,7 @@ private:
     bool _feature_hostname_title{false};
 
     uint64_t _feature_flags{0};
+    uint64_t _url_feature_flags{0};
     uint64_t _html_feature_flags{0};
 
     /// HTML features settings
@@ -127,6 +129,7 @@ private:
 
     const char* on_off(bool feature);
     void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
+    void check_url_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
     void check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
 };
 
