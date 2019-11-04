@@ -63,7 +63,7 @@ RUN apt-get update \
     && add-apt-repository ppa:ubuntu-toolchain-r/test \
     && apt-get -y install gcc-9 g++-9
 
-RUN apt-get install -y curl
+RUN apt-get install -y curl dnsutils
 
 CMD ["bash"]
 
