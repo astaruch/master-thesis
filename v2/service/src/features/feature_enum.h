@@ -57,7 +57,9 @@ enum id: uint64_t {
     google_index =   0x400000000,
     dns_a_record =    0x800000000,
     // 36 bits (9)
-    dnssec = 0x1000000000,
+    dnssec =      0x1000000000,
+    dns_created = 0x2000000000,
+    dns_updated = 0x4000000000,
 };
 
 static const id url[] = {
@@ -104,6 +106,8 @@ static const id host_based[] = {
     google_index,
     dns_a_record,
     dnssec,
+    dns_created,
+    dns_updated,
 };
 
 static const std::unordered_map<feature_enum::id, std::string_view> column_names{
@@ -147,6 +151,8 @@ static const std::unordered_map<feature_enum::id, std::string_view> column_names
     { feature_enum::google_index, "google_index" },
     { feature_enum::dns_a_record, "dns_a_record" },
     { feature_enum::dnssec, "dnssec" },
+    { feature_enum::dns_created, "dns_created" },
+    { feature_enum::dns_updated, "dns_updated" },
 };
 
 } // namespace feature_enum

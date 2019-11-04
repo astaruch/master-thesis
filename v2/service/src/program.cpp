@@ -88,6 +88,8 @@ program::program(int argc, char** argv)
         ("feat-google-index", "Check wether host of URL is indexed by Google", cxxopts::value<bool>(_feature_google_index))
         ("feat-dns-a-record", "Check wether host has DNS A record", cxxopts::value<bool>(_feature_dns_a_record))
         ("feat-dnssec", "Check wether host has DNSSEC", cxxopts::value<bool>(_feature_dnssec))
+        ("feat-dns-created", "Check when was DNS record created", cxxopts::value<bool>(_feature_dns_created))
+        ("feat-dns-updated", "Check when was DNS record updated", cxxopts::value<bool>(_feature_dns_updated))
     ;
 
     _options.add_options("Training data")
@@ -113,38 +115,6 @@ program::program(int argc, char** argv)
     } catch (const cxxopts::option_not_exists_exception& ex) {
         fmt::print(stderr, "{}\n", ex.what());
         exit(1);
-    }
-}
-
-void program::check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
-{
-    fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
-    if (feature_on) {
-        _feature_flags |= feature_id;
-    }
-}
-
-void program::check_url_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
-{
-    check_feature_option(feature_on, feature_id, feature_name);
-    if (feature_on) {
-        _url_feature_flags |= feature_id;
-    }
-}
-
-void program::check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
-{
-    check_feature_option(feature_on, feature_id, feature_name);
-    if (feature_on) {
-        _html_feature_flags |= feature_id;
-    }
-}
-
-void program::check_host_based_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
-{
-    check_feature_option(feature_on, feature_id, feature_name);
-    if (feature_on) {
-        _host_based_feature_flags |= feature_id;
     }
 }
 
@@ -201,6 +171,8 @@ void program::check_options()
         check_host_based_feature_option(_feature_google_index, feature_enum::id::google_index, "google index"sv);
         check_host_based_feature_option(_feature_dns_a_record, feature_enum::id::dns_a_record, "DNS A record"sv);
         check_host_based_feature_option(_feature_dnssec, feature_enum::id::dnssec, "DNSSEC record"sv);
+        check_host_based_feature_option(_feature_dns_created, feature_enum::id::dns_created, "DNS created"sv);
+        check_host_based_feature_option(_feature_dns_updated, feature_enum::id::dns_updated, "DNS updated"sv);
     }
 
     if (_enable_training_data) {
@@ -265,6 +237,38 @@ void program::check_options()
     // checking options for a one table manipulation
     if (!_table.empty() || _parse_urls) {
         _table_manipulation = true;
+    }
+}
+
+void program::check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
+    if (feature_on) {
+        _feature_flags |= feature_id;
+    }
+}
+
+void program::check_url_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    check_feature_option(feature_on, feature_id, feature_name);
+    if (feature_on) {
+        _url_feature_flags |= feature_id;
+    }
+}
+
+void program::check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    check_feature_option(feature_on, feature_id, feature_name);
+    if (feature_on) {
+        _html_feature_flags |= feature_id;
+    }
+}
+
+void program::check_host_based_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    check_feature_option(feature_on, feature_id, feature_name);
+    if (feature_on) {
+        _host_based_feature_flags |= feature_id;
     }
 }
 

@@ -2,6 +2,8 @@
 
 #include "../help_functions.h"
 
+#include <algorithm>
+#include <regex>
 #include <string_view>
 
 #include <fmt/format.h>
@@ -90,6 +92,55 @@ double host_based_features_t::compute_value_dnssec() const
     return output.size() > 1 ? 0 : 1;
 }
 
+std::string host_based_features_t::extract_value(const std::vector<std::string>& output,
+                                                 const std::regex& reg) const
+{
+    std::smatch match;
+    std::string created;
+    for (const auto& line: output) {
+        if(std::regex_search(line, match, reg)) {
+            created = match[2].str(); //TODO: change to last/or take as argument
+            break;
+        }
+    }
+    // if it's in dotted format then reverse order
+    if (created.find('.') != std::string::npos) {
+        created = fmt::format("{}-{}-{}", created.substr(6,4), created.substr(3,2), created.substr(0,2));
+        fmt::print("new = {}", created);
+    }
+    created.erase(remove_if(created.begin(), created.end(), ispunct), created.end());
+    return created;
+}
+
+std::string host_based_features_t::extract_dns_date(bool created) const
+{
+    auto cmd = fmt::format("whois {}", _parsed.getHost());
+    auto output = help_functions::get_output_from_program(cmd);
+    auto reg_created = R"((creat|regist)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
+    auto reg_updated = R"((chang|updat)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
+    const std::regex reg(created ? reg_created : reg_updated, std::regex::icase);
+    return extract_value(output, reg);
+}
+
+double host_based_features_t::compute_value_dns_created() const
+{
+    auto created = extract_dns_date(true);
+    if (created.empty()) {
+        // could not find basic DNS record in traditional format
+        return 1.;
+    }
+    return help_functions::normalize_date_string(created);}
+
+double host_based_features_t::compute_value_dns_updated() const
+{
+    auto created = extract_dns_date(false);
+    if (created.empty()) {
+        // could not find basic DNS record in traditional format
+        return 1.;
+    }
+    return help_functions::normalize_date_string(created);
+}
+
 double host_based_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -139,6 +190,8 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::google_index: return compute_value_google_indexed();
     case feature_enum::dns_a_record: return compute_value_dns_a_record();
     case feature_enum::dnssec: return compute_value_dnssec();
+    case feature_enum::dns_created: return compute_value_dns_created();
+    case feature_enum::dns_updated: return compute_value_dns_updated();
     }
     return 0;
 }

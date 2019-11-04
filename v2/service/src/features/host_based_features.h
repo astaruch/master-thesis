@@ -5,6 +5,7 @@
 
 #include "feature_enum.h"
 
+#include <regex>
 #include <string_view>
 #include <vector>
 
@@ -23,6 +24,9 @@ public:
     double compute_value_google_indexed() const;
     double compute_value_dns_a_record() const;
     double compute_value_dnssec() const;
+    double compute_value_dns_created() const;
+    double compute_value_dns_updated() const;
+    std::string extract_dns_date(bool created) const;
 private:
     const std::string_view _url;
     const uint64_t _flags{0};
@@ -30,6 +34,8 @@ private:
     const bool _url_is_ok{false};
 
     const std::string_view _user_agent{"user-agent: Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"};
+
+    std::string extract_value(const std::vector<std::string>& output, const std::regex& reg) const;
 };
 
 #endif // PHISHSVC_FEATURE_HOST_BASED_FEATURES_H

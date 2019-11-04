@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <string_view>
 
 class help_functions {
 public:
@@ -14,6 +15,8 @@ public:
     static double normalize_value(int min, int value, int max);
     static double normalize_value(int min, size_t value, int max);
     static double normalize_value(int min, long value, int max);
+    static double normalize_value(long min, long value, long max);
+    static double normalize_date_string(std::string_view date);
 };
 
 

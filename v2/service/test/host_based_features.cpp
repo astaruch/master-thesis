@@ -49,3 +49,59 @@ TEST(DNS, DNSSECmissing)
     host_based_features_t f("https://staruch.sk");
     EXPECT_EQ(1, f.compute_value_dnssec());
 }
+
+TEST(DNSRegex, ExtractDate1)
+{
+    host_based_features_t f("http://google.ro");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("20000717", date);
+}
+
+TEST(DNSRegex, ExtractDate2)
+{
+    host_based_features_t f("http://staruch.sk");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("20180926", date);
+}
+
+TEST(DNSRegex, ExtractDate3)
+{
+    host_based_features_t f("http://google.com");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("19970915", date);
+}
+
+TEST(DNSRegex, ExtractDate4)
+{
+    host_based_features_t f("http://google.cn");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("20030317", date);
+}
+
+TEST(DNSRegex, ExtractDate5)
+{
+    host_based_features_t f("http://youtube.jp");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("20070612", date);
+}
+
+TEST(DNSRegex, ExtractDate6)
+{
+    host_based_features_t f("http://nic.cz");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("19971030", date);
+}
+
+TEST(DNSRegex, ExtractDate7)
+{
+    host_based_features_t f("http://google.com.br");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("19990518", date);
+}
+
+TEST(DNSRegex, ExtractDate8)
+{
+    host_based_features_t f("http://i-dont-exist.com.cz");
+    auto date = f.extract_dns_date(true);
+    EXPECT_EQ("", date);
+}
