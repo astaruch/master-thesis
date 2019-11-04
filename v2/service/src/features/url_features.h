@@ -35,6 +35,7 @@ public:
     double compute_value_https_used() const;
     double compute_value_extra_https() const;
     double compute_value_shortening_service() const;
+    double compute_value_non_std_port() const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};

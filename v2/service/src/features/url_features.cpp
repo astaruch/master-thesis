@@ -200,6 +200,12 @@ double url_features_t::compute_value_shortening_service() const
     return std::regex_search(_parsed.getHost(), reg);
 }
 
+double url_features_t::compute_value_non_std_port() const
+{
+    const auto& port = _parsed.getPort();
+    return (port != 80 && port != 443) ? 1 : 0;
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -218,7 +224,7 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::https_used: return compute_value_https_used();
     case feature_enum::extra_https: return compute_value_extra_https();
     case feature_enum::shortening_service: return compute_value_shortening_service();
-    case feature_enum::non_std_port:
+    case feature_enum::non_std_port: return compute_value_non_std_port();
     case feature_enum::spec_chars_path:
     case feature_enum::spec_chars_query:
     case feature_enum::spec_chars_fragment:

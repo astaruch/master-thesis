@@ -235,44 +235,38 @@ TEST(ShorteningService, normal)
 
 TEST(NonSTDPort, Implicit80)
 {
-    feature::non_std_port f;
-    f.set_url("http://google.com/GH874$ag");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com/GH874$ag");
+    EXPECT_EQ(0, f.compute_value_non_std_port());
 }
 
 TEST(NonSTDPort, Explicit80)
 {
-    feature::non_std_port f;
-    f.set_url("http://google.com:80/GH874$ag");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com:80/GH874$ag");
+    EXPECT_EQ(0, f.compute_value_non_std_port());
 }
 
 TEST(NonSTDPort, Implicit443)
 {
-    feature::non_std_port f;
-    f.set_url("https://google.com/GH874$ag");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("https://google.com/GH874$ag");
+    EXPECT_EQ(0, f.compute_value_non_std_port());
 }
 
 TEST(NonSTDPort, Explicit443)
 {
-    feature::non_std_port f;
-    f.set_url("https://google.com:443/GH874$ag");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("https://google.com:443/GH874$ag");
+    EXPECT_EQ(0, f.compute_value_non_std_port());
 }
 
 TEST(NonSTDPort, NonSTDPort)
 {
-    feature::non_std_port f;
-    f.set_url("http://google.com:81/GH874$ag");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://google.com:81/GH874$ag");
+    EXPECT_EQ(1, f.compute_value_non_std_port());
 }
 
 TEST(NonSTDPort, NonSTDPort2)
 {
-    feature::non_std_port f;
-    f.set_url("http://google.com:22/GH874$ag");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://google.com:22/GH874$ag");
+    EXPECT_EQ(1, f.compute_value_non_std_port());
 }
 
 TEST(SpecialChars, PathZero)
