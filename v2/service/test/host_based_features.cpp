@@ -24,3 +24,15 @@ TEST(GoogleIndex, NotIndexed)
     host_based_features_t f("http://www.acceso24.banorte.com.bxi058.xyz");
     EXPECT_EQ(1, f.compute_value_google_indexed());
 }
+
+TEST(DNS, ArecordOK)
+{
+    host_based_features_t f("http://google.cz");
+    EXPECT_EQ(0, f.compute_value_dns_a_record());
+}
+
+TEST(DNS, ArecordMissing)
+{
+    host_based_features_t f("https://aenbauk.com");
+    EXPECT_EQ(1, f.compute_value_dns_a_record());
+}

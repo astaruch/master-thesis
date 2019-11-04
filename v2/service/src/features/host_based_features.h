@@ -21,6 +21,7 @@ public:
     double compute_value(feature_enum::id feature) const;
     double compute_value_redirect() const;
     double compute_value_google_indexed() const;
+    double compute_value_dns_a_record() const;
 private:
     const std::string_view _url;
     const uint64_t _flags{0};

@@ -111,6 +111,7 @@ private:
     // host based
     bool _feature_redirect{false};
     bool _feature_google_index{false};
+    bool _feature_dns_a_record{false};
 
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};
