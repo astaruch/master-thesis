@@ -12,16 +12,10 @@ public:
     /// Sets the feature flags
     void set_feature_flags(uint64_t flags);
     void set_url_feature_flags(uint64_t flags);
-    /// Sets the html feature flags
     void set_html_feature_flags(uint64_t flags);
 
-    /// Sets the source input data
     void set_input_data(std::vector<std::string> urls);
-
-    /// Sets the label for the classification
     void set_label(double value);
-
-    /// Sets the output name of the training data
     void set_output_name(std::string name);
 
     void set_node_bin(std::string_view node_bin);

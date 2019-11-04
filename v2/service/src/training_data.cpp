@@ -51,7 +51,6 @@ void training_data::set_html_script(std::string_view html_script)
 
 bool training_data::create_training_data()
 {
-
     fmt::print("-- file '{}':\n", _output_name);
     std::string csv_header = create_csv_header();
     fmt::print("{}\n", csv_header);

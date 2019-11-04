@@ -60,7 +60,8 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "bit": "cpp",
-        "binarystring": "cpp"
+        "binarystring": "cpp",
+        "ios": "cpp"
     },
     "C_Cpp.intelliSenseCacheSize": 512
 }

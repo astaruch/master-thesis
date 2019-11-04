@@ -9,7 +9,6 @@
 
 #include <Poco/URI.h>
 
-
 namespace feature_enum {
 
 enum id: uint64_t {
@@ -109,11 +108,7 @@ namespace feature {
 
 class base {
 public:
-    virtual ~base() = default;
-    virtual double compute_value() = 0;
     void set_url(const std::string& url);
-    // compute normalized value that goes into [0, 1] interval
-    double normalize_value(int min, int value, int max);
 
     static std::unordered_map<feature_enum::id, std::string_view> create_column_names();
     static const std::unordered_map<feature_enum::id, std::string_view> column_names;

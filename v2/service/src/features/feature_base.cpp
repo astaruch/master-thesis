@@ -64,11 +64,5 @@ void base::set_url(const std::string& url)
     }
 }
 
-double base::normalize_value(int min, int value, int max)
-{
-    value = std::max(min, std::min(value, max));
-    return static_cast<double>(value - min) / static_cast<double>(max - min);
-}
-
 } // namespace feature
 
