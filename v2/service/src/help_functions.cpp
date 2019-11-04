@@ -18,6 +18,12 @@ std::vector<std::string> help_functions::get_output_from_program(const char* cmd
     return lines;
 }
 
+void help_functions::print_output(const std::vector<std::string>& output)
+{
+    for (const auto& line: output) {
+        fmt::print("{}\n", line);
+    }
+}
 double help_functions::normalize_value(int min, int value, int max)
 {
     value = std::max(min, std::min(value, max));

@@ -1,5 +1,24 @@
 #include "host_based_features.h"
 
+#include "../help_functions.h"
+
+#include <string_view>
+
+#include <fmt/format.h>
+#include <Poco/Exception.h>
+
+host_based_features_t::host_based_features_t(const std::string_view url)
+try
+   : _url(url)
+   , _parsed(Poco::URI(url.begin()))
+   , _url_is_ok(true)
+{
+}
+catch (const Poco::SyntaxException& ex)
+{
+    // we didn't finish parsing an URL thus _url_is_ok is still false
+}
+
 host_based_features_t::host_based_features_t(const std::string_view url,
                                              const Poco::URI& parsed,
                                              const uint64_t flags,
@@ -35,6 +54,15 @@ std::vector<double> host_based_features_t::compute_values_vec() const
 
 double host_based_features_t::compute_value_redirect() const
 {
+    auto cmd = fmt::format("curl -s -w \"%{{http_code}}\" -o /dev/null {}", _url);
+    auto output = help_functions::get_output_from_program(cmd.c_str());
+    auto http_code_str = output.front();
+    try {
+        auto http_code = std::stoi(http_code_str); // throws invalid_exception
+        return http_code == 301 ? 1 : 0;
+    } catch (const std::invalid_argument& ex) {
+        return 0;
+    }
     return 0;
 }
 
