@@ -7,8 +7,6 @@
 
 #include <cxxopts.hpp>
 
-#include "features/feature_base.h"
-
 class program {
 public:
 

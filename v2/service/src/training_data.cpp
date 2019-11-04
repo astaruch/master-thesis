@@ -1,6 +1,7 @@
 #include "training_data.h"
 
-#include "features/feature_base.h"
+#include "features/feature_enum.h"
+#include "features/features.h"
 #include "features/url_features.h"
 #include "features/html_features.h"
 
@@ -70,13 +71,13 @@ std::string training_data::create_csv_header()
 
     for (const auto id: feature_enum::url) {
         if (_url_feature_flags & id) {
-            columns.push_back(std::string(feature::base::column_names.at(id)));
+            columns.push_back(std::string(feature_enum::column_names.at(id)));
         }
     }
 
     for (const auto id: feature_enum::html) {
         if (_html_feature_flags & id) {
-            columns.push_back(std::string(feature::base::column_names.at(id)));
+            columns.push_back(std::string(feature_enum::column_names.at(id)));
         }
     }
 

@@ -1,13 +1,10 @@
 #pragma once
 
-#ifndef PHISHSVC_BASE_FEATURE_H
-#define PHISHSVC_BASE_FEATURE_H
+#ifndef PHISHSVC_FEATURE_ENUM_H
+#define PHISHSVC_FEATURE_ENUM_H
 
-#include <string>
 #include <string_view>
 #include <unordered_map>
-
-#include <Poco/URI.h>
 
 namespace feature_enum {
 
@@ -102,23 +99,46 @@ static const id host[] = {
     redirect,
 };
 
-}
-
-namespace feature {
-
-class base {
-public:
-    void set_url(const std::string& url);
-
-    static std::unordered_map<feature_enum::id, std::string_view> create_column_names();
-    static const std::unordered_map<feature_enum::id, std::string_view> column_names;
-protected:
-    double _value;
-    std::string _url;
-    Poco::URI _url_obj;
-    bool _url_is_ok;
+static const std::unordered_map<feature_enum::id, std::string_view> column_names{
+    // URL
+    { feature_enum::ip_address, "ip_address" },
+    { feature_enum::url_length, "url_length" },
+    { feature_enum::host_length, "host_length" },
+    { feature_enum::path_length, "path_length" },
+    { feature_enum::query_length, "query_length" },
+    { feature_enum::fragment_length, "fragment_length" },
+    { feature_enum::user_info, "user_info" },
+    { feature_enum::domain_count, "domain_count" },
+    { feature_enum::https_used, "https_used" },
+    { feature_enum::extra_https, "extra_https" },
+    { feature_enum::shortening_service, "shortening_service" },
+    { feature_enum::non_std_port, "non_std_port" },
+    { feature_enum::spec_chars_path, "spec_chars_path" },
+    { feature_enum::spec_chars_query, "spec_chars_query" },
+    { feature_enum::spec_chars_fragment, "spec_chars_fragment" },
+    { feature_enum::spec_chars_host, "spec_chars_host" },
+    { feature_enum::gtld, "gtld" },
+    { feature_enum::www_prefix, "www_prefix" },
+    { feature_enum::four_numbers, "four_numbers" },
+    { feature_enum::spec_keywords, "spec_keywords" },
+    { feature_enum::punycode, "punycode" },
+    // HTML
+    { feature_enum::input_tag, "input_tag" },
+    { feature_enum::src_link, "src_link" },
+    { feature_enum::form_handler, "form_handler" },
+    { feature_enum::invisible_iframe, "invisible_iframe" },
+    { feature_enum::rewrite_statusbar, "rewrite_statusbar" },
+    { feature_enum::disable_rightclick, "disable_rightclick" },
+    { feature_enum::ahref_link, "ahref_link" },
+    { feature_enum::popup_window, "popup_window" },
+    { feature_enum::favicon_link, "favicon_link" },
+    { feature_enum::old_technologies, "old_technologies" },
+    { feature_enum::missleading_link, "missleading_link" },
+    { feature_enum::hostname_title, "hostname_title" },
+    // HOST-BASED
+    { feature_enum::redirect, "redirect" },
 };
 
-} // namespace feature
+} // namespace feature_enum
 
-#endif // PHISHSVC_BASE_FEATURE_H
+#endif // PHISHSVC_FEATURE_ENUM_H

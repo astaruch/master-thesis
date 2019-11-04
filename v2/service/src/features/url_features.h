@@ -3,7 +3,8 @@
 #ifndef PHISHSVC_FEATURE_URL_FEATURES_H
 #define PHISHSVC_FEATURE_URL_FEATURES_H
 
-#include "feature_base.h"
+#include "features.h"
+#include "feature_enum.h"
 
 #include <string>
 #include <unordered_map>

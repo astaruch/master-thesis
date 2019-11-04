@@ -1,5 +1,7 @@
 #include "program.h"
 
+#include "features/feature_enum.h"
+
 #include <filesystem>
 #include <cxxopts.hpp>
 #include <spdlog/spdlog.h>

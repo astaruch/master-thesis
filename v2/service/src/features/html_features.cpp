@@ -1,6 +1,6 @@
 #include "html_features.h"
 
-#include "feature_base.h"
+#include "features.h"
 #include "../help_functions.h"
 
 #include <cstdio>
