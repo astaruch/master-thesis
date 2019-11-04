@@ -3,9 +3,7 @@
 #include <Poco/Exception.h>
 #include <fmt/format.h>
 
-namespace feature {
-
-void base::set_url(const std::string& url)
+void features_t::set_url(const std::string& url)
 {
     _url = url;
     try {
@@ -17,6 +15,4 @@ void base::set_url(const std::string& url)
         _value = 1.0; // we say that URL is phishing if we can't parse it
     }
 }
-
-} // namespace feature
 

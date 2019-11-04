@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PHISHSVC_BASE_FEATURE_H
-#define PHISHSVC_BASE_FEATURE_H
+#ifndef PHISHSVC_FEATURES_H
+#define PHISHSVC_FEATURES_H
 
 #include <string>
 #include <string_view>
@@ -9,9 +9,7 @@
 
 #include <Poco/URI.h>
 
-namespace feature {
-
-class base {
+class features_t {
 public:
     void set_url(const std::string& url);
 protected:
@@ -21,6 +19,4 @@ protected:
     bool _url_is_ok;
 };
 
-} // namespace feature
-
-#endif // PHISHSVC_BASE_FEATURE_H
+#endif // PHISHSVC_FEATURES_H
