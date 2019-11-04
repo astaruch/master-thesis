@@ -7,8 +7,6 @@
 #include <fmt/format.h>
 
 
-namespace feature {
-
 html_features::html_features(std::string_view node_bin,
                              std::string_view html_script,
                              std::string_view url,
@@ -60,6 +58,4 @@ void html_features::set_url(std::string_view url)
 {
     _url = url;
 }
-
-} // namespace feature
 

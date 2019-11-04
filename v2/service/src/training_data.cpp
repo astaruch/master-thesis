@@ -119,7 +119,7 @@ std::vector<double> training_data::compute_feature_vector(const std::string& url
         fvec.insert(fvec.end(), url_values.begin(), url_values.end());
     }
     if (_html_feature_flags) {
-        auto html_feat = feature::html_features(_node_bin, _html_script, url, _html_feature_flags);
+        auto html_feat = html_features(_node_bin, _html_script, url, _html_feature_flags);
         // TODO: make more robust version with mapping column - value
         // we have computed values in same order like we have columns
         auto html_values = html_feat.compute_values();

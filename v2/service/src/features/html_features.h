@@ -9,8 +9,6 @@
 #include <string>
 #include <unordered_map>
 
-namespace feature {
-
 class html_features {
 public:
     html_features() = default;
@@ -51,7 +49,5 @@ private:
     uint64_t _feature_flags{0};
 
 };
-
-} // namespace feature
 
 #endif // PHISHSVC_FEATURE_HTML_FEATURES_H
