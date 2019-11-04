@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
     app.check_options();
 
     auto features_to_check = app.feature_flags();
+    auto url_features_to_check = app.url_feature_flags();
     auto html_features_to_check = app.html_feature_flags();
 
     if (app.create_training_data()) {
@@ -30,6 +31,7 @@ int main(int argc, char* argv[]) {
         std::vector<std::string> urls{url};
         training_data td;
         td.set_feature_flags(features_to_check);
+        td.set_url_feature_flags(url_features_to_check);
         td.set_html_feature_flags(html_features_to_check);
         td.set_input_data(urls);
         td.set_label(value);

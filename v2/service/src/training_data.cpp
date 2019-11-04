@@ -15,6 +15,11 @@ void training_data::set_feature_flags(uint64_t flags)
     _feature_flags = flags;
 }
 
+void training_data::set_url_feature_flags(uint64_t flags)
+{
+    _url_feature_flags = flags;
+}
+
 void training_data::set_html_feature_flags(uint64_t flags)
 {
     _html_feature_flags = flags;
@@ -66,7 +71,7 @@ std::string training_data::create_csv_header()
     std::vector<std::string> columns;
 
     for (const auto id: feature_enum::url) {
-        if (_feature_flags & id) {
+        if (_url_feature_flags & id) {
             columns.push_back(std::string(feature::base::column_names.at(id)));
         }
     }
@@ -110,14 +115,12 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 std::vector<double> training_data::compute_feature_vector(const std::string& url)
 {
     std::vector<double> fvec; // feature vector
-    for (const auto id: feature_enum::url) {
-        if (_feature_flags & id) {
-            auto f = feature::creator::create_feature_from_flag(id);
-            f->set_url(url);
-            fvec.push_back(f->compute_value());
-        }
+    if (_url_feature_flags) {
+        url_features_t url_features(url, _url_feature_flags);
+        auto url_values = url_features.compute_values_vec();
+        fvec.insert(fvec.end(), url_values.begin(), url_values.end());
     }
-    {
+    if (_html_feature_flags) {
         auto html_feat = feature::html_features(_node_bin, _html_script, url, _html_feature_flags);
         // TODO: make more robust version with mapping column - value
         // we have computed values in same order like we have columns

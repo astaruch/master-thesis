@@ -278,6 +278,10 @@ uint64_t program::feature_flags() const
     return _feature_flags;
 }
 
+uint64_t program::url_feature_flags() const
+{
+    return _url_feature_flags;
+}
 uint64_t program::html_feature_flags() const
 {
     return _html_feature_flags;

@@ -11,7 +11,7 @@ class training_data {
 public:
     /// Sets the feature flags
     void set_feature_flags(uint64_t flags);
-
+    void set_url_feature_flags(uint64_t flags);
     /// Sets the html feature flags
     void set_html_feature_flags(uint64_t flags);
 
@@ -31,8 +31,9 @@ public:
     bool create_training_data();
 private:
     /// Flags used to determine which features are enabled. See class \a feature_base
-    uint64_t _feature_flags;
-    uint64_t _html_feature_flags;
+    uint64_t _feature_flags{0};
+    uint64_t _url_feature_flags{0};
+    uint64_t _html_feature_flags{0};
 
     /// Input data that will be transformed to training data
     std::vector<std::string> _urls;

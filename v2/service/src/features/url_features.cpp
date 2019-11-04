@@ -19,11 +19,24 @@ catch (const Poco::SyntaxException& ex)
     // we didn't finish parsing an URL thus _url_is_ok is still false
 }
 
+url_features_t::url_features_t(const std::string_view url, const uint64_t flags)
+try
+   : _url(url)
+   , _flags(flags)
+   , _parsed(Poco::URI(url.begin()))
+   , _url_is_ok(true)
+{
+}
+catch (const Poco::SyntaxException& ex)
+{
+    // we didn't finish parsing an URL thus _url_is_ok is still false
+}
+
 url_features_t::url_features_t(const std::string_view url, const Poco::URI& parsed, const uint64_t flags,
         const bool url_is_ok)
     : _url(url)
-    , _parsed(parsed)
     , _flags(flags)
+    , _parsed(parsed)
     , _url_is_ok(url_is_ok)
 {
 }
