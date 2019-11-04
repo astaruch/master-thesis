@@ -421,3 +421,20 @@ TEST(Punycode, NoPunycode)
     url_features_t f("http://google.com");
     EXPECT_EQ(0, f.compute_value_punycode());
 }
+
+TEST(AllTest, ReturnVector)
+{
+    auto url = "http://google.com";
+    Poco::URI parsed(url);
+    uint64_t flags = ~0;
+    bool ok = true;
+    url_features_t f(url, parsed, flags, ok);
+
+    auto x = f.compute_values_vec();
+    std::vector<double> y{0.0,0.0204081633,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+
+    ASSERT_EQ(x.size(), y.size());
+    for (int i = 0; i < x.size(); ++i) {
+        EXPECT_FLOAT_EQ(x[i], y[i]) << "Vectors x and y differ at index " << i;
+    }
+}
