@@ -1,14 +1,13 @@
 #include "training_data.h"
 
+#include "features/feature_base.h"
+#include "features/url_features.h"
+#include "features/html_features.h"
+
 #include <algorithm>
 #include <numeric>
 
 #include <spdlog/spdlog.h>
-
-#include "features/url_features.h"
-#include "features/feature_base.h"
-#include "features/all_features.h"
-
 
 void training_data::set_feature_flags(uint64_t flags)
 {
