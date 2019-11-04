@@ -271,86 +271,74 @@ TEST(NonSTDPort, NonSTDPort2)
 
 TEST(SpecialChars, PathZero)
 {
-    feature::spec_char_path f;
-    f.set_url("http://google.com/GH874ag");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com/GH874ag");
+    EXPECT_EQ(0, f.compute_value_spec_char_path());
 }
 
 TEST(SpecialChars, PathSmall)
 {
-    feature::spec_char_path f;
-    f.set_url("http://google.com/GH87$$@#4ag");
-    EXPECT_GT(0.5, f.compute_value());
+    url_features_t f("http://google.com/GH87$$@#4ag");
+    EXPECT_GT(0.5, f.compute_value_spec_char_path());
 }
 
 TEST(SpecialChars, PathBig)
 {
-    feature::spec_char_path f;
-    f.set_url("http://google.com/GH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!874ag");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://google.com/GH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!874ag");
+    EXPECT_EQ(1, f.compute_value_spec_char_path());
 }
 
 TEST(SpecialChars, QueryZero)
 {
-    feature::spec_char_query f;
-    f.set_url("http://google.com/GH874ag?asgoihao34");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com/GH874ag?asgoihao34");
+    EXPECT_EQ(0, f.compute_value_spec_char_query());
 }
 
 TEST(SpecialChars, QuerySmall)
 {
-    feature::spec_char_query f;
-    f.set_url("http://google.com/GH874ag?asgoihao34");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com/GH874ag?asgoihao34");
+    EXPECT_EQ(0, f.compute_value_spec_char_query());
 }
 
 TEST(SpecialChars, QueryBig)
 {
-    feature::spec_char_query f;
-    f.set_url("http://google.com/GH874ag?asgoihao34!@%20%20^*^*&");
-    EXPECT_LT(0.5, f.compute_value());
+    url_features_t f("http://google.com/GH874ag?asgoihao34!@%20%20^*^*&");
+    EXPECT_LT(0.5, f.compute_value_spec_char_query());
 }
 
 TEST(SpecialChars, FragmentZero)
 {
-    feature::spec_char_fragment f;
-    f.set_url("http://google.com/GH874ag?asgoihao34#agagag");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com/GH874ag?asgoihao34#agagag");
+    EXPECT_EQ(0, f.compute_value_spec_char_fragment());
 }
 
 TEST(SpecialChars, FragmentSmall)
 {
-    feature::spec_char_fragment f;
-    f.set_url("http://google.com/GH874ag?asgoihao34#ajg*gagagaga(");
-    EXPECT_GT(0.5, f.compute_value());
+    url_features_t f("http://google.com/GH874ag?asgoihao34#ajg*gagagaga(");
+    EXPECT_GT(0.5, f.compute_value_spec_char_fragment());
 }
 
 TEST(SpecialChars, FragmentBig)
 {
-    feature::spec_char_fragment f;
-    f.set_url("http://google.com/GH874ag?asgoih#gjakgj#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://google.com/GH874ag?asgoih#gjakgj#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$#$");
+    EXPECT_EQ(1, f.compute_value_spec_char_fragment());
 }
 
 TEST(SpecialChars, HostZero)
 {
-    feature::spec_char_host f;
-    f.set_url("http://google.com/");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com/");
+    EXPECT_EQ(0, f.compute_value_spec_char_host());
 }
 
 TEST(SpecialChars, HostSmall)
 {
-    feature::spec_char_host f;
-    f.set_url("http://goo-gle.com/");
-    EXPECT_GT(0.6, f.compute_value());
+    url_features_t f("http://goo-gle.com/");
+    EXPECT_GT(0.6, f.compute_value_spec_char_host());
 }
 
 TEST(SpecialChars, HostBig)
 {
-    feature::spec_char_host f;
-    f.set_url("http://paypal-yandex-seznam-google.com");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://paypal-yandex-seznam-google.com");
+    EXPECT_EQ(1, f.compute_value_spec_char_host());
 }
 
 TEST(gTLD, com)

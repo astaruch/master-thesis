@@ -206,6 +206,56 @@ double url_features_t::compute_value_non_std_port() const
     return (port != 80 && port != 443) ? 1 : 0;
 }
 
+double url_features_t::compute_value_spec_char_host() const
+{
+    return compute_value_spec_char_host(0, 2);
+}
+
+double url_features_t::compute_value_spec_char_host(int min, int max) const
+{
+    const auto& str = _parsed.getHost();
+    auto count = std::count_if(str.begin(), str.end(), [](const char c) {
+        return c == '_' || c == '-';
+    });
+    return help_functions::normalize_value(min, count, max);
+}
+
+double url_features_t::compute_value_spec_char_path() const
+{
+    return compute_value_spec_char_path(1, 8);
+}
+
+double url_features_t::compute_value_spec_char_path(int min, int max) const
+{
+    const auto& str = _parsed.getPath();
+    auto count = std::count_if(str.begin(), str.end(), ::ispunct);
+    return help_functions::normalize_value(min, count, max);
+}
+
+double url_features_t::compute_value_spec_char_query() const
+{
+    return compute_value_spec_char_query(0, 13);
+}
+
+double url_features_t::compute_value_spec_char_query(int min, int max) const
+{
+    const auto& str = _parsed.getQuery();
+    auto count = std::count_if(str.begin(), str.end(), ::ispunct);
+    return help_functions::normalize_value(min, count, max);
+}
+
+double url_features_t::compute_value_spec_char_fragment() const
+{
+    return compute_value_spec_char_fragment(0, 5);
+}
+
+double url_features_t::compute_value_spec_char_fragment(int min, int max) const
+{
+    const auto& str = _parsed.getFragment();
+    auto count = std::count_if(str.begin(), str.end(), ::ispunct);
+    return help_functions::normalize_value(min, count, max);
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -225,10 +275,10 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::extra_https: return compute_value_extra_https();
     case feature_enum::shortening_service: return compute_value_shortening_service();
     case feature_enum::non_std_port: return compute_value_non_std_port();
-    case feature_enum::spec_chars_path:
-    case feature_enum::spec_chars_query:
-    case feature_enum::spec_chars_fragment:
-    case feature_enum::spec_chars_host:
+    case feature_enum::spec_chars_path: return compute_value_spec_char_path();
+    case feature_enum::spec_chars_query: return compute_value_spec_char_query();
+    case feature_enum::spec_chars_fragment: return compute_value_spec_char_fragment();
+    case feature_enum::spec_chars_host: return compute_value_spec_char_host();
     case feature_enum::gtld:
     case feature_enum::www_prefix:
     case feature_enum::four_numbers:

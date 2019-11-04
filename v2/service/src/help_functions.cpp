@@ -28,3 +28,8 @@ double help_functions::normalize_value(int min, size_t value, int max)
 {
     return help_functions::normalize_value(min, static_cast<int>(value), max);
 }
+
+double help_functions::normalize_value(int min, long value, int max)
+{
+    return help_functions::normalize_value(min, static_cast<int>(value), max);
+}

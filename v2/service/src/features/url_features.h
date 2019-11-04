@@ -36,6 +36,14 @@ public:
     double compute_value_extra_https() const;
     double compute_value_shortening_service() const;
     double compute_value_non_std_port() const;
+    double compute_value_spec_char_host() const;
+    double compute_value_spec_char_host(int min, int max) const;
+    double compute_value_spec_char_path() const;
+    double compute_value_spec_char_path(int min, int max) const;
+    double compute_value_spec_char_query() const;
+    double compute_value_spec_char_query(int min, int max) const;
+    double compute_value_spec_char_fragment() const;
+    double compute_value_spec_char_fragment(int min, int max) const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};
