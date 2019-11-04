@@ -83,7 +83,9 @@ program::program(int argc, char** argv)
         ("feat-old-technologies", "Check wether page is not using new technologies", cxxopts::value<bool>(_feature_old_technologies))
         ("feat-missleading-link", "Check wether <a> elements are displaying same link as they refer to", cxxopts::value<bool>(_feature_missleading_link))
         ("feat-hostname-title", "Check wether hostname is in the title", cxxopts::value<bool>(_feature_hostname_title))
+        // HOST BASED
         ("feat-redirect", "Check wether URL points to redirected site", cxxopts::value<bool>(_feature_redirect))
+        ("feat-google-index", "Check wether host of URL is indexed by Google", cxxopts::value<bool>(_feature_google_index))
     ;
 
     _options.add_options("Training data")
@@ -194,6 +196,7 @@ void program::check_options()
         check_html_feature_option(_feature_hostname_title, feature_enum::id::hostname_title, "hostname in title"sv);
         // host based
         check_host_based_feature_option(_feature_redirect, feature_enum::id::redirect, "redirect"sv);
+        check_host_based_feature_option(_feature_google_index, feature_enum::id::google_index, "google index"sv);
     }
 
     if (_enable_training_data) {

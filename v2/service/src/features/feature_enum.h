@@ -54,6 +54,7 @@ enum id: uint64_t {
     hostname_title = 0x100000000,
     //// HOST BASED FEATURES
     redirect =       0x200000000,
+    google_index =   0x400000000,
 };
 
 static const id url[] = {
@@ -97,6 +98,7 @@ static const id html[] = {
 
 static const id host_based[] = {
     redirect,
+    google_index,
 };
 
 static const std::unordered_map<feature_enum::id, std::string_view> column_names{
@@ -137,6 +139,7 @@ static const std::unordered_map<feature_enum::id, std::string_view> column_names
     { feature_enum::hostname_title, "hostname_title" },
     // HOST-BASED
     { feature_enum::redirect, "redirect" },
+    { feature_enum::google_index, "google_index" },
 };
 
 } // namespace feature_enum

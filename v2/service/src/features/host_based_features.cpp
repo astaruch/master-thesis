@@ -55,7 +55,7 @@ std::vector<double> host_based_features_t::compute_values_vec() const
 double host_based_features_t::compute_value_redirect() const
 {
     auto cmd = fmt::format("curl -s -w \"%{{http_code}}\" -o /dev/null {}", _url);
-    auto output = help_functions::get_output_from_program(cmd.c_str());
+    auto output = help_functions::get_output_from_program(cmd);
     auto http_code_str = output.front();
     try {
         auto http_code = std::stoi(http_code_str); // throws invalid_exception
@@ -64,6 +64,14 @@ double host_based_features_t::compute_value_redirect() const
         return 0;
     }
     return 0;
+}
+
+double host_based_features_t::compute_value_google_indexed() const
+{
+    auto cmd = fmt::format("curl -s 'https://www.google.com/search?hl=en&q=site%3A{}' -H '{}' --compressed | grep 'did not match any documents'",
+                           _parsed.getHost(), _user_agent);
+    auto output = help_functions::get_output_from_program(cmd);
+    return output.empty() ? 0 : 1;
 }
 
 double host_based_features_t::compute_value(feature_enum::id feature) const
@@ -112,6 +120,7 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
         return 0;
     // HOST BASED FEATURES
     case feature_enum::redirect: return compute_value_redirect();
+    case feature_enum::google_index: return compute_value_google_indexed();
     }
     return 0;
 }

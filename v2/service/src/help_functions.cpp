@@ -18,6 +18,11 @@ std::vector<std::string> help_functions::get_output_from_program(const char* cmd
     return lines;
 }
 
+std::vector<std::string> help_functions::get_output_from_program(const std::string& cmd)
+{
+    return get_output_from_program(cmd.c_str());
+}
+
 void help_functions::print_output(const std::vector<std::string>& output)
 {
     for (const auto& line: output) {

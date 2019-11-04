@@ -364,6 +364,7 @@ double url_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::hostname_title:
     // HOST BASED FEATURES IN ANOTHER FILE
     case feature_enum::redirect:
+    case feature_enum::google_index:
         return 0;
     }
     return 0;

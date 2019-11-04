@@ -110,6 +110,7 @@ private:
     bool _feature_hostname_title{false};
     // host based
     bool _feature_redirect{false};
+    bool _feature_google_index{false};
 
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};
