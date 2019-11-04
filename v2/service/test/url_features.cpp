@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
-#include "features/all_features.h"
 #include "features/url_features.h"
-
-
 
 TEST(HostIPAddress, NoIPAddress)
 {
@@ -343,98 +340,84 @@ TEST(SpecialChars, HostBig)
 
 TEST(gTLD, com)
 {
-    feature::gtld f;
-    f.set_url("http://google.com");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com");
+    EXPECT_EQ(0, f.compute_value_gtld());
 }
 
 TEST(gTLD, cz)
 {
-    feature::gtld f;
-    f.set_url("http://google.cz");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.cz");
+    EXPECT_EQ(0, f.compute_value_gtld());
 }
 
 TEST(gTLD, sk)
 {
-    feature::gtld f;
-    f.set_url("http://google.sk");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.sk");
+    EXPECT_EQ(0, f.compute_value_gtld());
 }
 
 TEST(gTLD, hu)
 {
-    feature::gtld f;
-    f.set_url("http://google.hu");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://google.hu");
+    EXPECT_EQ(1, f.compute_value_gtld());
 }
 
 TEST(WWWPrefix, NoPrefix)
 {
-    feature::www_prefix f;
-    f.set_url("http://google.hu");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.hu");
+    EXPECT_EQ(0, f.compute_value_www_prefix());
 }
 
 TEST(WWWPrefix, Prefix)
 {
-    feature::www_prefix f;
-    f.set_url("http://www-google.hu");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://www-google.hu");
+    EXPECT_EQ(1, f.compute_value_www_prefix());
 }
 
 TEST(FourNumbers, HasFourNumbers)
 {
-    feature::four_numbers f;
-    f.set_url("http://1511300s.hol.es/1000655841.html");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://1511300s.hol.es/1000655841.html");
+    EXPECT_EQ(1, f.compute_value_four_numbers());
 }
 
 TEST(FourNumbers, DoesntHave)
 {
-    feature::four_numbers f;
-    f.set_url("http://seznam.hol.es/1000655841.html");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://seznam.hol.es/1000655841.html");
+    EXPECT_EQ(0, f.compute_value_four_numbers());
 }
 
 TEST(SpecialKeywords, ZeroKeywords)
 {
-    feature::spec_keywords f;
-    f.set_url("http://www.jingau.com.tw/it/webstaticmktg2014designfontPP/SansPayPalSansBig-Bold.woff/d6c14aa74fbcfee1d1f8ed7eab33f6ca/");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://www.jingau.com.tw/it/webstaticmktg2014designfontPP/SansPayPalSansBig-Bold.woff/d6c14aa74fbcfee1d1f8ed7eab33f6ca/");
+    EXPECT_EQ(0, f.compute_value_spec_keywords());
 }
 
 TEST(SpecialKeywords, OneKeyword)
 {
-    feature::spec_keywords f;
-    f.set_url("http://roadtracksway.com/updatemailserversecurity/login.php");
-    EXPECT_EQ(0.1, f.compute_value());
+    url_features_t f("http://roadtracksway.com/updatemailserversecurity/login.php");
+    EXPECT_EQ(0.1, f.compute_value_spec_keywords());
 }
 
 TEST(SpecialKeywords, ManyKeywords)
 {
-    feature::spec_keywords f;
-    f.set_url("http://www.quartier.com.ar/easyflexa/wallate/update_accounting/assetsfontsproductsaccountmyaccountwebsc_loginaccountmyaccountwebsc_logincountry/account/myaccount/websc_login/?country.x=");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://www.quartier.com.ar/easyflexa/wallate/update_accounting/assetsfontsproductsaccountmyaccountwebsc_loginaccountmyaccountwebsc_logincountry/account/myaccount/websc_login/?country.x=");
+    EXPECT_EQ(1, f.compute_value_spec_keywords());
 }
 
 TEST(Punycode, StartswithPunycode)
 {
-    feature::punycode f;
-    f.set_url("http://xn--mytherwalliet-4o2g.com");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://xn--mytherwalliet-4o2g.com");
+    EXPECT_EQ(1, f.compute_value_punycode());
 }
 
 TEST(Punycode, ContainsPunycode)
 {
-    feature::punycode f;
-    f.set_url("http://appleid.apple.com.setup.ca-icloud.xn--q9jyb4c");
-    EXPECT_EQ(1, f.compute_value());
+    url_features_t f("http://appleid.apple.com.setup.ca-icloud.xn--q9jyb4c");
+    EXPECT_EQ(1, f.compute_value_punycode());
 }
 
 TEST(Punycode, NoPunycode)
 {
-    feature::punycode f;
-    f.set_url("http://google.com");
-    EXPECT_EQ(0, f.compute_value());
+    url_features_t f("http://google.com");
+    EXPECT_EQ(0, f.compute_value_punycode());
 }

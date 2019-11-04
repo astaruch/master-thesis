@@ -256,6 +256,47 @@ double url_features_t::compute_value_spec_char_fragment(int min, int max) const
     return help_functions::normalize_value(min, count, max);
 }
 
+double url_features_t::compute_value_gtld() const
+{
+    const std::regex reg("(.com|.org|.net|.int|.edu|.gov|.mil|.cz|.sk)$");
+    return std::regex_search(_parsed.getHost(), reg) ? 0 : 1;
+}
+
+double url_features_t::compute_value_www_prefix() const
+{
+    const std::regex reg("^(www-)");
+    return std::regex_search(_parsed.getHost(), reg) ? 1 : 0;
+}
+
+double url_features_t::compute_value_four_numbers() const
+{
+    const std::regex reg("[[:digit:]]{4}");
+    return std::regex_search(_parsed.getHost(), reg) ? 1 : 0;
+}
+
+double url_features_t::compute_value_punycode() const
+{
+    return _parsed.getHost().find("xn--") == std::string::npos ? 0 : 1;
+}
+
+double url_features_t::compute_value_spec_keywords() const
+{
+    return compute_value_spec_keywords(0, 10);
+}
+
+double url_features_t::compute_value_spec_keywords(int min, int max) const
+{
+    std::regex reg("secure|account|webscr|login|ebayisapi|signin|banking|confirm", std::regex::icase | std::regex::optimize);
+    std::smatch match;
+    int count = 0;
+    std::string url(_url);
+    while (std::regex_search(url, match, reg)) {
+        count++;
+        url = match.suffix();
+    }
+    return help_functions::normalize_value(min, count, max);
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -279,11 +320,12 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::spec_chars_query: return compute_value_spec_char_query();
     case feature_enum::spec_chars_fragment: return compute_value_spec_char_fragment();
     case feature_enum::spec_chars_host: return compute_value_spec_char_host();
-    case feature_enum::gtld:
-    case feature_enum::www_prefix:
-    case feature_enum::four_numbers:
-    case feature_enum::spec_keywords:
-    case feature_enum::punycode:
+    case feature_enum::gtld: return compute_value_gtld();
+    case feature_enum::www_prefix: return compute_value_www_prefix();
+    case feature_enum::four_numbers: return compute_value_four_numbers();
+    case feature_enum::spec_keywords: return compute_value_spec_keywords();
+    case feature_enum::punycode: return compute_value_punycode();
+    // HTML FEATURES IN ANOTHER FILE
     case feature_enum::input_tag:
     case feature_enum::src_link:
     case feature_enum::form_handler:
@@ -296,6 +338,7 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::old_technologies:
     case feature_enum::missleading_link:
     case feature_enum::hostname_title:
+    // HOST BASED FEATURES IN ANOTHER FILE
     case feature_enum::redirect:
         return 0;
     }

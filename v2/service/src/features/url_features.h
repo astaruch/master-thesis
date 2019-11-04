@@ -44,6 +44,12 @@ public:
     double compute_value_spec_char_query(int min, int max) const;
     double compute_value_spec_char_fragment() const;
     double compute_value_spec_char_fragment(int min, int max) const;
+    double compute_value_gtld() const;
+    double compute_value_www_prefix() const;
+    double compute_value_four_numbers() const;
+    double compute_value_punycode() const;
+    double compute_value_spec_keywords() const;
+    double compute_value_spec_keywords(int min, int max) const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};
