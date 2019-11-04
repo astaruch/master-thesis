@@ -366,6 +366,7 @@ double url_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::redirect:
     case feature_enum::google_index:
     case feature_enum::dns_a_record:
+    case feature_enum::dnssec:
         return 0;
     }
     return 0;

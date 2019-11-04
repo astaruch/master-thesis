@@ -87,6 +87,7 @@ program::program(int argc, char** argv)
         ("feat-redirect", "Check wether URL points to redirected site", cxxopts::value<bool>(_feature_redirect))
         ("feat-google-index", "Check wether host of URL is indexed by Google", cxxopts::value<bool>(_feature_google_index))
         ("feat-dns-a-record", "Check wether host has DNS A record", cxxopts::value<bool>(_feature_dns_a_record))
+        ("feat-dnssec", "Check wether host has DNSSEC", cxxopts::value<bool>(_feature_dnssec))
     ;
 
     _options.add_options("Training data")
@@ -199,6 +200,7 @@ void program::check_options()
         check_host_based_feature_option(_feature_redirect, feature_enum::id::redirect, "redirect"sv);
         check_host_based_feature_option(_feature_google_index, feature_enum::id::google_index, "google index"sv);
         check_host_based_feature_option(_feature_dns_a_record, feature_enum::id::dns_a_record, "DNS A record"sv);
+        check_host_based_feature_option(_feature_dnssec, feature_enum::id::dnssec, "DNSSEC record"sv);
     }
 
     if (_enable_training_data) {

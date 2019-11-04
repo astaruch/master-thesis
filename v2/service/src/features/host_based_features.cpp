@@ -81,6 +81,15 @@ double host_based_features_t::compute_value_dns_a_record() const
     return output.empty() ? 1 : 0;
 }
 
+double host_based_features_t::compute_value_dnssec() const
+{
+    auto cmd = fmt::format("dig +dnssec {}. +short", _parsed.getHost());
+    auto output = help_functions::get_output_from_program(cmd);
+    // TODO: find out better heuristic. We are now only checking that dig is
+    //       returning more than A record
+    return output.size() > 1 ? 0 : 1;
+}
+
 double host_based_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -129,6 +138,7 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::redirect: return compute_value_redirect();
     case feature_enum::google_index: return compute_value_google_indexed();
     case feature_enum::dns_a_record: return compute_value_dns_a_record();
+    case feature_enum::dnssec: return compute_value_dnssec();
     }
     return 0;
 }

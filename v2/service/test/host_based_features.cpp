@@ -36,3 +36,16 @@ TEST(DNS, ArecordMissing)
     host_based_features_t f("https://aenbauk.com");
     EXPECT_EQ(1, f.compute_value_dns_a_record());
 }
+
+
+TEST(DNS, DNSSECOK)
+{
+    host_based_features_t f("https://nic.cz");
+    EXPECT_EQ(0, f.compute_value_dnssec());
+}
+
+TEST(DNS, DNSSECmissing)
+{
+    host_based_features_t f("https://google.com");
+    EXPECT_EQ(1, f.compute_value_dnssec());
+}
