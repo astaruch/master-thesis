@@ -46,6 +46,6 @@ TEST(DNS, DNSSECOK)
 
 TEST(DNS, DNSSECmissing)
 {
-    host_based_features_t f("https://google.com");
+    host_based_features_t f("https://staruch.sk");
     EXPECT_EQ(1, f.compute_value_dnssec());
 }
