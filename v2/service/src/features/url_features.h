@@ -34,6 +34,7 @@ public:
     double compute_value_domain_count(int min, int max) const;
     double compute_value_https_used() const;
     double compute_value_extra_https() const;
+    double compute_value_shortening_service() const;
 private:
     const std::string_view _url;
     const Poco::URI _parsed{};

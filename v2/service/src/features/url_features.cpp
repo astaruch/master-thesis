@@ -194,6 +194,12 @@ double url_features_t::compute_value_extra_https() const
     return 0;
 }
 
+double url_features_t::compute_value_shortening_service() const
+{
+    const std::regex reg("(bitly.|bit.ly|tinyurl.com|goo.gl|tiny.cc|livechatinc.com|is.gd|soo.gd|clicky.me|cutt.ly)");
+    return std::regex_search(_parsed.getHost(), reg);
+}
+
 double url_features_t::compute_value(feature_enum::id feature)
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -211,7 +217,7 @@ double url_features_t::compute_value(feature_enum::id feature)
     case feature_enum::domain_count: return compute_value_domain_count();
     case feature_enum::https_used: return compute_value_https_used();
     case feature_enum::extra_https: return compute_value_extra_https();
-    case feature_enum::shortening_service:
+    case feature_enum::shortening_service: return compute_value_shortening_service();
     case feature_enum::non_std_port:
     case feature_enum::spec_chars_path:
     case feature_enum::spec_chars_query:
