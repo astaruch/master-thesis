@@ -139,22 +139,19 @@ TEST(HTTPSProtocol, HTTPSCaps)
 
 TEST(ExtraHTTPS, WWW_HTTPS)
 {
-    feature::extra_https f;
-    f.set_url("http://www.https-myetherwallet.net");
-    EXPECT_EQ(1, f.compute_value());
+   url_features_t f("http://www.https-myetherwallet.net");
+    EXPECT_EQ(1, f.compute_value_extra_https());
 }
 TEST(ExtraHTTPS, HTTPS)
 {
-    feature::extra_https f;
-    f.set_url("http://https.mail.office.kyqjsd9dii74rmzs8g3su.46k2iqngqg00afsmaieyxyh.xwp14rfgoqn3tss8wc8wtp6i7.68lyyks730bhfn2hr4cbjxoqa9i.6uh8nzkrl7h2hhz1xcsvm.z723f6ydtns2gmx49pms667d1w.nxtedn7i9dhsa8694qsxiva2b.ddssdsd.duckdns.org");
-    EXPECT_EQ(1, f.compute_value());
+   url_features_t f("http://https.mail.office.kyqjsd9dii74rmzs8g3su.46k2iqngqg00afsmaieyxyh.xwp14rfgoqn3tss8wc8wtp6i7.68lyyks730bhfn2hr4cbjxoqa9i.6uh8nzkrl7h2hhz1xcsvm.z723f6ydtns2gmx49pms667d1w.nxtedn7i9dhsa8694qsxiva2b.ddssdsd.duckdns.org");
+    EXPECT_EQ(1, f.compute_value_extra_https());
 }
 
 TEST(ExtraHTTPS, NoToken)
 {
-    feature::extra_https f;
-    f.set_url("http://google.com");
-    EXPECT_EQ(0, f.compute_value());
+   url_features_t f("http://google.com");
+    EXPECT_EQ(0, f.compute_value_extra_https());
 }
 
 TEST(ShorteningService, bitlycom)
