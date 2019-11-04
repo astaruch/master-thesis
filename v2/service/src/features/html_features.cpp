@@ -1,20 +1,17 @@
 #include "html_features.h"
 
-#include "features.h"
 #include "../help_functions.h"
 
-#include <cstdio>
 #include <fmt/format.h>
 
-
-html_features_t::html_features_t(std::string_view node_bin,
-                                 std::string_view html_script,
-                                 std::string_view url,
-                                 uint64_t flags)
-    : _node_bin(node_bin)
-    , _html_script(html_script)
-    , _url(url)
+html_features_t::html_features_t(std::string_view url,
+                                 uint64_t flags,
+                                 std::string_view node_bin,
+                                 std::string_view html_script)
+    : _url(url)
     , _feature_flags(flags)
+    , _node_bin(node_bin)
+    , _html_script(html_script)
 {
     auto args = create_args();
     _cmd = fmt::format("{} {} --output-lines --url {} {}", _node_bin, _html_script, url, args);
@@ -47,14 +44,3 @@ std::string html_features_t::create_args()
     }
     return args;
 }
-
-void html_features_t::set_flags(uint64_t flags)
-{
-    _feature_flags = flags;
-}
-
-void html_features_t::set_url(std::string_view url)
-{
-    _url = url;
-}
-

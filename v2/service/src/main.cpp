@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         td.set_url_feature_flags(url_features_to_check);
         td.set_html_feature_flags(html_features_to_check);
         td.set_input_data(urls);
-        td.set_label(value);
+        td.set_label(static_cast<int>(value));
         td.set_output_name(output_name);
         if (html_features_to_check) {
             td.set_node_bin(app.node_bin());

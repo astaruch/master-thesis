@@ -12,9 +12,8 @@
 
 class html_features_t {
 public:
-    html_features_t() = default;
-    html_features_t(std::string_view node_bin, std::string_view html_script,
-        std::string_view url, uint64_t flags);
+    html_features_t(std::string_view url, uint64_t flags, std::string_view node_bin,
+        std::string_view html_script);
 
     std::vector<double> compute_values();
 
@@ -33,20 +32,16 @@ public:
         { feature_enum::hostname_title, "--feat-hostname-title" },
     };
 
-    std::tuple<std::string, std::string> split_by_space(const std::string& str);
-
-    void set_flags(uint64_t flags);
-
-    void set_url(std::string_view url);
 private:
     std::string create_args();
+    std::tuple<std::string, std::string> split_by_space(const std::string& str);
 
+    std::string_view _url;
+    uint64_t _feature_flags{0};
     std::string_view _node_bin;
     std::string_view _html_script;
-    std::string_view _url;
 
     std::string _cmd;
-    uint64_t _feature_flags{0};
 
 };
 

@@ -30,7 +30,7 @@ void training_data::set_input_data(std::vector<std::string> urls)
     _urls.swap(urls);
 }
 
-void training_data::set_label(double label)
+void training_data::set_label(int label)
 {
     _label = label;
 }
@@ -101,7 +101,11 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 
     std::vector<std::string> lines;
     for (const auto& url: _urls) {
-        auto fvec = compute_feature_vector(url);
+        features_t features(url, _url_feature_flags, _html_feature_flags, _label);
+        if (_html_feature_flags) {
+            features.set_html_features_opts(std::string(_node_bin), std::string(_html_script));
+        }
+        auto fvec = features.compute_feature_vector();
         std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
@@ -109,24 +113,4 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
         _training_data.push_back(std::move(fvec));
     }
     return lines;
-}
-
-std::vector<double> training_data::compute_feature_vector(const std::string& url)
-{
-    std::vector<double> fvec;
-    // TODO: make more robust version with mapping column - value
-    // we have computed values in same order like we have columns
-    if (_url_feature_flags) {
-        url_features_t url_features(url, _url_feature_flags);
-        auto url_values = url_features.compute_values_vec();
-        fvec.insert(fvec.end(), url_values.begin(), url_values.end());
-    }
-    if (_html_feature_flags) {
-        html_features_t html_features(_node_bin, _html_script, url, _html_feature_flags);
-        auto html_values = html_features.compute_values();
-        fvec.insert(fvec.end(), html_values.begin(), html_values.end());
-    }
-
-    fvec.push_back(_label);
-    return fvec;
 }

@@ -15,7 +15,7 @@ public:
     void set_html_feature_flags(uint64_t flags);
 
     void set_input_data(std::vector<std::string> urls);
-    void set_label(double value);
+    void set_label(int value);
     void set_output_name(std::string name);
 
     void set_node_bin(std::string_view node_bin);
@@ -33,7 +33,7 @@ private:
     std::vector<std::string> _urls;
 
     /// Label used for classification
-    double _label;
+    int _label;
 
     /// Name of the output filename
     std::string _output_name;
@@ -49,9 +49,6 @@ private:
 
     /// Method to transform input URLs to training data containing feature vectors
     std::vector<std::string> transform_urls_to_training_data();
-
-    /// Compute feature vector for a given URL
-    std::vector<double> compute_feature_vector(const std::string& url);
 };
 
 
