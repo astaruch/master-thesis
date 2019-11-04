@@ -3,12 +3,12 @@
 #ifndef PHISHSVC_FEATURE_HTML_FEATURES_H
 #define PHISHSVC_FEATURE_HTML_FEATURES_H
 
-#include "features.h"
 #include "feature_enum.h"
 
 #include <tuple>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class html_features_t {
 public:
