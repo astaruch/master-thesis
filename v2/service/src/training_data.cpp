@@ -112,17 +112,17 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 
 std::vector<double> training_data::compute_feature_vector(const std::string& url)
 {
-    std::vector<double> fvec; // feature vector
+    std::vector<double> fvec;
+    // TODO: make more robust version with mapping column - value
+    // we have computed values in same order like we have columns
     if (_url_feature_flags) {
         url_features_t url_features(url, _url_feature_flags);
         auto url_values = url_features.compute_values_vec();
         fvec.insert(fvec.end(), url_values.begin(), url_values.end());
     }
     if (_html_feature_flags) {
-        auto html_feat = html_features(_node_bin, _html_script, url, _html_feature_flags);
-        // TODO: make more robust version with mapping column - value
-        // we have computed values in same order like we have columns
-        auto html_values = html_feat.compute_values();
+        html_features_t html_features(_node_bin, _html_script, url, _html_feature_flags);
+        auto html_values = html_features.compute_values();
         fvec.insert(fvec.end(), html_values.begin(), html_values.end());
     }
 

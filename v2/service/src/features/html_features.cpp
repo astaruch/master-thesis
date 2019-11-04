@@ -7,10 +7,10 @@
 #include <fmt/format.h>
 
 
-html_features::html_features(std::string_view node_bin,
-                             std::string_view html_script,
-                             std::string_view url,
-                             uint64_t flags)
+html_features_t::html_features_t(std::string_view node_bin,
+                                 std::string_view html_script,
+                                 std::string_view url,
+                                 uint64_t flags)
     : _node_bin(node_bin)
     , _html_script(html_script)
     , _url(url)
@@ -18,16 +18,15 @@ html_features::html_features(std::string_view node_bin,
 {
     auto args = create_args();
     _cmd = fmt::format("{} {} --output-lines --url {} {}", _node_bin, _html_script, url, args);
-    // fmt::print("{}\n", cmd);
 }
 
-std::tuple<std::string, std::string> html_features::split_by_space(const std::string& str)
+std::tuple<std::string, std::string> html_features_t::split_by_space(const std::string& str)
 {
     auto found = str.find(' ');
     return {str.substr(0, found), str.substr(found + 1)};
 }
 
-std::vector<double> html_features::compute_values()
+std::vector<double> html_features_t::compute_values()
 {
     auto lines = help_functions::get_output_from_program(_cmd.c_str());
     std::vector<double> f_vec;
@@ -38,7 +37,7 @@ std::vector<double> html_features::compute_values()
     return f_vec;
 }
 
-std::string html_features::create_args()
+std::string html_features_t::create_args()
 {
     std::string args;
     for (const auto id: feature_enum::html) {
@@ -49,12 +48,12 @@ std::string html_features::create_args()
     return args;
 }
 
-void html_features::set_flags(uint64_t flags)
+void html_features_t::set_flags(uint64_t flags)
 {
     _feature_flags = flags;
 }
 
-void html_features::set_url(std::string_view url)
+void html_features_t::set_url(std::string_view url)
 {
     _url = url;
 }

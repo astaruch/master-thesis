@@ -9,13 +9,12 @@
 #include <string>
 #include <unordered_map>
 
-class html_features {
+class html_features_t {
 public:
-    html_features() = default;
-    html_features(std::string_view node_bin, std::string_view html_script,
+    html_features_t() = default;
+    html_features_t(std::string_view node_bin, std::string_view html_script,
         std::string_view url, uint64_t flags);
 
-    virtual ~html_features() = default;
     std::vector<double> compute_values();
 
     const std::unordered_map<feature_enum::id, std::string_view> html_feature_arg{
