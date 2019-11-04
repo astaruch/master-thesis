@@ -33,6 +33,7 @@ public:
     uint64_t feature_flags() const;
     uint64_t url_feature_flags() const;
     uint64_t html_feature_flags() const;
+    uint64_t host_based_feature_flags() const;
 
     /// HTML features options
     std::string_view node_bin();
@@ -107,10 +108,13 @@ private:
     bool _feature_old_technologies{false};
     bool _feature_missleading_link{false};
     bool _feature_hostname_title{false};
+    // host based
+    bool _feature_redirect{false};
 
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};
     uint64_t _html_feature_flags{0};
+    uint64_t _host_based_feature_flags{0};
 
     /// HTML features settings
     std::string _node_bin;
@@ -129,6 +133,7 @@ private:
     void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
     void check_url_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
     void check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
+    void check_host_based_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
 };
 
 #endif // PHISHSVC_PROGRAM_H

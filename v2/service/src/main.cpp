@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
         td.set_feature_flags(features_to_check);
         td.set_url_feature_flags(url_features_to_check);
         td.set_html_feature_flags(html_features_to_check);
+        td.set_host_based_feature_flags(app.host_based_feature_flags());
         td.set_input_data(urls);
         td.set_label(static_cast<int>(value));
         td.set_output_name(output_name);

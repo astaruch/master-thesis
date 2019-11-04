@@ -8,7 +8,7 @@ build:
 	@$(MAKE) -f $(THIS_FILE) build-debug # invoke other target
 
 run: build
-	@$(MAKE) -f $(THIS_FILE) feature-all
+	@$(MAKE) -f $(THIS_FILE) all-features
 
 test: build-tests
 	@echo $@
@@ -44,7 +44,7 @@ build-debug:
 	cd Debug && \
 		make -j 4
 
-feature1: build-debug
+f1: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-url "http://google.com" \
@@ -52,7 +52,7 @@ feature1: build-debug
 		--enable-features \
 		--feat-ip-address
 
-feature-url: build-debug
+url-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-url "http://google.com" \
@@ -60,7 +60,7 @@ feature-url: build-debug
 		--enable-features \
 		${URL_FEATURES}
 
-feature-html: build-debug
+html-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-url "http://google.com" \
@@ -70,7 +70,15 @@ feature-html: build-debug
 		--node-bin ${NODE_BIN} \
 		--html-script ${HTML_FEATURES_SCRIPT}
 
-feature-all: build-debug
+host-based-features: build-debug
+	Debug/phishsvc \
+		--enable-training-data \
+		--td-url "http://google.com" \
+		--td-class-value 0 \
+		--enable-features \
+		${HOST_BASED_FEATURES}
+
+all-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-url "http://google.com" \
@@ -79,7 +87,8 @@ feature-all: build-debug
 		${URL_FEATURES} \
 		${HTML_FEATURES} \
 		--node-bin ${NODE_BIN} \
-		--html-script ${HTML_FEATURES_SCRIPT}
+		--html-script ${HTML_FEATURES_SCRIPT} \
+		${HOST_BASED_FEATURES}
 
 valgrind: build-debug
 	valgrind --tool=memcheck --leak-check=yes Debug/phishsvc \

@@ -95,7 +95,7 @@ static const id html[] = {
     hostname_title,
 };
 
-static const id host[] = {
+static const id host_based[] = {
     redirect,
 };
 

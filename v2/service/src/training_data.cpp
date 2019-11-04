@@ -25,6 +25,11 @@ void training_data::set_html_feature_flags(uint64_t flags)
     _html_feature_flags = flags;
 }
 
+void training_data::set_host_based_feature_flags(uint64_t flags)
+{
+    _host_based_feature_flags = flags;
+}
+
 void training_data::set_input_data(std::vector<std::string> urls)
 {
     _urls.swap(urls);
@@ -81,6 +86,12 @@ std::string training_data::create_csv_header()
         }
     }
 
+    for (const auto id: feature_enum::host_based) {
+        if (_host_based_feature_flags & id) {
+            columns.push_back(std::string(feature_enum::column_names.at(id)));
+        }
+    }
+
     columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
@@ -101,7 +112,8 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
 
     std::vector<std::string> lines;
     for (const auto& url: _urls) {
-        features_t features(url, _url_feature_flags, _html_feature_flags, _label);
+        features_t features(url, _url_feature_flags, _html_feature_flags,
+            _host_based_feature_flags, _label);
         if (_html_feature_flags) {
             features.set_html_features_opts(std::string(_node_bin), std::string(_html_script));
         }

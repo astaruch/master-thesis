@@ -13,6 +13,7 @@ public:
     void set_feature_flags(uint64_t flags);
     void set_url_feature_flags(uint64_t flags);
     void set_html_feature_flags(uint64_t flags);
+    void set_host_based_feature_flags(uint64_t flags);
 
     void set_input_data(std::vector<std::string> urls);
     void set_label(int value);
@@ -28,6 +29,7 @@ private:
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};
     uint64_t _html_feature_flags{0};
+    uint64_t _host_based_feature_flags{0};
 
     /// Input data that will be transformed to training data
     std::vector<std::string> _urls;

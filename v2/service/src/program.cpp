@@ -83,6 +83,7 @@ program::program(int argc, char** argv)
         ("feat-old-technologies", "Check wether page is not using new technologies", cxxopts::value<bool>(_feature_old_technologies))
         ("feat-missleading-link", "Check wether <a> elements are displaying same link as they refer to", cxxopts::value<bool>(_feature_missleading_link))
         ("feat-hostname-title", "Check wether hostname is in the title", cxxopts::value<bool>(_feature_hostname_title))
+        ("feat-redirect", "Check wether URL points to redirected site", cxxopts::value<bool>(_feature_redirect))
     ;
 
     _options.add_options("Training data")
@@ -135,6 +136,14 @@ void program::check_html_feature_option(bool feature_on, uint64_t feature_id, st
     }
 }
 
+void program::check_host_based_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
+{
+    check_feature_option(feature_on, feature_id, feature_name);
+    if (feature_on) {
+        _host_based_feature_flags |= feature_id;
+    }
+}
+
 void program::check_options()
 {
     if (_help) {
@@ -183,6 +192,8 @@ void program::check_options()
         check_html_feature_option(_feature_old_technologies, feature_enum::id::old_technologies, "old technologies"sv);
         check_html_feature_option(_feature_missleading_link, feature_enum::id::missleading_link, "missleading <a> link"sv);
         check_html_feature_option(_feature_hostname_title, feature_enum::id::hostname_title, "hostname in title"sv);
+        // host based
+        check_host_based_feature_option(_feature_redirect, feature_enum::id::redirect, "redirect"sv);
     }
 
     if (_enable_training_data) {
@@ -287,6 +298,11 @@ uint64_t program::url_feature_flags() const
 uint64_t program::html_feature_flags() const
 {
     return _html_feature_flags;
+}
+
+uint64_t program::host_based_feature_flags() const
+{
+    return _host_based_feature_flags;
 }
 
 std::string_view program::node_bin()
