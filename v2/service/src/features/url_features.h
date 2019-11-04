@@ -17,8 +17,9 @@ public:
         const bool url_is_ok);
 
     std::unordered_map<feature_enum::id, double> compute_values();
-    double compute_value(feature_enum::id feature);
-    double compute_value_ip_address();
+    std::vector<double> compute_values_vec() const;
+    double compute_value(feature_enum::id feature) const;
+    double compute_value_ip_address() const;
     double compute_value_url_length() const;
     double compute_value_url_length(int min, int max) const;
     double compute_value_host_length() const;

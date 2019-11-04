@@ -39,7 +39,18 @@ std::unordered_map<feature_enum::id, double> url_features_t::compute_values()
     return values;
 }
 
-double url_features_t::compute_value_ip_address()
+std::vector<double> url_features_t::compute_values_vec() const
+{
+    std::vector<double> values;
+    for (const auto feature: feature_enum::url) {
+        if (_flags & feature) {
+            values.push_back(compute_value(feature));
+        }
+    }
+    return values;
+}
+
+double url_features_t::compute_value_ip_address() const
 {
     /**************************
      * Explanation of the regex
@@ -297,7 +308,7 @@ double url_features_t::compute_value_spec_keywords(int min, int max) const
     return help_functions::normalize_value(min, count, max);
 }
 
-double url_features_t::compute_value(feature_enum::id feature)
+double url_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
     if (!_url_is_ok) {
