@@ -369,6 +369,16 @@ double url_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::dnssec:
     case feature_enum::dns_created:
     case feature_enum::dns_updated:
+    case feature_enum::ssl_created:
+    case feature_enum::ssl_expire:
+    case feature_enum::ssl_subject:
+    case feature_enum::hsts:
+    case feature_enum::xss_protection:
+    case feature_enum::csp:
+    case feature_enum::x_frame:
+    case feature_enum::x_content_type:
+    case feature_enum::asn:
+    case feature_enum::similar_domain:
         return 0;
     }
     return 0;

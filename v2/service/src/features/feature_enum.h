@@ -60,6 +60,19 @@ enum id: uint64_t {
     dnssec =      0x1000000000,
     dns_created = 0x2000000000,
     dns_updated = 0x4000000000,
+    ssl_created = 0x8000000000,
+    // 40 bits (10)
+    ssl_expire =     0x10000000000,
+    ssl_subject =    0x20000000000,
+    hsts =           0x40000000000,
+    xss_protection = 0x80000000000,
+    // 44 bits (11)
+    csp =            0x100000000000,
+    x_frame =        0x200000000000,
+    x_content_type = 0x400000000000,
+    asn =            0x800000000000,
+    // 48 bits (12)
+    similar_domain = 0x1000000000000,
 };
 
 static const id url[] = {
@@ -153,6 +166,16 @@ static const std::unordered_map<feature_enum::id, std::string_view> column_names
     { feature_enum::dnssec, "dnssec" },
     { feature_enum::dns_created, "dns_created" },
     { feature_enum::dns_updated, "dns_updated" },
+    { feature_enum::ssl_created, "ssl_created" },
+    { feature_enum::ssl_expire, "ssl_expire" },
+    { feature_enum::ssl_subject, "ssl_subject" },
+    { feature_enum::hsts, "hsts" },
+    { feature_enum::xss_protection, "xss_protection" },
+    { feature_enum::csp, "csp" },
+    { feature_enum::x_frame, "x_frame" },
+    { feature_enum::x_content_type, "x_content_type" },
+    { feature_enum::asn, "asn" },
+    { feature_enum::similar_domain, "similar_domain" },
 };
 
 } // namespace feature_enum

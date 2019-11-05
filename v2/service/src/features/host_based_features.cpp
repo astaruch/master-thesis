@@ -106,7 +106,6 @@ std::string host_based_features_t::extract_value(const std::vector<std::string>&
     // if it's in dotted format then reverse order
     if (created.find('.') != std::string::npos) {
         created = fmt::format("{}-{}-{}", created.substr(6,4), created.substr(3,2), created.substr(0,2));
-        fmt::print("new = {}", created);
     }
     created.erase(remove_if(created.begin(), created.end(), ispunct), created.end());
     return created;
@@ -192,6 +191,17 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::dnssec: return compute_value_dnssec();
     case feature_enum::dns_created: return compute_value_dns_created();
     case feature_enum::dns_updated: return compute_value_dns_updated();
+    case feature_enum::ssl_created:
+    case feature_enum::ssl_expire:
+    case feature_enum::ssl_subject:
+    case feature_enum::hsts:
+    case feature_enum::xss_protection:
+    case feature_enum::csp:
+    case feature_enum::x_frame:
+    case feature_enum::x_content_type:
+    case feature_enum::asn:
+    case feature_enum::similar_domain:
+        return 0;
     }
     return 0;
 }

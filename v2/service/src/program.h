@@ -59,6 +59,7 @@ private:
     bool _enable_database;
     bool _enable_table_manipulation;
     bool _enable_training_data;
+    bool _enable_intermediate_value;
 
     std::string _host;
     std::string _port;
@@ -115,6 +116,16 @@ private:
     bool _feature_dnssec{false};
     bool _feature_dns_created{false};
     bool _feature_dns_updated{false};
+    bool _feature_ssl_created{false}; // echo | openssl s_client -connect www.staruch.sk:443 2>/dev/null | openssl x509 -noout -startdate
+    bool _feature_ssl_expire{false}; // echo | openssl s_client -connect www.staruch.sk:443 2>/dev/null | openssl x509 -noout -enddate
+    bool _feature_ssl_subject{false}; // echo | openssl s_client -connect www.staruch.sk:443 2>/dev/null | openssl x509 -noout -subject
+    bool _feature_hsts{false}; //  curl -s -I -X GET https://content-security-policy.com/ | grep -i strict-transport-security
+    bool _feature_xss_protection{false}; // curl -s -I -X GET https://github.com | grep -i x-xss-protection
+    bool _feature_csp{false}; // curl -s -I -X GET https://content-security-policy.com/ | grep -i content-security-policy
+    bool _feature_x_frame{false}; // curl -s -I -X GET https://github.com | grep -i x-frame-options
+    bool _feature_x_content_type{false}; // curl -s -I -X GET https://github.com | grep -i x-content-type
+    bool _feature_asn{false}; // dig +short google.co.uk | xargs whois -v | grep -i origin
+    bool _feature_similar_domain{false}; // curl -s http://suggestqueries.google.com/complete/search?output=firefox\&q=paypel | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'
 
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};
