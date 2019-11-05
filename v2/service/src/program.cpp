@@ -90,6 +90,16 @@ program::program(int argc, char** argv)
         ("feat-dnssec", "Check wether host has DNSSEC", cxxopts::value<bool>(_feature_dnssec))
         ("feat-dns-created", "Check when was DNS record created", cxxopts::value<bool>(_feature_dns_created))
         ("feat-dns-updated", "Check when was DNS record updated", cxxopts::value<bool>(_feature_dns_updated))
+        ("feat-ssl-created", "Check start date of HTTPS cert", cxxopts::value<bool>(_feature_ssl_created))
+        ("feat-ssl-expire", "Check expiry date of HTTPS cert", cxxopts::value<bool>(_feature_ssl_expire))
+        ("feat-ssl-subject", "Check if CN from HTTPS cert matches hostname", cxxopts::value<bool>(_feature_ssl_subject))
+        ("feat-hsts", "Check if website is using HSTS", cxxopts::value<bool>(_feature_hsts))
+        ("feat-xss-protection", "Check if site has implemented XSS protection", cxxopts::value<bool>(_feature_xss_protection))
+        ("feat-csp", "Check if website has implemented content strict policies", cxxopts::value<bool>(_feature_csp))
+        ("feat-x-frame", "Check if website has implemented Clickjacking protection", cxxopts::value<bool>(_feature_x_frame))
+        ("feat-x-content-type", "Check if website has implemented MIME type nosniffing", cxxopts::value<bool>(_feature_x_content_type))
+        ("feat-asn", "Check wether site is in problematic ASN", cxxopts::value<bool>(_feature_asn))
+        ("feat-similar-domain", "Check wether site has similar domain name as another famous site", cxxopts::value<bool>(_feature_similar_domain))
     ;
 
     _options.add_options("Training data")
@@ -173,6 +183,16 @@ void program::check_options()
         check_host_based_feature_option(_feature_dnssec, feature_enum::id::dnssec, "DNSSEC record"sv);
         check_host_based_feature_option(_feature_dns_created, feature_enum::id::dns_created, "DNS created"sv);
         check_host_based_feature_option(_feature_dns_updated, feature_enum::id::dns_updated, "DNS updated"sv);
+        check_host_based_feature_option(_feature_ssl_created, feature_enum::id::ssl_created, "SSL start"sv);
+        check_host_based_feature_option(_feature_ssl_expire, feature_enum::id::ssl_expire, "SSL end"sv);
+        check_host_based_feature_option(_feature_ssl_subject, feature_enum::id::dns_updated, "SSL CN"sv);
+        check_host_based_feature_option(_feature_hsts, feature_enum::id::hsts, "HSTS"sv);
+        check_host_based_feature_option(_feature_xss_protection, feature_enum::id::xss_protection, "X-XSS-Protection"sv);
+        check_host_based_feature_option(_feature_csp, feature_enum::id::csp, "Content-Security-Policy"sv);
+        check_host_based_feature_option(_feature_x_frame, feature_enum::id::x_frame, "X-Frame-Options"sv);
+        check_host_based_feature_option(_feature_x_content_type, feature_enum::id::x_content_type, "X-Content-Type"sv);
+        check_host_based_feature_option(_feature_asn, feature_enum::id::asn, "ASN"sv);
+        check_host_based_feature_option(_feature_similar_domain, feature_enum::id::similar_domain, "similar domain"sv);
     }
 
     if (_enable_training_data) {

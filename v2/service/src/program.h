@@ -126,6 +126,7 @@ private:
     bool _feature_x_content_type{false}; // curl -s -I -X GET https://github.com | grep -i x-content-type
     bool _feature_asn{false}; // dig +short google.co.uk | xargs whois -v | grep -i origin
     bool _feature_similar_domain{false}; // curl -s http://suggestqueries.google.com/complete/search?output=firefox\&q=paypel | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'
+    // https://geekflare.com/http-header-implementation
 
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};
