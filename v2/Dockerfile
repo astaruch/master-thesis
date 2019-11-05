@@ -63,7 +63,9 @@ RUN apt-get update \
     && add-apt-repository ppa:ubuntu-toolchain-r/test \
     && apt-get -y install gcc-9 g++-9
 
-RUN apt-get install -y curl dnsutils whois
+# dnsutils => dig
+# netbase => getaddrinfo() calls inside whois are failing without netbase
+RUN apt-get install -y curl dnsutils whois netbase
 
 CMD ["bash"]
 
