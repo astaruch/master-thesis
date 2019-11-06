@@ -17,9 +17,8 @@ std::vector<std::string> help_functions::get_output_from_program(const char* cmd
     std::vector<std::string> lines;
     while (fgets(line, 256, output_stream) != nullptr) {
         auto str = std::string(line);
-        if (!str.empty() && str[str.length() - 1] == '\n') {
-            str.erase(str.length()-1);
-        }
+        if (str.back() == '\n') str.pop_back();
+        if (str.back() == '\r') str.pop_back();
         lines.push_back(std::move(str));
     }
     pclose(output_stream);

@@ -22,3 +22,16 @@ TEST(Utility, GetOutPutFromProgramEmptyLine)
     };
     EXPECT_EQ(lines, expected);
 }
+
+TEST(Utility, CheckThatEndLinesFromHeadersAreRemoved)
+{
+    std::string cmd = R"(printf 'GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: close\r\n\r\n')";
+    auto lines = help_functions::get_output_from_program(cmd.c_str());
+    std::vector<std::string> expected = {
+        "GET / HTTP/1.1",
+        "Host: www.example.com",
+        "Connection: close",
+        ""
+    };
+    EXPECT_EQ(lines, expected);
+}
