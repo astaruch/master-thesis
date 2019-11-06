@@ -141,3 +141,16 @@ TEST(Headers, HSTS_invalid_url)
     host_based_features_t f("http://goog1231231231le.com");
     EXPECT_EQ(1, f.compute_value_hsts(true));
 }
+
+TEST(Headers, XSS_OK)
+{
+    host_based_features_t f("https://github.com");
+    EXPECT_EQ(0, f.compute_value_xss_protection(true));
+}
+
+TEST(Headers, XSS_MISSING)
+{
+    host_based_features_t f("https://google.com");
+    EXPECT_EQ(1, f.compute_value_xss_protection(true));
+}
+
