@@ -43,7 +43,7 @@ host_based_features_t::host_based_features_t(const std::string_view url,
         dig_response_ = get_dig_response();
     }
     if (_flags & (feature_enum::similar_domain)) {
-        sld_ = get_sld();
+        sld_ = help_functions::get_sld(std::string(_url));
     }
 }
 
@@ -358,12 +358,6 @@ double host_based_features_t::compute_value_asn() const
     return get_asn().empty() ? 1 : 0;
 }
 
-std::string host_based_features_t::get_sld() const
-{
-    auto cmd = fmt::format("faup -f domain_without_tld {}", _parsed.getHost());
-    return help_functions::get_line_from_program_if_exists(cmd, 0);
-}
-
 std::string host_based_features_t::get_word_suggestion(std::string_view word) const
 {
     auto cmd = fmt::format("curl -s http://suggestqueries.google.com/complete/search?output=firefox\\&q={} | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'",
@@ -395,7 +389,7 @@ double host_based_features_t::compute_similar_domain() const
 
 double host_based_features_t::compute_similar_domain(bool)
 {
-    sld_ = get_sld();
+    sld_ = help_functions::get_sld(std::string(_url));
     return compute_similar_domain();
 }
 
