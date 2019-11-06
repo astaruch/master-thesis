@@ -105,3 +105,21 @@ TEST(DNSRegex, ExtractDate8)
     auto date = f.extract_dns_date(true);
     EXPECT_EQ("", date);
 }
+
+TEST(SSL, SubjectMatchHostname)
+{
+    host_based_features_t f("https://www.google.com");
+    EXPECT_EQ(0, f.compute_value_ssl_subject(true));
+}
+
+TEST(SSL, SubjectDoesntMatchHostname)
+{
+    host_based_features_t f("https://google.com");
+    EXPECT_EQ(1, f.compute_value_ssl_subject(true));
+}
+
+TEST(SSL, NoCert)
+{
+    host_based_features_t f("http://google.com");
+    EXPECT_EQ(1, f.compute_value_ssl_subject(true));
+}

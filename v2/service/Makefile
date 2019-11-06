@@ -47,10 +47,10 @@ build-debug:
 f1: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
-		--td-url "http://google.com" \
+		--td-url "https://www.google.com" \
 		--td-class-value 0 \
 		--enable-features \
-		--feat-ip-address
+		--feat-ssl-subject
 
 url-features: build-debug
 	Debug/phishsvc \

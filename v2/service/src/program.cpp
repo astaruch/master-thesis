@@ -183,9 +183,9 @@ void program::check_options()
         check_host_based_feature_option(_feature_dnssec, feature_enum::id::dnssec, "DNSSEC record"sv);
         check_host_based_feature_option(_feature_dns_created, feature_enum::id::dns_created, "DNS created"sv);
         check_host_based_feature_option(_feature_dns_updated, feature_enum::id::dns_updated, "DNS updated"sv);
-        check_host_based_feature_option(_feature_ssl_created, feature_enum::id::ssl_created, "SSL start"sv);
-        check_host_based_feature_option(_feature_ssl_expire, feature_enum::id::ssl_expire, "SSL end"sv);
-        check_host_based_feature_option(_feature_ssl_subject, feature_enum::id::dns_updated, "SSL CN"sv);
+        check_host_based_feature_option(_feature_ssl_created, feature_enum::id::ssl_created, "SSL start date"sv);
+        check_host_based_feature_option(_feature_ssl_expire, feature_enum::id::ssl_expire, "SSL expirty date"sv);
+        check_host_based_feature_option(_feature_ssl_subject, feature_enum::id::ssl_subject, "SSL subject"sv);
         check_host_based_feature_option(_feature_hsts, feature_enum::id::hsts, "HSTS"sv);
         check_host_based_feature_option(_feature_xss_protection, feature_enum::id::xss_protection, "X-XSS-Protection"sv);
         check_host_based_feature_option(_feature_csp, feature_enum::id::csp, "Content-Security-Policy"sv);

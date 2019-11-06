@@ -15,6 +15,9 @@ try
    , _parsed(Poco::URI(url.begin()))
    , _url_is_ok(true)
 {
+    if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
+        ssl_response_ = get_ssl_response();
+    }
 }
 catch (const Poco::SyntaxException& ex)
 {
@@ -30,6 +33,9 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     , _parsed(parsed)
     , _url_is_ok(url_is_ok)
 {
+    if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
+        ssl_response_ = get_ssl_response();
+    }
 }
 
 std::unordered_map<feature_enum::id, double> host_based_features_t::compute_values_map() const
@@ -92,23 +98,19 @@ double host_based_features_t::compute_value_dnssec() const
     return output.size() > 1 ? 0 : 1;
 }
 
-std::string host_based_features_t::extract_value(const std::vector<std::string>& output,
-                                                 const std::regex& reg) const
+std::string host_based_features_t::extract_value_from_output(
+    const std::vector<std::string>& output,
+    const std::regex& reg) const
 {
     std::smatch match;
-    std::string created;
+    std::string value;
     for (const auto& line: output) {
         if(std::regex_search(line, match, reg)) {
-            created = match[2].str(); //TODO: change to last/or take as argument
+            value = match[2].str(); //TODO: change to last/or take as argument
             break;
         }
     }
-    // if it's in dotted format then reverse order
-    if (created.find('.') != std::string::npos) {
-        created = fmt::format("{}-{}-{}", created.substr(6,4), created.substr(3,2), created.substr(0,2));
-    }
-    created.erase(remove_if(created.begin(), created.end(), ispunct), created.end());
-    return created;
+    return value;
 }
 
 std::string host_based_features_t::extract_dns_date(bool created) const
@@ -118,7 +120,12 @@ std::string host_based_features_t::extract_dns_date(bool created) const
     auto reg_created = R"((creat|regist)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
     auto reg_updated = R"((chang|updat)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
     const std::regex reg(created ? reg_created : reg_updated, std::regex::icase);
-    return extract_value(output, reg);
+    auto value = extract_value_from_output(output, reg);
+        if (value.find('.') != std::string::npos) {
+        value = fmt::format("{}-{}-{}", value.substr(6,4), value.substr(3,2), value.substr(0,2));
+    }
+    value.erase(remove_if(value.begin(), value.end(), ispunct), value.end());
+    return value;
 }
 
 double host_based_features_t::compute_value_dns_created() const
@@ -138,6 +145,39 @@ double host_based_features_t::compute_value_dns_updated() const
         return 1.;
     }
     return help_functions::normalize_date_string(created);
+}
+
+std::vector<std::string> host_based_features_t::get_ssl_response() const
+{
+    auto cmd = fmt::format("echo | timeout 2 openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
+                           _parsed.getHost(), _parsed.getPort());
+    return help_functions::get_output_from_program(cmd);
+}
+
+void host_based_features_t::fill_ssl_response()
+{
+    if (ssl_response_.empty()) {
+        ssl_response_ = get_ssl_response();
+    }
+}
+
+std::string host_based_features_t::get_ssl_subject() const
+{
+    const std::regex reg("subject=.*(CN = )(.*$| )", std::regex::icase);
+    auto value = extract_value_from_output(ssl_response_, reg);
+    fmt::print(value);
+    return value;
+}
+
+double host_based_features_t::compute_value_ssl_subject(bool)
+{
+    fill_ssl_response();
+    return compute_value_ssl_subject();
+}
+
+double host_based_features_t::compute_value_ssl_subject() const
+{
+    return get_ssl_subject() == _parsed.getHost() ? 0 : 1;
 }
 
 double host_based_features_t::compute_value(feature_enum::id feature) const
@@ -193,7 +233,7 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::dns_updated: return compute_value_dns_updated();
     case feature_enum::ssl_created:
     case feature_enum::ssl_expire:
-    case feature_enum::ssl_subject:
+    case feature_enum::ssl_subject: return compute_value_ssl_subject();
     case feature_enum::hsts:
     case feature_enum::xss_protection:
     case feature_enum::csp:
