@@ -16,7 +16,11 @@ std::vector<std::string> help_functions::get_output_from_program(const char* cmd
     char line[256];
     std::vector<std::string> lines;
     while (fgets(line, 256, output_stream) != nullptr) {
-        lines.push_back(std::string(line));
+        auto str = std::string(line);
+        if (!str.empty() && str[str.length() - 1] == '\n') {
+            str.erase(str.length()-1);
+        }
+        lines.push_back(std::move(str));
     }
     pclose(output_stream);
     return lines;
