@@ -121,6 +121,16 @@ static const id host_based[] = {
     dnssec,
     dns_created,
     dns_updated,
+    ssl_created,
+    ssl_expire,
+    ssl_subject,
+    hsts,
+    xss_protection,
+    csp,
+    x_frame,
+    x_content_type,
+    asn,
+    similar_domain,
 };
 
 static const std::unordered_map<feature_enum::id, std::string_view> column_names{
