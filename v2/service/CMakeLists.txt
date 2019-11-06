@@ -53,14 +53,6 @@ else()
   message(FATAL_ERROR "Can't find edlib library")
 endif()
 
-### faup (url parser) - https://github.com/stricaud/faup/tree/v1.5=======================##
-find_library(LIBFAUP faup_static)
-if(LIBFAUP)
-  message(STATUS "Found faup: ${LIBFAUP}")
-else()
-  message(FATAL_ERROR "Can't find faup library")
-endif()
-
 ## ======================================================================================##
 ## Subdirectories and source files
 ## ======================================================================================##
@@ -90,7 +82,6 @@ set(ALL_LIBRARIES
   fmt::fmt
   fmt::fmt-header-only
   ${LIBEDLIB}
-  ${LIBFAUP}
 )
 
 ## ======================================================================================##

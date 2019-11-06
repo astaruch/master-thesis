@@ -76,6 +76,7 @@ private:
     void fill_http_resp_headers();
     std::vector<std::string> get_dig_response() const;
     void fill_dig_response();
+    std::string get_sld() const;
     std::string get_word_suggestion(std::string_view word) const;
 
 };

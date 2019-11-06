@@ -35,21 +35,3 @@ TEST(Utility, CheckThatEndLinesFromHeadersAreRemoved)
     };
     EXPECT_EQ(lines, expected);
 }
-
-TEST(HelpFunctionURL, GetSLD1)
-{
-    auto sld = help_functions::get_sld("http://some.weird.domain.paypel.com");
-    EXPECT_EQ(sld, "paypel");
-}
-
-TEST(HelpFunctionURL, GetSLD2)
-{
-    auto sld = help_functions::get_sld("http://aiohsgoiashgoiashgoiahgoihaigo.com.br");
-    EXPECT_EQ(sld, "aiohsgoiashgoiashgoiahgoihaigo");
-}
-
-TEST(HelpFunctionURL, GetSLD3)
-{
-    auto sld = help_functions::get_sld("http://google.cz");
-    EXPECT_EQ(sld, "google");
-}

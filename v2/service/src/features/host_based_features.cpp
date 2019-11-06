@@ -43,7 +43,7 @@ host_based_features_t::host_based_features_t(const std::string_view url,
         dig_response_ = get_dig_response();
     }
     if (_flags & (feature_enum::similar_domain)) {
-        sld_ = help_functions::get_sld(std::string(_url));
+        sld_ = get_sld();
     }
 }
 
@@ -387,9 +387,15 @@ double host_based_features_t::compute_similar_domain() const
     return 1. / static_cast<double>(distance);
 }
 
+std::string host_based_features_t::get_sld() const
+{
+    auto cmd = fmt::format("faup -f domain_without_tld {}", _parsed.getHost());
+    return help_functions::get_line_from_program_if_exists(cmd, 0);
+}
+
 double host_based_features_t::compute_similar_domain(bool)
 {
-    sld_ = help_functions::get_sld(std::string(_url));
+    sld_ = get_sld();
     return compute_similar_domain();
 }
 
