@@ -30,7 +30,7 @@ void training_data::set_output(std::FILE* file)
 
 void training_data::set_input_data(std::vector<std::string> urls)
 {
-    _urls.swap(urls);
+    _urls = urls;
 }
 
 void training_data::set_label(int label)
@@ -51,15 +51,10 @@ void training_data::set_html_script(std::string_view html_script)
 bool training_data::create_training_data()
 {
 
-    if (verbose_) fmt::print("-- file '{}':\n");
     std::string csv_header = create_csv_header();
     fmt::print(file_, "{}\n", csv_header);
 
-    std::vector<std::string> lines = transform_urls_to_training_data();
-    for (const std::string& line: lines) {
-        fmt::print(file_, "{}\n", line);
-    }
-    if (verbose_) fmt::print("--\n");
+    transform_urls_to_training_data();
 
     return true;
 }
@@ -95,7 +90,7 @@ std::string training_data::create_csv_header()
     );
 }
 
-std::vector<std::string> training_data::transform_urls_to_training_data()
+void training_data::transform_urls_to_training_data()
 {
     // takes vector of doubles and transform it to the string separated by comma
     // input: [0., 1., 0.5]
@@ -104,8 +99,8 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
         return std::move(a) + "," + fmt::format("{}", b);
     };
 
-    std::vector<std::string> lines;
     for (const auto& url: _urls) {
+        if (verbose_) fmt::print(file_, "-> Checking {}\n", url);
         features_t features(url, _url_feature_flags, _html_feature_flags,
             _host_based_feature_flags, _label);
         if (_html_feature_flags) {
@@ -115,8 +110,6 @@ std::vector<std::string> training_data::transform_urls_to_training_data()
         std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
-        lines.push_back(line);
-        _training_data.push_back(std::move(fvec));
+        fmt::print(file_, "{}\n", line);
     }
-    return lines;
 }

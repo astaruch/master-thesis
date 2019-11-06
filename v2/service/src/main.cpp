@@ -30,15 +30,30 @@ int main(int argc, char* argv[]) {
     }
 
     if (app.create_training_data()) {
+        std::vector<std::string> urls;
+
+        if (!app._training_data_url.empty()) {
+            urls.push_back(app._training_data_url);
+            urls.push_back(app._training_data_url);
+        } else if (app.training_data_stdin) {
+            for (std::string url; std::getline(std::cin, url);) {
+                urls.push_back(std::move(url));
+            }
+        }
+
+        if (urls.empty()) {
+            fmt::print(stderr, "No input URLs!\n");
+            exit(1);
+        }
+
         auto url = app._training_data_url;
 
-        std::vector<std::string> urls{url};
         training_data td(app.verbose);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
                      app.html_feature_flags(),
                      app.host_based_feature_flags());
-        td.set_input_data(urls);
+        td.set_input_data(std::move(urls));
         td.set_label(static_cast<int>(app._training_data_class_value));
 
 

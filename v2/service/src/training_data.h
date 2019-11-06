@@ -41,14 +41,11 @@ private:
     std::string_view _node_bin;
     std::string_view _html_script;
 
-    /// Training data containing feature
-    std::vector<std::vector<double>> _training_data;
-
     /// Method to create csv header delimated by comma
     std::string create_csv_header();
 
     /// Method to transform input URLs to training data containing feature vectors
-    std::vector<std::string> transform_urls_to_training_data();
+    void transform_urls_to_training_data();
 };
 
 

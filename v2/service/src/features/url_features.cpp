@@ -171,7 +171,7 @@ double url_features_t::compute_value_query_length() const
 
 double url_features_t::compute_value_query_length(int min, int max) const
 {
-    return help_functions::normalize_value(min, _parsed.getQuery().length(), max);
+    return help_functions::normalize_value(min, _parsed.getRawQuery().length(), max);
 }
 
 double url_features_t::compute_value_fragment_length() const
@@ -263,7 +263,7 @@ double url_features_t::compute_value_spec_char_query() const
 
 double url_features_t::compute_value_spec_char_query(int min, int max) const
 {
-    const auto& str = _parsed.getQuery();
+    const auto& str = _parsed.getRawQuery();
     auto count = std::count_if(str.begin(), str.end(), ::ispunct);
     return help_functions::normalize_value(min, count, max);
 }

@@ -55,7 +55,8 @@ f1: build-debug
 url-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
-		--td-url "http://google.com" \
+		--td-stdin \
+		--verbose \
 		--td-class-value 0 \
 		--enable-features \
 		${URL_FEATURES}
@@ -63,7 +64,8 @@ url-features: build-debug
 html-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
-		--td-url "http://google.com" \
+		--td-stdin \
+		--verbose \
 		--td-class-value 0 \
 		--enable-features \
 		${HTML_FEATURES} \
@@ -73,7 +75,8 @@ html-features: build-debug
 host-based-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
-		--td-url "http://google.com" \
+		--verbose \
+		--td-stdin \
 		--td-class-value 0 \
 		--enable-features \
 		${HOST_BASED_FEATURES}
@@ -81,7 +84,8 @@ host-based-features: build-debug
 all-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
-		--td-url "http://google.com" \
+		--td-stdin \
+		--verbose \
 		--td-class-value 0 \
 		--enable-features \
 		${URL_FEATURES} \

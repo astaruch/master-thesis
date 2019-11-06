@@ -47,14 +47,14 @@ public:
 
     /// Training data
     std::string _training_data_url{};
-    bool _training_data_stdin{false};
+    bool training_data_stdin{false};
     std::string _training_data_input_file{};
     std::string _training_data_output_name{};
     bool _training_data_output_stdout{false};
     double _training_data_class_value{0};
     bool _missing_training_data_class_value;
 
-    // General
+    // General options
     bool help_{false};
     bool version_{false};
     bool verbose{false};

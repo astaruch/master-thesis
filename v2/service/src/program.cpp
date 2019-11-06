@@ -107,7 +107,7 @@ program::program(int argc, char** argv)
         ("td-url", "Enter one escaped URL as parameter",
             cxxopts::value<std::string>(_training_data_url))
         ("td-stdin", "Flag that we are using standard input as source",
-            cxxopts::value<bool>(_training_data_stdin))
+            cxxopts::value<bool>(training_data_stdin))
         ("td-input-file", "Path containing escaped URLs delimitaded by a new line",
             cxxopts::value<std::string>(_training_data_input_file))
         ("td-output-name", "Desired name of the output data.",
@@ -196,13 +196,18 @@ void program::check_options()
     if (_training_data_output_name.empty()) _training_data_output_stdout = true;
 
     if (_enable_training_data) {
-        if (_training_data_url.empty() && !_training_data_stdin && _training_data_input_file.empty()) {
-            fmt::print(stderr, "You have to provide one source for a data (e.g. --tld-url <URL>)\n");
+        if (_training_data_url.empty() && !training_data_stdin && _training_data_input_file.empty()) {
+            fmt::print(stderr, "You have to provide one source for a data (e.g. --td-url <URL>)\n");
             exit(1);
         }
 
-        if (_training_data_input_file.size() > 0 || _training_data_stdin) {
+        if (_training_data_input_file.size() > 0) {
             fmt::print(stderr, "Not implemented yet\n");
+            exit(1);
+        }
+
+        if (!_training_data_url.empty() && training_data_stdin) {
+            fmt::print(stderr, "Please choose only one type of input!\n");
             exit(1);
         }
 
