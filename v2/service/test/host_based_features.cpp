@@ -195,3 +195,11 @@ TEST(Headers, X_CONTENT_TYPE_OPTS_MISSING)
     host_based_features_t f("https://paypal.com");
     EXPECT_EQ(1, f.compute_value_x_content_type(true));
 }
+
+TEST(Host, ASN)
+{
+    host_based_features_t f("https://google.com");
+    EXPECT_EQ(0, f.compute_value_asn(true));
+    EXPECT_EQ("AS15169", f.get_asn());
+}
+

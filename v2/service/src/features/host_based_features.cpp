@@ -38,7 +38,7 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     {
         http_resp_headers_ = get_http_resp_headers();
     }
-    if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec)) {
+    if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
         dig_response_ = get_dig_response();
     }
 }
@@ -328,6 +328,31 @@ double host_based_features_t::compute_value_x_content_type() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
+double host_based_features_t::compute_value_asn(bool)
+{
+    fill_dig_response();
+    return compute_value_asn();
+}
+
+std::string host_based_features_t::get_asn() const
+{
+    // we don't have hostname -> IP address thus DNS record doesn't exist
+    if (dig_response_.empty()) {
+        return {};
+    }
+    // 1st line of dig is IP address for a hostname
+    auto cmd = fmt::format("whois --verbose {} | grep -i origin", dig_response_[0]);
+    auto output = help_functions::get_output_from_program(cmd);
+    std::regex reg("(origin).* ([[:alnum:]]*)", std::regex::icase);
+    return extract_value_from_output(output, reg);
+}
+
+double host_based_features_t::compute_value_asn() const
+{
+    // TODO: change to some meaningfull value after performing statistics
+    return get_asn().empty() ? 1 : 0;
+}
+
 double host_based_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -387,7 +412,7 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::csp: return compute_value_csp();
     case feature_enum::x_frame: return compute_value_x_frame();
     case feature_enum::x_content_type: return compute_value_x_content_type();
-    case feature_enum::asn:
+    case feature_enum::asn: return compute_value_asn();
     case feature_enum::similar_domain:
         return 0;
     }

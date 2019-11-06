@@ -119,11 +119,11 @@ private:
     bool _feature_ssl_created{false};
     bool _feature_ssl_expire{false};
     bool _feature_ssl_subject{false};
-    bool _feature_hsts{false}; //  curl -s -I -X GET https://content-security-policy.com/ | grep -i strict-transport-security
-    bool _feature_xss_protection{false}; // curl -s -I -X GET https://github.com | grep -i x-xss-protection
-    bool _feature_csp{false}; // curl -s -I -X GET https://content-security-policy.com/ | grep -i content-security-policy
-    bool _feature_x_frame{false}; // curl -s -I -X GET https://github.com | grep -i x-frame-options
-    bool _feature_x_content_type{false}; // curl -s -I -X GET https://github.com | grep -i x-content-type
+    bool _feature_hsts{false};
+    bool _feature_xss_protection{false};
+    bool _feature_csp{false};
+    bool _feature_x_frame{false};
+    bool _feature_x_content_type{false};
     bool _feature_asn{false}; // dig +short google.co.uk | xargs whois -v | grep -i origin
     bool _feature_similar_domain{false}; // curl -s http://suggestqueries.google.com/complete/search?output=firefox\&q=paypel | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'
     // https://geekflare.com/http-header-implementation

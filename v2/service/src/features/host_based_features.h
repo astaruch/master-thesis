@@ -45,6 +45,9 @@ public:
     double compute_value_x_frame(bool);  // for testing purpose
     double compute_value_x_content_type() const;
     double compute_value_x_content_type(bool);  // for testing purpose
+    double compute_value_asn() const;
+    double compute_value_asn(bool); // for testing purpose
+    std::string get_asn() const;
 
 private:
     const std::string_view _url;
