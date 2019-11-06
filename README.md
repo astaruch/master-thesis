@@ -56,14 +56,20 @@ Then find a library`libedlib_static.a` in CMakeListst (usually in /usr/local/lib
 
 ## SLD from commandline
 
-To parse an URL from commandline, we are using program `faup`
+To parse an URL from commandline, we are using program `faup`.
 
-    git clone -b v1.5 git://github.com/stricaud/faup.git && cd faup/build \
-    cmake ..
-    make
-    sudo make install
-    echo '/usr/local/lib' | sudo tee -a /etc/ld.so.conf.d/faup.conf
+    $ git clone -b v1.5 git://github.com/stricaud/faup.git && cd faup/build \
+    $ cmake ..
+    $ make
+    $ sudo make install
+    $ echo '/usr/local/lib' | sudo tee -a /etc/ld.so.conf.d/faup.conf
     ## or /usr/local/lib64 if you are using RPM based system
-    sudo ldconfig
+    $ sudo ldconfig
     $ faup -t domain_without_tld sites.google.com
     google
+
+ Also, we can use it statically in code if we copy the library into system (make install is not doing that in this case)
+
+    $ pwd
+    faup/build
+    $ sudo cp src/lib/libfaup_static.a /usr/local/lib/

@@ -83,6 +83,12 @@ RUN apt-get update \
 # netbase => getaddrinfo() calls inside whois are failing without netbase
 RUN apt-get install -y curl dnsutils whois netbase jq
 
+COPY --from=thesis-builder /usr/local/lib/libfaupl.so /usr/local/lib/libfaupl.so
+COPY --from=thesis-builder /usr/local/bin/faup /usr/local/bin/faup
+COPY ./mozilla.tlds /root/.faup/mozilla.tlds
+RUN echo '/usr/local/lib' | tee -a /etc/ld.so.conf.d/faup.conf \
+    && ldconfig
+
 CMD ["bash"]
 
 ############################################
@@ -120,6 +126,7 @@ FROM astaruch/thesis-runtime as thesis-tests
 
 COPY --from=thesis-builder  /project/out/test/all_tests /app/all_tests
 COPY --from=thesis-nodejs-builder /nodejsapp/bin/htmlfeatures /app/htmlfeatures
+
 WORKDIR /app
 
 CMD ["/app/all_tests"]
