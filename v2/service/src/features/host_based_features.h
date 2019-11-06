@@ -23,7 +23,9 @@ public:
     double compute_value_redirect() const;
     double compute_value_google_indexed() const;
     double compute_value_dns_a_record() const;
+    double compute_value_dns_a_record(bool); // for testing purpose
     double compute_value_dnssec() const;
+    double compute_value_dnssec(bool); // for testing purpose
     double compute_value_dns_created() const;
     double compute_value_dns_updated() const;
     std::string extract_dns_date(bool created) const;
@@ -52,6 +54,7 @@ private:
 
     const std::string_view _user_agent{"user-agent: Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"};
 
+    std::vector<std::string> dig_response_;
     std::vector<std::string> ssl_response_;
     std::vector<std::string> http_resp_headers_;
 
@@ -65,6 +68,8 @@ private:
     void fill_ssl_response();
     std::vector<std::string> get_http_resp_headers() const;
     void fill_http_resp_headers();
+    std::vector<std::string> get_dig_response() const;
+    void fill_dig_response();
 
 };
 

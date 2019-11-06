@@ -38,6 +38,9 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     {
         http_resp_headers_ = get_http_resp_headers();
     }
+    if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec)) {
+        dig_response_ = get_dig_response();
+    }
 }
 
 std::unordered_map<feature_enum::id, double> host_based_features_t::compute_values_map() const
@@ -84,20 +87,39 @@ double host_based_features_t::compute_value_google_indexed() const
     return output.empty() ? 0 : 1;
 }
 
+std::vector<std::string> host_based_features_t::get_dig_response() const
+{
+    auto cmd = fmt::format("dig +dnssec +short {}", _parsed.getHost());
+    return help_functions::get_output_from_program(cmd);
+}
+
+void host_based_features_t::fill_dig_response()
+{
+    if (dig_response_.empty()) {
+        dig_response_ = get_dig_response();
+    }
+}
+
 double host_based_features_t::compute_value_dns_a_record() const
 {
-    auto cmd = fmt::format("dig -t a {} +short", _parsed.getHost());
-    auto output = help_functions::get_output_from_program(cmd);
-    return output.empty() ? 1 : 0;
+    return dig_response_.empty() ? 1 : 0;
+}
+
+double host_based_features_t::compute_value_dns_a_record(bool)
+{
+    fill_dig_response();
+    return compute_value_dns_a_record();
 }
 
 double host_based_features_t::compute_value_dnssec() const
 {
-    auto cmd = fmt::format("dig +dnssec {}. +short", _parsed.getHost());
-    auto output = help_functions::get_output_from_program(cmd);
-    // TODO: find out better heuristic. We are now only checking that dig is
-    //       returning more than A record
-    return output.size() > 1 ? 0 : 1;
+    return dig_response_.size() > 1 ? 0 : 1;
+}
+
+double host_based_features_t::compute_value_dnssec(bool)
+{
+    fill_dig_response();
+    return compute_value_dnssec();
 }
 
 bool host_based_features_t::check_value_in_output(

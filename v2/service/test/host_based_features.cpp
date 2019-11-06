@@ -28,26 +28,26 @@ TEST(GoogleIndex, NotIndexed)
 TEST(DNS, ArecordOK)
 {
     host_based_features_t f("http://google.cz");
-    EXPECT_EQ(0, f.compute_value_dns_a_record());
+    EXPECT_EQ(0, f.compute_value_dns_a_record(true));
 }
 
 TEST(DNS, ArecordMissing)
 {
     host_based_features_t f("https://aenbauk.com");
-    EXPECT_EQ(1, f.compute_value_dns_a_record());
+    EXPECT_EQ(1, f.compute_value_dns_a_record(true));
 }
 
 
 TEST(DNS, DNSSECOK)
 {
     host_based_features_t f("https://nic.cz");
-    EXPECT_EQ(0, f.compute_value_dnssec());
+    EXPECT_EQ(0, f.compute_value_dnssec(true));
 }
 
 TEST(DNS, DNSSECmissing)
 {
     host_based_features_t f("https://staruch.sk");
-    EXPECT_EQ(1, f.compute_value_dnssec());
+    EXPECT_EQ(1, f.compute_value_dnssec(true));
 }
 
 TEST(DNSRegex, ExtractDate1)
