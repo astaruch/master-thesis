@@ -282,7 +282,18 @@ double host_based_features_t::compute_value_csp() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_x_frame() const { return 0; }
+double host_based_features_t::compute_value_x_frame(bool)
+{
+    fill_http_resp_headers();
+    return compute_value_x_frame();
+}
+
+double host_based_features_t::compute_value_x_frame() const
+{
+    const std::regex reg("x-frame-options:.*(sameorigin|deny)", std::regex::icase);
+    return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
+}
+
 double host_based_features_t::compute_value_x_content_type() const { return 0; }
 
 double host_based_features_t::compute_value(feature_enum::id feature) const

@@ -165,3 +165,21 @@ TEST(Headers, CSP_MISSING)
     host_based_features_t f("https://google.sk");
     EXPECT_EQ(1, f.compute_value_csp(true));
 }
+
+TEST(Headers, X_FRAME_OK_DENY)
+{
+    host_based_features_t f("https://github.com/");
+    EXPECT_EQ(0, f.compute_value_x_frame(true));
+}
+
+TEST(Headers, X_FRAME_OK_SAMEORIGIN)
+{
+    host_based_features_t f("https://google.com/");
+    EXPECT_EQ(0, f.compute_value_x_frame(true));
+}
+
+TEST(Headers, X_FRAME_MISSING)
+{
+    host_based_features_t f("https://paypal.com");
+    EXPECT_EQ(1, f.compute_value_x_frame(true));
+}
