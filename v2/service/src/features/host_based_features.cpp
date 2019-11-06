@@ -15,9 +15,6 @@ try
    , _parsed(Poco::URI(url.begin()))
    , _url_is_ok(true)
 {
-    if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
-        ssl_response_ = get_ssl_response();
-    }
 }
 catch (const Poco::SyntaxException& ex)
 {
@@ -35,6 +32,11 @@ host_based_features_t::host_based_features_t(const std::string_view url,
 {
     if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
         ssl_response_ = get_ssl_response();
+    }
+    if (_flags & (feature_enum::hsts | feature_enum::xss_protection |
+                  feature_enum::csp | feature_enum::x_content_type))
+    {
+        http_resp_headers_ = get_http_resp_headers();
     }
 }
 
@@ -96,6 +98,18 @@ double host_based_features_t::compute_value_dnssec() const
     // TODO: find out better heuristic. We are now only checking that dig is
     //       returning more than A record
     return output.size() > 1 ? 0 : 1;
+}
+
+bool host_based_features_t::check_value_in_output(
+    const std::vector<std::string>& output,
+    const std::regex& reg) const
+{
+    for (const auto& line: output) {
+        if(std::regex_search(line, reg)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::string host_based_features_t::extract_value_from_output(
@@ -161,12 +175,11 @@ void host_based_features_t::fill_ssl_response()
     }
 }
 
-
 std::string host_based_features_t::get_ssl_created() const
 {
     const std::regex reg("(notBefore)=(.*)", std::regex::icase);
     auto value = extract_value_from_output(ssl_response_, reg);
-    fmt::print(value);
+    // fmt::print(value);
     return value;
 }
 
@@ -186,7 +199,7 @@ std::string host_based_features_t::get_ssl_expire() const
 {
     const std::regex reg("(notAfter)=(.*)", std::regex::icase);
     auto value = extract_value_from_output(ssl_response_, reg);
-    fmt::print(value);
+    // fmt::print(value);
     return value;
 }
 
@@ -219,6 +232,36 @@ double host_based_features_t::compute_value_ssl_subject() const
 {
     return get_ssl_subject() == _parsed.getHost() ? 0 : 1;
 }
+
+void host_based_features_t::fill_http_resp_headers()
+{
+    if (http_resp_headers_.empty()) {
+        http_resp_headers_ = get_http_resp_headers();
+    }
+}
+
+std::vector<std::string> host_based_features_t::get_http_resp_headers() const
+{
+    auto cmd = fmt::format("curl -s -I -X GET {}", _url);
+    return help_functions::get_output_from_program(cmd);
+}
+
+double host_based_features_t::compute_value_hsts(bool)
+{
+    fill_http_resp_headers();
+    return compute_value_hsts();
+}
+
+double host_based_features_t::compute_value_hsts() const
+{
+    const std::regex reg("strict-transport-security", std::regex::icase);
+    return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
+}
+
+double host_based_features_t::compute_value_xss_protection() const { return 0; }
+double host_based_features_t::compute_value_csp() const { return 0; }
+double host_based_features_t::compute_value_x_frame() const { return 0; }
+double host_based_features_t::compute_value_x_content_type() const { return 0; }
 
 double host_based_features_t::compute_value(feature_enum::id feature) const
 {
@@ -274,11 +317,11 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::ssl_created: return compute_value_ssl_created();
     case feature_enum::ssl_expire:  return compute_value_ssl_expire();
     case feature_enum::ssl_subject: return compute_value_ssl_subject();
-    case feature_enum::hsts:
-    case feature_enum::xss_protection:
-    case feature_enum::csp:
-    case feature_enum::x_frame:
-    case feature_enum::x_content_type:
+    case feature_enum::hsts: return compute_value_hsts();
+    case feature_enum::xss_protection: return compute_value_xss_protection();
+    case feature_enum::csp: return compute_value_csp();
+    case feature_enum::x_frame: return compute_value_x_frame();
+    case feature_enum::x_content_type: return compute_value_x_content_type();
     case feature_enum::asn:
     case feature_enum::similar_domain:
         return 0;

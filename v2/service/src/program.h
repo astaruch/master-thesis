@@ -116,9 +116,9 @@ private:
     bool _feature_dnssec{false};
     bool _feature_dns_created{false};
     bool _feature_dns_updated{false};
-    bool _feature_ssl_created{false}; // echo | openssl s_client -connect www.staruch.sk:443 2>/dev/null | openssl x509 -noout -startdate
-    bool _feature_ssl_expire{false}; // echo | openssl s_client -connect www.staruch.sk:443 2>/dev/null | openssl x509 -noout -enddate
-    bool _feature_ssl_subject{false}; // echo | openssl s_client -connect www.staruch.sk:443 2>/dev/null | openssl x509 -noout -subject
+    bool _feature_ssl_created{false};
+    bool _feature_ssl_expire{false};
+    bool _feature_ssl_subject{false};
     bool _feature_hsts{false}; //  curl -s -I -X GET https://content-security-policy.com/ | grep -i strict-transport-security
     bool _feature_xss_protection{false}; // curl -s -I -X GET https://github.com | grep -i x-xss-protection
     bool _feature_csp{false}; // curl -s -I -X GET https://content-security-policy.com/ | grep -i content-security-policy

@@ -123,3 +123,21 @@ TEST(SSL, NoCert)
     host_based_features_t f("http://google.com");
     EXPECT_EQ(1, f.compute_value_ssl_subject(true));
 }
+
+TEST(Headers, HSTS_false)
+{
+    host_based_features_t f("http://google.com");
+    EXPECT_EQ(1, f.compute_value_hsts(true));
+}
+
+TEST(Headers, HSTS_OK)
+{
+    host_based_features_t f("https://content-security-policy.com");
+    EXPECT_EQ(0, f.compute_value_hsts(true));
+}
+
+TEST(Headers, HSTS_invalid_url)
+{
+    host_based_features_t f("http://goog1231231231le.com");
+    EXPECT_EQ(1, f.compute_value_hsts(true));
+}
