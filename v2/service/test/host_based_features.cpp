@@ -183,3 +183,15 @@ TEST(Headers, X_FRAME_MISSING)
     host_based_features_t f("https://paypal.com");
     EXPECT_EQ(1, f.compute_value_x_frame(true));
 }
+
+TEST(Headers, X_CONTENT_TYPE_OPTS_OK)
+{
+    host_based_features_t f("https://developer.mozilla.org");
+    EXPECT_EQ(0, f.compute_value_x_content_type(true));
+}
+
+TEST(Headers, X_CONTENT_TYPE_OPTS_MISSING)
+{
+    host_based_features_t f("https://paypal.com");
+    EXPECT_EQ(1, f.compute_value_x_content_type(true));
+}
