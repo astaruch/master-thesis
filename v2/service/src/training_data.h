@@ -13,7 +13,8 @@ public:
 
     void set_input_data(std::vector<std::string> urls);
     void set_label(int value);
-    void set_output_name(std::string name);
+    void set_output(bool use_stdout, const std::string& output_name);
+    // void set_output_name(std::string name);
 
     void set_node_bin(std::string_view node_bin);
     void set_html_script(std::string_view html_script);
@@ -34,7 +35,8 @@ private:
     int _label;
 
     /// Name of the output filename
-    std::string _output_name;
+    std::string output_name_;
+    bool use_stdout_;
 
     std::string_view _node_bin;
     std::string_view _html_script;

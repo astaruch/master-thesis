@@ -40,13 +40,19 @@ public:
     std::string_view html_script();
 
     /// Training data options
-    std::string training_data_url();
-    std::string training_data_output_name();
     bool create_training_data();
-    double training_data_class_value();
 
     bool parse_urls();
     std::string table_name();
+
+    /// Training data
+    std::string _training_data_url{};
+    bool _training_data_stdin{false};
+    std::string _training_data_input_file{};
+    std::string _training_data_output_name{};
+    bool _training_data_output_stdout{false};
+    double _training_data_class_value{0};
+    bool _missing_training_data_class_value;
 private:
     cxxopts::Options _options;
 
@@ -135,16 +141,6 @@ private:
     /// HTML features settings
     std::string _node_bin;
     std::string _html_script;
-
-    /// Training data
-    std::string _training_data_url;
-    bool _training_data_stdin;
-    std::string _training_data_input_file;
-    std::string _training_data_output_name{};
-    bool _training_data_output_stdout{false};
-    double _training_data_class_value;
-    bool _missing_training_data_class_value;
-
 
     const char* on_off(bool feature);
     void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);

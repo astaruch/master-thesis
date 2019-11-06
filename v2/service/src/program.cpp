@@ -346,23 +346,7 @@ std::string_view program::html_script()
     return _html_script;
 }
 
-std::string program::training_data_url()
-{
-    return _training_data_url;
-}
-
-std::string program::training_data_output_name()
-{
-    return _training_data_output_name;
-}
-
 bool program::create_training_data()
 {
     return _enable_training_data;
 }
-
-double program::training_data_class_value()
-{
-    return _training_data_class_value;
-}
-

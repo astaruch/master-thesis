@@ -19,11 +19,8 @@ int main(int argc, char* argv[]) {
     app.check_options();
 
     if (app.create_training_data()) {
-        auto url = app.training_data_url();
-        auto value = app.training_data_class_value();
-        auto output_name = app.training_data_output_name();
+        auto url = app._training_data_url;
 
-        // TODO: change to accept stdin/input file
         std::vector<std::string> urls{url};
         training_data td;
         td.set_flags(app.feature_flags(),
@@ -31,8 +28,11 @@ int main(int argc, char* argv[]) {
                      app.html_feature_flags(),
                      app.host_based_feature_flags());
         td.set_input_data(urls);
-        td.set_label(static_cast<int>(value));
-        td.set_output_name(output_name);
+        td.set_label(static_cast<int>(app._training_data_class_value));
+        // td.set_output_name(output_name);
+        td.set_output(app._training_data_output_stdout,
+                      app._training_data_output_name);
+
         if (app.html_feature_flags()) {
             td.set_node_bin(app.node_bin());
             td.set_html_script(app.html_script());
