@@ -4,6 +4,10 @@
 #include <chrono>
 
 #include <fmt/format.h>
+#include <faup/faup.h>
+#include <faup/decode.h>
+#include <faup/options.h>
+#include <faup/output.h>
 
 
 std::vector<std::string> help_functions::get_output_from_program(const char* cmd)
@@ -89,4 +93,22 @@ double help_functions::normalize_date_string(std::string_view date)
     time_t t = mktime(&tm);
     // fmt::print("{} {} {}\n", timestamp_start, t, timestamp_end);
     return normalize_value(timestamp_start, std::move(t), timestamp_end);
+}
+
+std::string help_functions::get_sld(const std::string& url)
+{
+    faup_handler_t *fh;
+    faup_options_t *options;
+
+    options = faup_options_new();
+    if (!options) {
+        fprintf(stderr, "Error: cannot allocate faup options!\n");
+    }
+    fh = faup_init(options);
+    faup_decode(fh, url.c_str(), url.size());
+    auto sld = url.substr(static_cast<size_t>(faup_get_domain_without_tld_pos(fh)),
+                          static_cast<size_t>(faup_get_domain_without_tld_size(fh)));
+
+    faup_terminate(fh);
+    return sld;
 }

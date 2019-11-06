@@ -21,6 +21,7 @@ public:
     static double normalize_value(int min, long value, int max);
     static double normalize_value(long min, long value, long max);
     static double normalize_date_string(std::string_view date);
+    static std::string get_sld(const std::string& url);
 };
 
 
