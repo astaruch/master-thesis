@@ -154,3 +154,14 @@ TEST(Headers, XSS_MISSING)
     EXPECT_EQ(1, f.compute_value_xss_protection(true));
 }
 
+TEST(Headers, CSP_OK)
+{
+    host_based_features_t f("https://content-security-policy.com/presentations/");
+    EXPECT_EQ(0, f.compute_value_csp(true));
+}
+
+TEST(Headers, CSP_MISSING)
+{
+    host_based_features_t f("https://google.sk");
+    EXPECT_EQ(1, f.compute_value_csp(true));
+}

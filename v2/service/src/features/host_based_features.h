@@ -38,6 +38,7 @@ public:
     double compute_value_xss_protection() const;
     double compute_value_xss_protection(bool);  // for testing purpose
     double compute_value_csp() const;
+    double compute_value_csp(bool);  // for testing purpose
     double compute_value_x_frame() const;
     double compute_value_x_content_type() const;
 
