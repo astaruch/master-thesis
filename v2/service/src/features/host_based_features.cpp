@@ -161,11 +161,51 @@ void host_based_features_t::fill_ssl_response()
     }
 }
 
+
+std::string host_based_features_t::get_ssl_created() const
+{
+    const std::regex reg("(notBefore)=(.*)", std::regex::icase);
+    auto value = extract_value_from_output(ssl_response_, reg);
+    fmt::print(value);
+    return value;
+}
+
+double host_based_features_t::compute_value_ssl_created(bool)
+{
+    fill_ssl_response();
+    return compute_value_ssl_created();
+}
+
+double host_based_features_t::compute_value_ssl_created() const
+{
+    auto date = get_ssl_created();
+    return 0;
+}
+
+std::string host_based_features_t::get_ssl_expire() const
+{
+    const std::regex reg("(notAfter)=(.*)", std::regex::icase);
+    auto value = extract_value_from_output(ssl_response_, reg);
+    fmt::print(value);
+    return value;
+}
+
+double host_based_features_t::compute_value_ssl_expire(bool)
+{
+    fill_ssl_response();
+    return compute_value_ssl_expire();
+}
+
+double host_based_features_t::compute_value_ssl_expire() const
+{
+    auto date = get_ssl_expire();
+    return 0;
+}
+
 std::string host_based_features_t::get_ssl_subject() const
 {
     const std::regex reg("subject=.*(CN = )(.*$| )", std::regex::icase);
     auto value = extract_value_from_output(ssl_response_, reg);
-    fmt::print(value);
     return value;
 }
 
@@ -231,8 +271,8 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::dnssec: return compute_value_dnssec();
     case feature_enum::dns_created: return compute_value_dns_created();
     case feature_enum::dns_updated: return compute_value_dns_updated();
-    case feature_enum::ssl_created:
-    case feature_enum::ssl_expire:
+    case feature_enum::ssl_created: return compute_value_ssl_created();
+    case feature_enum::ssl_expire:  return compute_value_ssl_expire();
     case feature_enum::ssl_subject: return compute_value_ssl_subject();
     case feature_enum::hsts:
     case feature_enum::xss_protection:

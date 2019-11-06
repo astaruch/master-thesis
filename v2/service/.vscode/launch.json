@@ -11,6 +11,8 @@
                 "--td-class-value", "0",
                 "--enable-features",
                 "--feat-ssl-subject",
+                "--feat-ssl-created",
+                "--feat-ssl-expire",
                 "--node-bin", "/home/xstaruch/.nvm/versions/node/v12.13.0/bin/node",
                 "--html-script", "/home/xstaruch/master-thesis/v2/html_features_js/src/index.js"
             ],

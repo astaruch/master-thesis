@@ -50,7 +50,7 @@ f1: build-debug
 		--td-url "https://www.google.com" \
 		--td-class-value 0 \
 		--enable-features \
-		--feat-ssl-subject
+		--feat-ssl-expire
 
 url-features: build-debug
 	Debug/phishsvc \

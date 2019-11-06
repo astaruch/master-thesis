@@ -27,6 +27,10 @@ public:
     double compute_value_dns_created() const;
     double compute_value_dns_updated() const;
     std::string extract_dns_date(bool created) const;
+    double compute_value_ssl_created() const;
+    double compute_value_ssl_created(bool);
+    double compute_value_ssl_expire() const;
+    double compute_value_ssl_expire(bool);
     double compute_value_ssl_subject() const;
     double compute_value_ssl_subject(bool);
 
@@ -45,6 +49,8 @@ private:
     std::string extract_value_from_output(const std::vector<std::string>& output, const std::regex& reg) const;
     std::vector<std::string>  get_ssl_response() const;
     std::string get_ssl_subject() const;
+    std::string get_ssl_created() const;
+    std::string get_ssl_expire() const;
     void fill_ssl_response();
 };
 
