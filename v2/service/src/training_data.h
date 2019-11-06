@@ -9,11 +9,7 @@
 
 class training_data {
 public:
-    /// Sets the feature flags
-    void set_feature_flags(uint64_t flags);
-    void set_url_feature_flags(uint64_t flags);
-    void set_html_feature_flags(uint64_t flags);
-    void set_host_based_feature_flags(uint64_t flags);
+    void set_flags(uint64_t all, uint64_t url, uint64_t html, uint64_t host_based);
 
     void set_input_data(std::vector<std::string> urls);
     void set_label(int value);

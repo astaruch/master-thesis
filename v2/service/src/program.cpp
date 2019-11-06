@@ -112,9 +112,9 @@ program::program(int argc, char** argv)
         ("td-input-file", "Path containing escaped URLs delimitaded by a new line",
             cxxopts::value<std::string>(_training_data_input_file))
         ("td-output-name", "Desired name of the output data.",
-            cxxopts::value<std::string>(_training_data_output_name)
-                ->default_value("training-data.csv")
-                ->implicit_value("training-data.csv"))
+            cxxopts::value<std::string>(_training_data_output_name))
+        ("td-output-stdout", "Flag that we are printing results to stdout",
+            cxxopts::value<bool>(_training_data_output_stdout))
         ("td-class-value", "Sets the classification value for the training data",
             cxxopts::value<double>(_training_data_class_value))
     ;

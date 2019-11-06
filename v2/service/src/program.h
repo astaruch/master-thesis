@@ -140,7 +140,8 @@ private:
     std::string _training_data_url;
     bool _training_data_stdin;
     std::string _training_data_input_file;
-    std::string _training_data_output_name;
+    std::string _training_data_output_name{};
+    bool _training_data_output_stdout{false};
     double _training_data_class_value;
     bool _missing_training_data_class_value;
 

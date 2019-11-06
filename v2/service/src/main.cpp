@@ -18,10 +18,6 @@ int main(int argc, char* argv[]) {
 
     app.check_options();
 
-    auto features_to_check = app.feature_flags();
-    auto url_features_to_check = app.url_feature_flags();
-    auto html_features_to_check = app.html_feature_flags();
-
     if (app.create_training_data()) {
         auto url = app.training_data_url();
         auto value = app.training_data_class_value();
@@ -30,14 +26,14 @@ int main(int argc, char* argv[]) {
         // TODO: change to accept stdin/input file
         std::vector<std::string> urls{url};
         training_data td;
-        td.set_feature_flags(features_to_check);
-        td.set_url_feature_flags(url_features_to_check);
-        td.set_html_feature_flags(html_features_to_check);
-        td.set_host_based_feature_flags(app.host_based_feature_flags());
+        td.set_flags(app.feature_flags(),
+                     app.url_feature_flags(),
+                     app.html_feature_flags(),
+                     app.host_based_feature_flags());
         td.set_input_data(urls);
         td.set_label(static_cast<int>(value));
         td.set_output_name(output_name);
-        if (html_features_to_check) {
+        if (app.html_feature_flags()) {
             td.set_node_bin(app.node_bin());
             td.set_html_script(app.html_script());
         }

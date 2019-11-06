@@ -10,25 +10,14 @@
 
 #include <spdlog/spdlog.h>
 
-void training_data::set_feature_flags(uint64_t flags)
+void training_data::set_flags(uint64_t all, uint64_t url, uint64_t html, uint64_t host_based)
 {
-    _feature_flags = flags;
+    _feature_flags = all;
+    _url_feature_flags = url;
+    _html_feature_flags = html;
+    _host_based_feature_flags = host_based;
 }
 
-void training_data::set_url_feature_flags(uint64_t flags)
-{
-    _url_feature_flags = flags;
-}
-
-void training_data::set_html_feature_flags(uint64_t flags)
-{
-    _html_feature_flags = flags;
-}
-
-void training_data::set_host_based_feature_flags(uint64_t flags)
-{
-    _host_based_feature_flags = flags;
-}
 
 void training_data::set_input_data(std::vector<std::string> urls)
 {
