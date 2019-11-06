@@ -53,12 +53,13 @@ public:
     bool _training_data_output_stdout{false};
     double _training_data_class_value{0};
     bool _missing_training_data_class_value;
+
+    // General
+    bool help_{false};
+    bool version_{false};
+    bool verbose{false};
 private:
     cxxopts::Options _options;
-
-    /// General options
-    bool _help;
-    bool _version;
 
     /// Disambiguation options
     bool _enable_features;

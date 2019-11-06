@@ -9,12 +9,13 @@
 
 class training_data {
 public:
+    training_data() = default;
+    training_data(bool verbose);
     void set_flags(uint64_t all, uint64_t url, uint64_t html, uint64_t host_based);
 
     void set_input_data(std::vector<std::string> urls);
     void set_label(int value);
     void set_output(bool use_stdout, const std::string& output_name);
-    // void set_output_name(std::string name);
 
     void set_node_bin(std::string_view node_bin);
     void set_html_script(std::string_view html_script);
@@ -22,6 +23,7 @@ public:
     /// Method for generating the training data
     bool create_training_data();
 private:
+    bool verbose_{false};
     /// Flags used to determine which features are enabled. See class \a feature_base
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};

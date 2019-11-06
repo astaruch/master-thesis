@@ -10,6 +10,11 @@
 
 #include <spdlog/spdlog.h>
 
+training_data::training_data(bool verbose)
+    : verbose_(verbose)
+{
+}
+
 void training_data::set_flags(uint64_t all, uint64_t url, uint64_t html, uint64_t host_based)
 {
     _feature_flags = all;
@@ -46,7 +51,8 @@ void training_data::set_html_script(std::string_view html_script)
 
 bool training_data::create_training_data()
 {
-    fmt::print("-- file '{}':\n", output_name_);
+
+    if (verbose_) fmt::print("-- file '{}':\n", output_name_);
     std::string csv_header = create_csv_header();
     fmt::print("{}\n", csv_header);
 
@@ -54,7 +60,7 @@ bool training_data::create_training_data()
     for (const std::string& line: lines) {
         fmt::print("{}\n", line);
     }
-    fmt::print("--\n");
+    if (verbose_) fmt::print("--\n");
 
     return true;
 }

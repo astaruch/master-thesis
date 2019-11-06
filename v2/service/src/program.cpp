@@ -12,8 +12,6 @@ namespace fs = std::filesystem;
 
 program::program(int argc, char** argv)
     : _options("phishsvc", "Application for phishing defence")
-    , _help(false)
-    , _version(false)
     , _feature_flags(0)
 {
     _options
@@ -21,8 +19,9 @@ program::program(int argc, char** argv)
         .show_positional_help();
 
     _options.add_options("General")
-        ("h,help", "Prints help and exit", cxxopts::value<bool>(_help))
-        ("v,version", "Prints version information and exit", cxxopts::value<bool>(_version))
+        ("h,help", "Prints help and exit", cxxopts::value<bool>(help_))
+        ("v,version", "Prints version information and exit", cxxopts::value<bool>(version_))
+        ("verbose", "Enable verbose mode", cxxopts::value<bool>(verbose))
     ;
 
     _options.add_options("Database")
@@ -130,18 +129,18 @@ program::program(int argc, char** argv)
 
 void program::check_options()
 {
-    if (_help) {
+    if (help_) {
         fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "HTML feature settings", "Training data"}));
         exit(0);
     }
 
-    if (_version) {
+    if (version_) {
         fmt::print("0.0.1\n");
         exit(0);
     }
 
     if (_enable_features) {
-        fmt::print("Features:\n");
+        if (verbose) fmt::print("Features:\n");
         check_url_feature_option(_feature_ip_address, feature_enum::id::ip_address, "IP address"sv);
         check_url_feature_option(_feature_url_length, feature_enum::id::url_length, "URL length"sv);
         check_url_feature_option(_feature_host_length, feature_enum::id::host_length, "host length"sv);
@@ -262,7 +261,7 @@ void program::check_options()
 
 void program::check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
 {
-    fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
+    if (verbose) fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
     if (feature_on) {
         _feature_flags |= feature_id;
     }

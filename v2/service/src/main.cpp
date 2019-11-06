@@ -22,14 +22,13 @@ int main(int argc, char* argv[]) {
         auto url = app._training_data_url;
 
         std::vector<std::string> urls{url};
-        training_data td;
+        training_data td(app.verbose);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
                      app.html_feature_flags(),
                      app.host_based_feature_flags());
         td.set_input_data(urls);
         td.set_label(static_cast<int>(app._training_data_class_value));
-        // td.set_output_name(output_name);
         td.set_output(app._training_data_output_stdout,
                       app._training_data_output_name);
 
