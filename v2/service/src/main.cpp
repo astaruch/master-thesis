@@ -18,6 +18,17 @@ int main(int argc, char* argv[]) {
 
     app.check_options();
 
+    std::FILE* output;
+    if (!app._training_data_output_name.empty()) {
+        output = std::fopen(app._training_data_output_name.c_str(), "w");
+    } else {
+        output = stdout;
+    }
+    if(!output) {
+        std::perror("File opening failed");
+        return EXIT_FAILURE;
+    }
+
     if (app.create_training_data()) {
         auto url = app._training_data_url;
 
@@ -29,8 +40,9 @@ int main(int argc, char* argv[]) {
                      app.host_based_feature_flags());
         td.set_input_data(urls);
         td.set_label(static_cast<int>(app._training_data_class_value));
-        td.set_output(app._training_data_output_stdout,
-                      app._training_data_output_name);
+
+
+        td.set_output(output);
 
         if (app.html_feature_flags()) {
             td.set_node_bin(app.node_bin());
@@ -61,5 +73,6 @@ int main(int argc, char* argv[]) {
         fmt::print(stderr, "Error: {}\n", ex.what());
         exit(1);
     }
+    std::fclose(output);
     return 0;
 }

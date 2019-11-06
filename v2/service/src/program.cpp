@@ -193,6 +193,7 @@ void program::check_options()
         check_host_based_feature_option(_feature_asn, feature_enum::id::asn, "ASN"sv);
         check_host_based_feature_option(_feature_similar_domain, feature_enum::id::similar_domain, "similar domain"sv);
     }
+    if (_training_data_output_name.empty()) _training_data_output_stdout = true;
 
     if (_enable_training_data) {
         if (_training_data_url.empty() && !_training_data_stdin && _training_data_input_file.empty()) {

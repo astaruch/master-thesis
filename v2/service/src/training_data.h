@@ -15,7 +15,7 @@ public:
 
     void set_input_data(std::vector<std::string> urls);
     void set_label(int value);
-    void set_output(bool use_stdout, const std::string& output_name);
+    void set_output(std::FILE* file);
 
     void set_node_bin(std::string_view node_bin);
     void set_html_script(std::string_view html_script);
@@ -36,9 +36,7 @@ private:
     /// Label used for classification
     int _label;
 
-    /// Name of the output filename
-    std::string output_name_;
-    bool use_stdout_;
+    std::FILE* file_;
 
     std::string_view _node_bin;
     std::string_view _html_script;

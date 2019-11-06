@@ -23,10 +23,9 @@ void training_data::set_flags(uint64_t all, uint64_t url, uint64_t html, uint64_
     _host_based_feature_flags = host_based;
 }
 
-void training_data::set_output(bool use_stdout, const std::string& output_name)
+void training_data::set_output(std::FILE* file)
 {
-    use_stdout_ = use_stdout;
-    output_name_ = output_name;
+    file_ = file;
 }
 
 void training_data::set_input_data(std::vector<std::string> urls)
@@ -52,13 +51,13 @@ void training_data::set_html_script(std::string_view html_script)
 bool training_data::create_training_data()
 {
 
-    if (verbose_) fmt::print("-- file '{}':\n", output_name_);
+    if (verbose_) fmt::print("-- file '{}':\n");
     std::string csv_header = create_csv_header();
-    fmt::print("{}\n", csv_header);
+    fmt::print(file_, "{}\n", csv_header);
 
     std::vector<std::string> lines = transform_urls_to_training_data();
     for (const std::string& line: lines) {
-        fmt::print("{}\n", line);
+        fmt::print(file_, "{}\n", line);
     }
     if (verbose_) fmt::print("--\n");
 
