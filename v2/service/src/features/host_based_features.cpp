@@ -6,6 +6,7 @@
 #include <regex>
 #include <string_view>
 
+#include <edlib.h>
 #include <fmt/format.h>
 #include <Poco/Exception.h>
 
@@ -40,6 +41,9 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     }
     if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
         dig_response_ = get_dig_response();
+    }
+    if (_flags & (feature_enum::similar_domain)) {
+        sld_ = get_sld();
     }
 }
 
@@ -171,7 +175,8 @@ double host_based_features_t::compute_value_dns_created() const
         // could not find basic DNS record in traditional format
         return 1.;
     }
-    return help_functions::normalize_date_string(created);}
+    return help_functions::normalize_date_string(created);
+}
 
 double host_based_features_t::compute_value_dns_updated() const
 {
@@ -353,6 +358,47 @@ double host_based_features_t::compute_value_asn() const
     return get_asn().empty() ? 1 : 0;
 }
 
+std::string host_based_features_t::get_sld() const
+{
+    auto cmd = fmt::format("faup -f domain_without_tld {}", _parsed.getHost());
+    return help_functions::get_line_from_program_if_exists(cmd, 0);
+}
+
+std::string host_based_features_t::get_word_suggestion(std::string_view word) const
+{
+    auto cmd = fmt::format("curl -s http://suggestqueries.google.com/complete/search?output=firefox\\&q={} | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'",
+                           word);
+    return help_functions::get_line_from_program_if_exists(cmd, 0);
+}
+
+double host_based_features_t::compute_similar_domain() const
+{
+    auto suggestion = get_word_suggestion(sld_);
+    // we got something unusual/unknown
+    if (suggestion.empty()) {
+        return 1;
+    }
+    // e.g. 'paypal == paypal'
+    if (suggestion == sld_) {
+        return 0;
+    }
+    // e.g. 'paypal <-> paypel'
+    // compute levehstein
+    auto result = edlibAlign(suggestion.c_str(), static_cast<int>(suggestion.size()),
+                               sld_.c_str(), static_cast<int>(sld_.size()),
+                               edlibDefaultAlignConfig());
+    auto distance = result.editDistance;
+    edlibFreeAlignResult(result);
+    // fmt::print("{} - {} -- distance = {}\n", suggestion, sld_, distance);
+    return 1. / static_cast<double>(distance);
+}
+
+double host_based_features_t::compute_similar_domain(bool)
+{
+    sld_ = get_sld();
+    return compute_similar_domain();
+}
+
 double host_based_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
@@ -413,8 +459,7 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
     case feature_enum::x_frame: return compute_value_x_frame();
     case feature_enum::x_content_type: return compute_value_x_content_type();
     case feature_enum::asn: return compute_value_asn();
-    case feature_enum::similar_domain:
-        return 0;
+    case feature_enum::similar_domain: return compute_similar_domain();
     }
     return 0;
 }

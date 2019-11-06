@@ -203,3 +203,28 @@ TEST(Host, ASN)
     EXPECT_EQ("AS15169", f.get_asn());
 }
 
+TEST(DomainSimilarity, SimilarDomain)
+{
+    host_based_features_t f("http://some.weird.domain.paypel.com");
+    EXPECT_EQ(1, f.compute_similar_domain(true));
+}
+
+TEST(DomainSimilarity, SameDomain)
+{
+    host_based_features_t f("http://paypal.com");
+    EXPECT_EQ(0, f.compute_similar_domain(true));
+}
+
+
+TEST(DomainSimilarity, Unknowndomain)
+{
+    host_based_features_t f("http://aiohsgoiashgoiashgoiahgoihaigo.com");
+    EXPECT_EQ(1, f.compute_similar_domain(true));
+}
+
+TEST(DomainSimilarity, MultipleCharDifferent)
+{
+    host_based_features_t f("http://gaagle.com");
+    EXPECT_EQ(0.5, f.compute_similar_domain(true));
+}
+

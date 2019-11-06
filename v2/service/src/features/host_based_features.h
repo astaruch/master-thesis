@@ -48,6 +48,8 @@ public:
     double compute_value_asn() const;
     double compute_value_asn(bool); // for testing purpose
     std::string get_asn() const;
+    double compute_similar_domain() const;
+    double compute_similar_domain(bool);
 
 private:
     const std::string_view _url;
@@ -56,6 +58,7 @@ private:
     const bool _url_is_ok{false};
 
     const std::string_view _user_agent{"user-agent: Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"};
+    std::string sld_; // second level domain (hostname without TLD and subdomains)
 
     std::vector<std::string> dig_response_;
     std::vector<std::string> ssl_response_;
@@ -73,6 +76,8 @@ private:
     void fill_http_resp_headers();
     std::vector<std::string> get_dig_response() const;
     void fill_dig_response();
+    std::string get_sld() const;
+    std::string get_word_suggestion(std::string_view word) const;
 
 };
 

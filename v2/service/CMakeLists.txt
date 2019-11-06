@@ -45,10 +45,19 @@ find_package(fmt CONFIG REQUIRED)
 ### threading ===========================================================================##
 find_package(Threads REQUIRED)
 
+### edlib (edit distance) - https://github.com/Martinsos/edlib/tree/v1.2.4===============##
+find_library(LIBEDLIB edlib_static)
+if(LIBEDLIB)
+  message(STATUS "Found edlib: ${LIBEDLIB}")
+else()
+  message(FATAL_ERROR "Can't find edlib")
+endif()
+
 ## ======================================================================================##
 ## Subdirectories and source files
 ## ======================================================================================##
 file(GLOB_RECURSE SOURCES src/*.cpp src/*.hpp)
+
 
 ## ======================================================================================##
 ## Libraries
@@ -72,6 +81,7 @@ set(ALL_LIBRARIES
   cxxopts::cxxopts
   fmt::fmt
   fmt::fmt-header-only
+  ${LIBEDLIB}
 )
 
 ## ======================================================================================##

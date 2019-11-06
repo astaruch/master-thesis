@@ -9,8 +9,12 @@
 
 class help_functions {
 public:
+    // execute a system command and return output in vector of strings without endlines (\r\n are trimmd)
     static std::vector<std::string> get_output_from_program(const char* cmd);
     static std::vector<std::string> get_output_from_program(const std::string& cmd);
+    // returns the n-th line from output. if output has lesser lines, empty string is returned
+    static std::string get_line_from_program_if_exists(const char* cmd, size_t pos);
+    static std::string get_line_from_program_if_exists(const std::string& cmd, size_t pos);
     static void print_output(const std::vector<std::string>& output);
     static double normalize_value(int min, int value, int max);
     static double normalize_value(int min, size_t value, int max);
