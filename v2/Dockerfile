@@ -32,6 +32,22 @@ RUN cd /tmp \
 RUN cd /tmp/vcpkg \
     && ./vcpkg install POCO spdlog libpq gtest yaml-cpp libpqxx cxxopts fmt
 
+# Install Levehnstein for edit distance libraries
+RUN cd /tmp \
+    && git clone -b v1.2.4 https://github.com/Martinsos/edlib.git && cd edlib/build \
+    && cmake -D CMAKE_BUILD_TYPE=Release .. \
+    && make \
+    && make install
+
+# Install faup to get URL parts from commandline
+RUN cd /tmp \
+    && git clone -b v1.5 git://github.com/stricaud/faup.git && cd faup/build \
+    && cmake .. \
+    && make \
+    && make install \
+    && echo '/usr/local/lib' | tee -a /etc/ld.so.conf.d/faup.conf \
+    && ldconfig
+
 CMD  ["bash"]
 
 ##############################################
@@ -65,7 +81,7 @@ RUN apt-get update \
 
 # dnsutils => dig
 # netbase => getaddrinfo() calls inside whois are failing without netbase
-RUN apt-get install -y curl dnsutils whois netbase
+RUN apt-get install -y curl dnsutils whois netbase jq
 
 CMD ["bash"]
 
