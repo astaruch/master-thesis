@@ -71,7 +71,7 @@ std::vector<double> host_based_features_t::compute_values_vec() const
 
 double host_based_features_t::compute_value_redirect() const
 {
-    auto cmd = fmt::format("curl -s -w \"%{{http_code}}\" -o /dev/null {}", _url);
+    auto cmd = fmt::format("curl -s -w \"%{{http_code}}\" -o /dev/null '{}'", _url);
     auto output = help_functions::get_output_from_program(cmd);
     auto http_code_str = output.front();
     try {
@@ -269,7 +269,7 @@ void host_based_features_t::fill_http_resp_headers()
 
 std::vector<std::string> host_based_features_t::get_http_resp_headers() const
 {
-    auto cmd = fmt::format("curl -s -I -X GET {}", _url);
+    auto cmd = fmt::format("curl -s -I -X GET '{}'", _url);
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -389,7 +389,8 @@ double host_based_features_t::compute_similar_domain() const
 
 std::string host_based_features_t::get_sld() const
 {
-    auto cmd = fmt::format("faup -f domain_without_tld {}", _parsed.getHost());
+    // https://github.com/stricaud/faup/issues/94#issuecomment-521689212
+    auto cmd = fmt::format("echo {} | faup -f domain_without_tld", _parsed.getHost());
     return help_functions::get_line_from_program_if_exists(cmd, 0);
 }
 

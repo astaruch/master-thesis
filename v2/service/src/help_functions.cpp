@@ -7,20 +7,19 @@
 
 std::vector<std::string> help_functions::get_output_from_program(const char* cmd)
 {
-    std::FILE* output_stream = popen(cmd, "r");
-    if (output_stream == nullptr) {
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
         fmt::print(stderr, "There was an error executing command: {}\n", cmd);
-        return {};
+        throw std::runtime_error("popen() failed!");
     }
-    char line[256];
+    std::array<char, 256> line;
     std::vector<std::string> lines;
-    while (fgets(line, 256, output_stream) != nullptr) {
-        auto str = std::string(line);
+    while (fgets(line.data(), 256, pipe.get()) != nullptr) {
+        auto str = std::string(line.data());
         if (str.back() == '\n') str.pop_back();
         if (str.back() == '\r') str.pop_back();
         lines.push_back(std::move(str));
     }
-    pclose(output_stream);
     return lines;
 }
 
