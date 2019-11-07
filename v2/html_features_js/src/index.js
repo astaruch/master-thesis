@@ -41,81 +41,82 @@ const main = async () => {
     .describe(featureStrings[10], 'Flag wether check if text value of <a> link is same as actual link')
     .describe(featureStrings[11], 'Flag wether check if hostname is matching title (0: yes, 1: no)')
 
-    if (!argv.argv.stdin && !argv.argv.url) {
-      console.error('You have to provide URL to check or start as "--stdin"')
-      process.exit(1)
-    }
-    jsdomDevtoolsFormatter.install();
-    const verbose = argv.argv.verbose
-    const features = {}
-    // We are relying on the order. check c++ file service/src/features/feature_enum.h
-    if (argv.argv.featInputTag) features.inputTag = 'inputTag'
-    if (argv.argv.featSrcLink) features.srcLink = 'srcLink'
-    if (argv.argv.featFormHandler) features.formHandler = 'formHandler'
-    if (argv.argv.featInvisibleIframe) features.invisibleIframe = 'invisibleIframe'
-    if (argv.argv.featRewriteStatusbar) features.rewriteStatusbar = 'rewriteStatusbar'
-    if (argv.argv.featDisableRightclick) features.disableRightclick = 'disableRightclick'
-    if (argv.argv.featAhrefLink) features.ahrefLink = 'ahrefLink'
-    if (argv.argv.featPopupWindow) features.popupWindow = 'popupWindow'
-    if (argv.argv.featFaviconLink) features.faviconLink = 'faviconLink'
-    if (argv.argv.featOldTechnologies) features.oldTechnologies = 'oldTechnologies'
-    if (argv.argv.featMissleadingLink) features.missleadingLink = 'missleadingLink'
-    if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
+  if (!argv.argv.stdin && !argv.argv.url) {
+    console.error('You have to provide URL to check or start as "--stdin"')
+    process.exit(1)
+  }
+  jsdomDevtoolsFormatter.install();
+  const verbose = argv.argv.verbose
+  const features = {}
+  // We are relying on the order. check c++ file service/src/features/feature_enum.h
+  if (argv.argv.featInputTag) features.inputTag = 'inputTag'
+  if (argv.argv.featSrcLink) features.srcLink = 'srcLink'
+  if (argv.argv.featFormHandler) features.formHandler = 'formHandler'
+  if (argv.argv.featInvisibleIframe) features.invisibleIframe = 'invisibleIframe'
+  if (argv.argv.featRewriteStatusbar) features.rewriteStatusbar = 'rewriteStatusbar'
+  if (argv.argv.featDisableRightclick) features.disableRightclick = 'disableRightclick'
+  if (argv.argv.featAhrefLink) features.ahrefLink = 'ahrefLink'
+  if (argv.argv.featPopupWindow) features.popupWindow = 'popupWindow'
+  if (argv.argv.featFaviconLink) features.faviconLink = 'faviconLink'
+  if (argv.argv.featOldTechnologies) features.oldTechnologies = 'oldTechnologies'
+  if (argv.argv.featMissleadingLink) features.missleadingLink = 'missleadingLink'
+  if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
 
-    let urls = []
-    if (argv.argv.url) {
-      urls.push(argv.argv.url)
-    } else if (argv.argv.stdin) {
-      const rl = readline.createInterface({
-        input: process.stdin,
-      })
-      for await (const line of rl) {
-        urls.push(line)
-        if (verbose) console.log(`Line from file: ${line}`)
-      }
-    } else {
-      console.error('Missing input type argument (e.g. --stdin)')
-      process.exit(1)
+  let urls = []
+  if (argv.argv.url) {
+    urls.push(argv.argv.url)
+  } else if (argv.argv.stdin) {
+    const rl = readline.createInterface({
+      input: process.stdin,
+    })
+    for await (const line of rl) {
+      urls.push(line)
+      if (verbose) console.log(`Line from file: ${line}`)
     }
-    let firstRun = true
-    for await (const url of urls) {
-      if (verbose) console.log(`--> Checking ${url}`)
-      const page = new Page(url, argv.argv.includeValues)
-      let badUrl = false
-      const results = await page.performTests(features).catch(err => {
-        console.error(err.message)
-        badUrl = true
-      })
-      if (badUrl) continue
+  } else {
+    console.error('Missing input type argument (e.g. --stdin)')
+    process.exit(1)
+  }
+  let firstRun = true
+  for await (const url of urls) {
+    if (verbose) console.log(`--> Checking ${url}`)
+    const page = new Page(url, argv.argv.includeValues)
+    let badUrl = false
+    const results = await page.performTests(features).catch(err => {
+      console.error(err.message)
+      badUrl = true
+    })
+    if (badUrl) continue
 
-      if (argv.argv.outputJson) {
-        console.log(JSON.stringify(results))
-      } else if (argv.argv.outputLines) {
-        Object.keys(results).forEach(feature => {
-          console.log(`${feature} ${results[feature]}`)
-        })
-      } else if (argv.argv.outputValuesString) {
-        // print header only for the first time
-        if (firstRun) {
-          let columns = []
-          if (argv.argv.includeUrl) {
-            columns.push('url')
-          }
-          Object.keys(results).forEach(key => columns.push(key))
-          console.log(columns.join(','))
-          firstRun = false
-        }
-        let values = []
+    if (argv.argv.outputJson) {
+      console.log(JSON.stringify(results))
+    } else if (argv.argv.outputLines) {
+      Object.keys(results).forEach(feature => {
+        console.log(`${feature} ${results[feature]}`)
+      })
+    } else if (argv.argv.outputValuesString) {
+      // print header only for the first time
+      if (firstRun) {
+        let columns = []
         if (argv.argv.includeUrl) {
-          values.push(`"${url}"`)
+          columns.push('url')
         }
-        Object.keys(results).forEach(key => values.push(results[key]))
-        console.log(values.join(','))
-      } else {
-        console.error('You need to set output format')
-        process.exit(1)
+        Object.keys(results).forEach(key => columns.push(key))
+        console.log(columns.join(','))
+        firstRun = false
       }
+      let values = []
+      if (argv.argv.includeUrl) {
+        values.push(`"${url}"`)
+      }
+      Object.keys(results).forEach(key => values.push(results[key]))
+      console.log(values.join(','))
+    } else {
+      console.error('You need to set output format')
+      process.exit(1)
     }
+  }
+  process.exit(0)
 }
 
 if (require.main === module) {
