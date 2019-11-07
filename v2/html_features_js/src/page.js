@@ -109,7 +109,7 @@ class Page {
 
       }
     })
-    return differentLinks / allLinks;
+    return (differentLinks / allLinks) || 0;
   }
 
   /**
@@ -226,7 +226,7 @@ class Page {
         }
       }
     })
-    return count / allLinks
+    return (count / allLinks) || 0
   }
 
   featureAhrefLinkTest(dom) {
