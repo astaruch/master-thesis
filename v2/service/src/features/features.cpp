@@ -53,10 +53,14 @@ std::vector<double> features_t::compute_feature_vector()
     }
 
     if (_html_flags) {
-        // TODO: add constructor to accept executable path (omit NodeJS + script)
-        html_features_t html_features(_url, _html_flags, node_bin_, html_script_);
-        // auto values = html_features.get_values_from_external_script();
-        auto values = html_features.compute_values();
+        std::vector<double> values;
+        if (!htmlfeatures_bin_.empty()) {
+            html_features_t html_features(_url, _html_flags, htmlfeatures_bin_);
+            values = html_features.get_values_from_external_script();
+        } else {
+            html_features_t html_features(_url, _html_flags, node_bin_, html_script_);
+            values = html_features.compute_values();
+        }
         fvec.insert(fvec.end(), values.begin(), values.end());
     }
 

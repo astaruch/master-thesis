@@ -58,7 +58,7 @@ public:
     /// HTML features settings
     std::string node_bin{};
     std::string html_script{};
-    std::string htmlfeatures_exe{};
+    std::string htmlfeatures_bin{};
 private:
     cxxopts::Options _options;
 

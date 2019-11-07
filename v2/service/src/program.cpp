@@ -43,6 +43,7 @@ program::program(int argc, char** argv)
     _options.add_options("HTML feature settings")
         ("node-bin", "Path to the node.js executable", cxxopts::value<std::string>(node_bin))
         ("html-script", "Path to the script containing HTML feature checks", cxxopts::value<std::string>(html_script))
+        ("htmlfeatures-bin", "Path to the binary with HTML features", cxxopts::value<std::string>(htmlfeatures_bin))
     ;
 
     _options.add_options("Features")
@@ -218,12 +219,12 @@ void program::check_options()
 
         std::error_code ec;
         if (_html_feature_flags) {
-            if (htmlfeatures_exe.empty() && node_bin.empty() && html_script.empty()) {
+            if (htmlfeatures_bin.empty() && node_bin.empty() && html_script.empty()) {
                 fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-exe <path>)\n");
                 exit(1);
             }
-            if (!htmlfeatures_exe.empty()) {
-                if (!fs::exists(htmlfeatures_exe, ec)) {
+            if (!htmlfeatures_bin.empty()) {
+                if (!fs::exists(htmlfeatures_bin, ec)) {
                     fmt::print(stderr, "No such file (--htmlfeatures-exe <path>): {}\n", node_bin);
                     exit(1);
                 }

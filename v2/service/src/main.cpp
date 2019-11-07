@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
                      app.host_based_feature_flags());
         td.set_input_data(std::move(urls));
         td.set_label(static_cast<int>(app._training_data_class_value));
-        td.set_html_features_opts(app.node_bin, app.html_script, app.htmlfeatures_exe);
+        td.set_html_features_opts(app.node_bin, app.html_script, app.htmlfeatures_bin);
 
         td.set_output(output);
 

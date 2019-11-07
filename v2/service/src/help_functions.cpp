@@ -13,7 +13,7 @@ std::string help_functions::get_output_from_program_in_string(const char* cmd)
         throw std::runtime_error("popen() failed!");
     }
     std::string result;
-    std::array<char, 128> buffer;
+    std::array<char, 256> buffer;
     while (fgets(buffer.data(), 256, pipe.get()) != nullptr) {
         result += buffer.data();
     }

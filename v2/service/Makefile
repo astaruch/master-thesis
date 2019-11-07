@@ -65,12 +65,10 @@ html-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-stdin \
-		--verbose \
 		--td-class-value 0 \
 		--enable-features \
 		${HTML_FEATURES} \
-		--node-bin ${NODE_BIN} \
-		--html-script ${HTML_FEATURES_SCRIPT}
+		--htmlfeatures-bin ${HTMLFEATURES_BIN}
 
 host-based-features: build-debug
 	Debug/phishsvc \

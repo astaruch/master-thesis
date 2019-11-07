@@ -26,7 +26,7 @@ html_features_t::html_features_t(std::string_view url,
     , exe_path_(exe_path)
 {
     auto args = create_args();
-    cmd_ = fmt::format("{} {} --output-values-string --stdin", exe_path_, args);
+    cmd_ = fmt::format("{} {} --output-values-string --url '{}'", exe_path_, args, url);
 }
 
 std::tuple<std::string, std::string> html_features_t::split_by_space(const std::string& str)
@@ -48,7 +48,9 @@ std::vector<double> html_features_t::compute_values()
 
 std::vector<double> html_features_t::get_values_from_external_script()
 {
-    auto output = help_functions::get_output_from_program_in_string(cmd_.c_str());
+    // 0th line are values
+    // 1th line is optional error message
+    auto output = help_functions::get_line_from_program_if_exists(cmd_.c_str(), 0);
     std::vector<double> result;
     std::stringstream stream(output);
     std::string value_str;
