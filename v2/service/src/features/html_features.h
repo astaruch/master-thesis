@@ -14,8 +14,10 @@ class html_features_t {
 public:
     html_features_t(std::string_view url, uint64_t flags, std::string_view node_bin,
         std::string_view html_script);
+    html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path);
 
     std::vector<double> compute_values();
+    std::vector<double> get_values_from_external_script();
 
     const std::unordered_map<feature_enum::id, std::string_view> html_feature_arg{
         { feature_enum::input_tag, "--feat-input-tag" },
@@ -36,12 +38,13 @@ private:
     std::string create_args();
     std::tuple<std::string, std::string> split_by_space(const std::string& str);
 
-    std::string_view _url;
-    uint64_t _feature_flags{0};
-    std::string_view _node_bin;
-    std::string_view _html_script;
+    std::string_view url_;
+    uint64_t flags_{0};
+    std::string_view node_bin_;
+    std::string_view html_script_;
+    std::string_view exe_path_;
 
-    std::string _cmd;
+    std::string cmd_;
 
 };
 

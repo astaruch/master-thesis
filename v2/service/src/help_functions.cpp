@@ -5,6 +5,20 @@
 
 #include <fmt/format.h>
 
+std::string help_functions::get_output_from_program_in_string(const char* cmd)
+{
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        fmt::print(stderr, "There was an error executing command: {}\n", cmd);
+        throw std::runtime_error("popen() failed!");
+    }
+    std::string result;
+    std::array<char, 128> buffer;
+    while (fgets(buffer.data(), 256, pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
 std::vector<std::string> help_functions::get_output_from_program(const char* cmd)
 {
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);

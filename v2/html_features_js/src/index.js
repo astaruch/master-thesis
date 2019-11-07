@@ -42,6 +42,7 @@ const main = async () => {
 
     const page = new Page(argv.argv.url)
     const features = {}
+    // We are relying on the order. check c++ file service/src/features/feature_enum.h
     if (argv.argv.featInputTag) features.inputTag = 'inputTag'
     if (argv.argv.featSrcLink) features.srcLink = 'srcLink'
     if (argv.argv.featFormHandler) features.formHandler = 'formHandler'

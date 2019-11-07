@@ -37,15 +37,12 @@ void training_data::set_label(int label)
 {
     _label = label;
 }
-
-void training_data::set_node_bin(std::string_view node_bin)
+void training_data::set_html_features_opts(std::string_view node_bin, std::string_view html_script,
+    std::string_view htmlfeatures_bin)
 {
-    _node_bin = node_bin;
-}
-
-void training_data::set_html_script(std::string_view html_script)
-{
-    _html_script = html_script;
+    node_bin_ = node_bin;
+    html_script_ = html_script;
+    htmlfeatures_bin_ = htmlfeatures_bin;
 }
 
 bool training_data::create_training_data()
@@ -124,7 +121,7 @@ void training_data::transform_urls_to_training_data()
             _host_based_feature_flags, _label);
         features.set_verbose(verbose_);
         if (_html_feature_flags) {
-            features.set_html_features_opts(std::string(_node_bin), std::string(_html_script));
+            features.set_html_features_opts(std::string(node_bin_), std::string(html_script_), std::string(htmlfeatures_bin_));
         }
         auto fvec = features.compute_feature_vector();
         std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),

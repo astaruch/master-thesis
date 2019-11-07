@@ -17,7 +17,7 @@ public:
 
     std::vector<double> compute_feature_vector();
     std::string compute_extra_values() const;
-    void set_html_features_opts(const std::string& node_bin, const std::string& html_script);
+    void set_html_features_opts(const std::string& node_bin, const std::string& html_script, const std::string& htmlfeatures_bin);
     void set_verbose(bool verbose) {
         verbose_ = verbose;
     }
@@ -34,8 +34,9 @@ protected:
 
     std::string extra_values_{};
 
-    std::string _node_bin;
-    std::string _html_script;
+    std::string node_bin_;
+    std::string html_script_;
+    std::string htmlfeatures_bin_;
 };
 
 #endif // PHISHSVC_FEATURES_H

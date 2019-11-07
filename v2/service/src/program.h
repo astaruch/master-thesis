@@ -35,10 +35,6 @@ public:
     uint64_t html_feature_flags() const;
     uint64_t host_based_feature_flags() const;
 
-    /// HTML features options
-    std::string_view node_bin();
-    std::string_view html_script();
-
     /// Training data options
     bool create_training_data();
 
@@ -58,6 +54,11 @@ public:
     bool help_{false};
     bool version_{false};
     bool verbose{false};
+
+    /// HTML features settings
+    std::string node_bin{};
+    std::string html_script{};
+    std::string htmlfeatures_exe{};
 private:
     cxxopts::Options _options;
 
@@ -139,9 +140,7 @@ private:
     uint64_t _html_feature_flags{0};
     uint64_t _host_based_feature_flags{0};
 
-    /// HTML features settings
-    std::string _node_bin;
-    std::string _html_script;
+
 
     const char* on_off(bool feature);
     void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);

@@ -41,8 +41,8 @@ program::program(int argc, char** argv)
     ;
 
     _options.add_options("HTML feature settings")
-        ("node-bin", "Path to the node.js executable", cxxopts::value<std::string>(_node_bin))
-        ("html-script", "Path to the script containing HTML feature checks", cxxopts::value<std::string>(_html_script))
+        ("node-bin", "Path to the node.js executable", cxxopts::value<std::string>(node_bin))
+        ("html-script", "Path to the script containing HTML feature checks", cxxopts::value<std::string>(html_script))
     ;
 
     _options.add_options("Features")
@@ -216,23 +216,35 @@ void program::check_options()
             exit(1);
         }
 
+        std::error_code ec;
         if (_html_feature_flags) {
-            if (_node_bin.empty()) {
-                fmt::print(stderr, "You have request HTML features. Please set path to node.js (--node-bin <path>)\n");
+            if (htmlfeatures_exe.empty() && node_bin.empty() && html_script.empty()) {
+                fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-exe <path>)\n");
                 exit(1);
             }
-            std::error_code ec;
-            if (!fs::exists(_node_bin, ec)) {
-                fmt::print(stderr, "No such file (--node-bin <path>): {}\n", _node_bin);
-                exit(1);
-            }
-            if (_html_script.empty()) {
-                fmt::print(stderr, "You have request HTML features. Please set path to the script containing HTML features (--html-script <path>)\n");
-                exit(1);
-            }
-            if (!fs::exists(_html_script, ec)) {
-                fmt::print(stderr, "No such file (--html-script): {}\n", _html_script);
-                exit(1);
+            if (!htmlfeatures_exe.empty()) {
+                if (!fs::exists(htmlfeatures_exe, ec)) {
+                    fmt::print(stderr, "No such file (--htmlfeatures-exe <path>): {}\n", node_bin);
+                    exit(1);
+                }
+            } else if (node_bin.empty() || html_script.empty()) {
+                if (node_bin.empty()) {
+                    fmt::print(stderr, "Please set path to node.js (--node-bin <path>)\n");
+                    exit(1);
+                }
+                if (html_script.empty()) {
+                    fmt::print(stderr, "Please set path to the script containing HTML features (--html-script <path>)\n");
+                    exit(1);
+                }
+            } else {
+                if (!fs::exists(html_script, ec)) {
+                    fmt::print(stderr, "No such file (--html-script): {}\n", html_script);
+                    exit(1);
+                }
+                if (!fs::exists(node_bin, ec)) {
+                    fmt::print(stderr, "No such file (--node-bin <path>): {}\n", node_bin);
+                    exit(1);
+                }
             }
         }
 
@@ -339,16 +351,6 @@ uint64_t program::html_feature_flags() const
 uint64_t program::host_based_feature_flags() const
 {
     return _host_based_feature_flags;
-}
-
-std::string_view program::node_bin()
-{
-    return _node_bin;
-}
-
-std::string_view program::html_script()
-{
-    return _html_script;
 }
 
 bool program::create_training_data()
