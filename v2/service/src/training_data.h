@@ -18,8 +18,6 @@ public:
     void set_output(std::FILE* file);
 
     void set_html_features_opts(std::string_view node, std::string_view html, std::string_view htmlfeatures_exe);
-    // void set_node_bin(std::string_view node_bin);
-    // void set_html_script(std::string_view html_script);
 
     /// Method for generating the training data
     bool create_training_data();

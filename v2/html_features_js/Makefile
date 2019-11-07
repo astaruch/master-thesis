@@ -12,8 +12,8 @@ clean:
 run:
 	node src/index.js ${HTML_FEATURES} --output-lines --url http://google.cz
 
-input-tag:
-	node src/index.js --url http://google.cz --feat-input-tag --output-lines
+stdin:
+	node src/index.js ${HTML_FEATURES} --output-values-string --stdin
 
 pack: build
 	pkg src/index.js --targets node12-linux-x64 --output bin/htmlfeatures
