@@ -74,7 +74,7 @@ std::vector<double> host_based_features_t::compute_values_vec() const
 
 double host_based_features_t::compute_value_redirect() const
 {
-    auto cmd = fmt::format("curl -s -w \"%{{http_code}}\" -o /dev/null '{}'", _url);
+    auto cmd = fmt::format("curl --max-time 2 -s -w \"%{{http_code}}\" -o /dev/null '{}'", _url);
     auto output = help_functions::get_output_from_program(cmd);
     auto http_code_str = output.front();
     try {
@@ -88,7 +88,7 @@ double host_based_features_t::compute_value_redirect() const
 
 double host_based_features_t::compute_value_google_indexed() const
 {
-    auto cmd = fmt::format("curl -s 'https://www.google.com/search?hl=en&q=site%3A{}' -H '{}' --compressed | grep 'did not match any documents'",
+    auto cmd = fmt::format("curl --max-time 2 -s 'https://www.google.com/search?hl=en&q=site%3A{}' -H '{}' --compressed | grep 'did not match any documents'",
                            _parsed.getHost(), _user_agent);
     auto output = help_functions::get_output_from_program(cmd);
     return output.empty() ? 0 : 1;
@@ -96,7 +96,7 @@ double host_based_features_t::compute_value_google_indexed() const
 
 std::vector<std::string> host_based_features_t::get_dig_response() const
 {
-    auto cmd = fmt::format("dig +dnssec +short {}", _parsed.getHost());
+    auto cmd = fmt::format("dig +timeout=2 +dnssec +short {}", _parsed.getHost());
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -220,7 +220,7 @@ double host_based_features_t::compute_value_dns_updated() const
 
 std::vector<std::string> host_based_features_t::get_ssl_response() const
 {
-    auto cmd = fmt::format("echo | timeout 1 openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
+    auto cmd = fmt::format("echo | timeout 2 openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
                            _parsed.getHost(), _parsed.getPort());
     return help_functions::get_output_from_program(cmd);
 }
@@ -299,7 +299,7 @@ void host_based_features_t::fill_http_resp_headers()
 
 std::vector<std::string> host_based_features_t::get_http_resp_headers() const
 {
-    auto cmd = fmt::format("curl -s -I -X GET '{}'", _url);
+    auto cmd = fmt::format("curl --max-time 1 -s -I -X GET '{}'", _url);
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -390,7 +390,7 @@ double host_based_features_t::compute_value_asn() const
 
 std::string host_based_features_t::get_word_suggestion(std::string_view word) const
 {
-    auto cmd = fmt::format("curl -s http://suggestqueries.google.com/complete/search?output=firefox\\&q={} | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'",
+    auto cmd = fmt::format("curl --max-time 2 -s http://suggestqueries.google.com/complete/search?output=firefox\\&q={} | jq . | sed -n 4p | egrep -o '[[:alnum:]]*'",
                            word);
     return help_functions::get_line_from_program_if_exists(cmd, 0);
 }

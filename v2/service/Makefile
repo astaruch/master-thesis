@@ -56,7 +56,6 @@ url-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-stdin \
-		--verbose \
 		--td-class-value 0 \
 		--enable-features \
 		${URL_FEATURES}
@@ -83,13 +82,11 @@ all-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
 		--td-stdin \
-		--verbose \
 		--td-class-value 0 \
 		--enable-features \
+		--htmlfeatures-bin ${HTMLFEATURES_BIN} \
 		${URL_FEATURES} \
 		${HTML_FEATURES} \
-		--node-bin ${NODE_BIN} \
-		--html-script ${HTML_FEATURES_SCRIPT} \
 		${HOST_BASED_FEATURES}
 
 valgrind: build-debug
