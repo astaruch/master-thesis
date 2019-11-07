@@ -1,6 +1,8 @@
 'use strict'
 
 const fetch = require('node-fetch')
+const { fetchWithTimeout } = require('./fetchWithTimeout')
+
 const { JSDOM, VirtualConsole } = require('jsdom')
 
 class Page {
@@ -40,11 +42,21 @@ class Page {
   }
 
   async getDOM(url) {
-    const page = await fetch(url, {
+    const page = await fetchWithTimeout(url, {
       headers: {
         'Content-Type': 'text/html; charset=UTF-8'
       },
-    }).then(res => res.text())
+    }, 3000)
+    .then(res => res.text())
+    .catch(err => {
+      if (err.code === "ENOTFOUND") {
+        throw new Error('ERROR: Site is down')
+      }
+      throw err
+    })
+    if (page.length === 0) {
+      throw new Error('ERROR: Empty page')
+    }
     const virtualConsole = new VirtualConsole()
     return new JSDOM(page, { virtualConsole })
   }
@@ -55,7 +67,9 @@ class Page {
    * @returns {Object} Object with value for each feature
    */
   async performTests(features) {
-    const dom = await this.getDOM(this.url)
+    const dom = await this.getDOM(this.url).catch(err => {
+      throw err
+    })
     const results = {}
     Object.keys(features).forEach(feature => {
       results[this.columns[feature]] = this.tests[feature](dom, this.parsed)

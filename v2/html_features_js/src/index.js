@@ -17,6 +17,7 @@ const main = async () => {
   const argv = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
     .help('help').alias('help', 'h')
+    .describe('verbose', 'Flag wether enable verbose mode')
     .group(['url', 'stdin'], 'Input:')
     .describe('url', 'Enter one URL as parameter' )
     .describe('stdin', 'Take input URLs from stdin')
@@ -25,6 +26,7 @@ const main = async () => {
     .describe('output-values-string', 'Return results as one string in format "<value1>,..,<value2>"')
     .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
     .describe('include-values', 'Prints also values used for tuning')
+    .describe('include-url', 'Prints also source URL')
     .group(featureStrings, 'Features:')
     .describe(featureStrings[0], 'Flag wether check how many input tags has page')
     .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
@@ -44,7 +46,7 @@ const main = async () => {
       process.exit(1)
     }
     jsdomDevtoolsFormatter.install();
-
+    const verbose = argv.argv.verbose
     const features = {}
     // We are relying on the order. check c++ file service/src/features/feature_enum.h
     if (argv.argv.featInputTag) features.inputTag = 'inputTag'
@@ -69,7 +71,7 @@ const main = async () => {
       })
       for await (const line of rl) {
         urls.push(line)
-        console.log(`Line from file: ${line}`);
+        if (verbose) console.log(`Line from file: ${line}`)
       }
     } else {
       console.error('Missing input type argument (e.g. --stdin)')
@@ -77,9 +79,14 @@ const main = async () => {
     }
     let firstRun = true
     for await (const url of urls) {
-      console.log(`--> Checking ${url}`)
+      if (verbose) console.log(`--> Checking ${url}`)
       const page = new Page(url, argv.argv.includeValues)
-      const results = await page.performTests(features)
+      let badUrl = false
+      const results = await page.performTests(features).catch(err => {
+        console.error(err.message)
+        badUrl = true
+      })
+      if (badUrl) continue
 
       if (argv.argv.outputJson) {
         console.log(JSON.stringify(results))
@@ -91,11 +98,17 @@ const main = async () => {
         // print header only for the first time
         if (firstRun) {
           let columns = []
+          if (argv.argv.includeUrl) {
+            columns.push('url')
+          }
           Object.keys(results).forEach(key => columns.push(key))
           console.log(columns.join(','))
           firstRun = false
         }
         let values = []
+        if (argv.argv.includeUrl) {
+          values.push(`"${url}"`)
+        }
         Object.keys(results).forEach(key => values.push(results[key]))
         console.log(values.join(','))
       } else {

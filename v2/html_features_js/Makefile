@@ -13,7 +13,7 @@ run:
 	node src/index.js ${HTML_FEATURES} --output-lines --url http://google.cz
 
 stdin:
-	node src/index.js ${HTML_FEATURES} --output-values-string --stdin --include-values
+	node src/index.js ${HTML_FEATURES} --output-values-string --stdin --include-values --include-url --verbose
 
 pack: build
 	pkg src/index.js --targets node12-linux-x64 --output bin/htmlfeatures
