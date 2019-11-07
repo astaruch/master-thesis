@@ -1,7 +1,7 @@
 'use strict'
 
 const fetch = require('node-fetch')
-const { JSDOM } = require('jsdom')
+const { JSDOM, VirtualConsole } = require('jsdom')
 
 class Page {
   constructor(url) {
@@ -44,7 +44,8 @@ class Page {
         'Content-Type': 'text/html; charset=UTF-8'
       },
     }).then(res => res.text())
-    return new JSDOM(page)
+    const virtualConsole = new VirtualConsole()
+    return new JSDOM(page, { virtualConsole })
   }
 
   /**
