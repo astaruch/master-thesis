@@ -75,6 +75,7 @@ const main = async () => {
       console.error('Missing input type argument (e.g. --stdin)')
       process.exit(1)
     }
+    let firstRun = true
     for await (const url of urls) {
       console.log(`--> Checking ${url}`)
       const page = new Page(url, argv.argv.includeValues)
@@ -87,7 +88,16 @@ const main = async () => {
           console.log(`${feature} ${results[feature]}`)
         })
       } else if (argv.argv.outputValuesString) {
-        console.log(results)
+        // print header only for the first time
+        if (firstRun) {
+          let columns = []
+          Object.keys(results).forEach(key => columns.push(key))
+          console.log(columns.join(','))
+          firstRun = false
+        }
+        let values = []
+        Object.keys(results).forEach(key => values.push(results[key]))
+        console.log(values.join(','))
       } else {
         console.error('You need to set output format')
         process.exit(1)

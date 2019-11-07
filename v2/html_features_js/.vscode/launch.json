@@ -10,7 +10,7 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/src/index.js",
             "args": [
-              "--url", "http://vysledky.lidovky.cz/soutez.php?stat=107&vek=1&typ=1&sport=2",
+              "--url", "http://google.com",
               "--feat-input-tag", "--feat-src-link", "--feat-form-handler", "--feat-invisible-iframe", "--feat-rewrite-statusbar", "--feat-disable-rightclick", "--feat-ahref-link", "--feat-popup-window", "--feat-favicon-link", "--feat-old-technologies", "--feat-missleading-link", "--feat-hostname-title",
               "--feat-hostname-title",
               "--output-values-string",

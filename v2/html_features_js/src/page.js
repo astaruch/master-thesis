@@ -360,7 +360,11 @@ class Page {
   }
 
   featureHostnameTitleTest(dom) {
-    const title = dom.window.document.title.toLowerCase()
+    let title = dom.window.document.querySelector('title')
+    if (!title || !title.text) {
+      return 1
+    }
+    title = title.text.toLowerCase()
     let hostname = this.parsed.hostname.match(/(?:www\.)?(?<HOST>.*)(?:\..*)/u)
     if (!hostname) {
       return 0
