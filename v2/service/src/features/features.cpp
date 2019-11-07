@@ -42,7 +42,7 @@ catch (const Poco::SyntaxException& ex)
     _url_is_ok = false;
 }
 
-std::vector<double> features_t::compute_feature_vector() const
+std::vector<double> features_t::compute_feature_vector()
 {
     std::vector<double> fvec;
 
@@ -63,11 +63,20 @@ std::vector<double> features_t::compute_feature_vector() const
         host_based_features_t host_based_features(_url, _parsed, _host_based_flags, _url_is_ok);
         auto values = host_based_features.compute_values_vec();
         fvec.insert(fvec.end(), values.begin(), values.end());
+
+        if (verbose_) {
+            extra_values_ += host_based_features.extra_values();
+        }
     }
 
     fvec.push_back(_label);
 
     return fvec;
+}
+
+std::string features_t::compute_extra_values() const
+{
+    return extra_values_;
 }
 
 void features_t::set_html_features_opts(const std::string& node_bin, const std::string& html_script)

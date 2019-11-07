@@ -17,7 +17,14 @@ public:
     host_based_features_t(const std::string_view url, const Poco::URI& parsed,
         const uint64_t flags, const bool url_is_ok);
 
+    void set_verbose(bool verbose) {
+        verbose_ = verbose;
+    }
+
     std::vector<double> compute_values_vec() const;
+    std::string extra_values();
+    std::vector<std::string> extra_columns();
+
     std::unordered_map<feature_enum::id, double> compute_values_map() const;
     double compute_value(feature_enum::id feature) const;
     double compute_value_redirect() const;
@@ -28,7 +35,6 @@ public:
     double compute_value_dnssec(bool); // for testing purpose
     double compute_value_dns_created() const;
     double compute_value_dns_updated() const;
-    std::string extract_dns_date(bool created) const;
     double compute_value_ssl_created() const;
     double compute_value_ssl_created(bool); // for testing purpose
     double compute_value_ssl_expire() const;
@@ -50,7 +56,8 @@ public:
     std::string get_asn() const;
     double compute_similar_domain() const;
     double compute_similar_domain(bool);
-
+    std::string get_dns_created(bool);
+    std::string get_dns_updated(bool);
 private:
     const std::string_view _url;
     const uint64_t _flags{0};
@@ -63,10 +70,19 @@ private:
     std::vector<std::string> dig_response_;
     std::vector<std::string> ssl_response_;
     std::vector<std::string> http_resp_headers_;
+    std::vector<std::string> whois_response_;
+
+    std::vector<std::string> extra_values_;
+    std::vector<std::string> extra_columns_;
+
+    bool verbose_;
 
     std::string extract_value(const std::vector<std::string>& output, const std::regex& reg) const;
     std::string extract_value_from_output(const std::vector<std::string>& output, const std::regex& reg) const;
     bool check_value_in_output(const std::vector<std::string>& output, const std::regex& reg) const;
+    std::string extract_dns_date(const std::regex& reg) const;
+    std::string get_dns_created() const;
+    std::string get_dns_updated() const;
     std::string get_ssl_subject() const;
     std::string get_ssl_created() const;
     std::string get_ssl_expire() const;
@@ -76,6 +92,7 @@ private:
     void fill_http_resp_headers();
     std::vector<std::string> get_dig_response() const;
     void fill_dig_response();
+    std::vector<std::string> get_whois_response() const;
     std::string get_sld() const;
     std::string get_word_suggestion(std::string_view word) const;
 

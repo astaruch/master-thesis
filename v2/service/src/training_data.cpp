@@ -83,6 +83,25 @@ std::string training_data::create_csv_header()
 
     columns.push_back("label");
 
+    if (verbose_) {
+        if (_host_based_feature_flags & feature_enum::dns_created) {
+            columns.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_created)) + "_value");
+        }
+        if (_host_based_feature_flags & feature_enum::dns_updated) {
+            columns.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_updated)) + "_value");
+        }
+        if (_host_based_feature_flags & feature_enum::ssl_created) {
+            columns.push_back(std::string(feature_enum::column_names.at(feature_enum::ssl_created)) + "_value");
+        }
+        if (_host_based_feature_flags & feature_enum::ssl_expire) {
+            columns.push_back(std::string(feature_enum::column_names.at(feature_enum::ssl_expire)) + "_value");
+        }
+        if (_host_based_feature_flags & feature_enum::asn) {
+            columns.push_back(std::string(feature_enum::column_names.at(feature_enum::asn)) + "_value");
+        }
+    }
+
+
     return std::accumulate(columns.begin(), columns.end(), std::string(),
         [](const std::string& a, const std::string& b) -> std::string {
             return a + (a.length() > 0 ? "," : "") + b;
@@ -103,6 +122,7 @@ void training_data::transform_urls_to_training_data()
         if (verbose_) fmt::print(file_, "-> Checking {}\n", url);
         features_t features(url, _url_feature_flags, _html_feature_flags,
             _host_based_feature_flags, _label);
+        features.set_verbose(verbose_);
         if (_html_feature_flags) {
             features.set_html_features_opts(std::string(_node_bin), std::string(_html_script));
         }
@@ -110,6 +130,9 @@ void training_data::transform_urls_to_training_data()
         std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
+        if (verbose_) {
+            line += features.compute_extra_values();
+        }
         fmt::print(file_, "{}\n", line);
     }
 }

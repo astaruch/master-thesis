@@ -42,6 +42,9 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
         dig_response_ = get_dig_response();
     }
+    if (_flags & (feature_enum::dns_created | feature_enum::dns_updated)) {
+        whois_response_ = get_whois_response();
+    }
     if (_flags & (feature_enum::similar_domain)) {
         sld_ = get_sld();
     }
@@ -153,14 +156,15 @@ std::string host_based_features_t::extract_value_from_output(
     return value;
 }
 
-std::string host_based_features_t::extract_dns_date(bool created) const
+std::vector<std::string> host_based_features_t::get_whois_response() const
 {
     auto cmd = fmt::format("whois {}", _parsed.getHost());
-    auto output = help_functions::get_output_from_program(cmd);
-    auto reg_created = R"((creat|regist)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
-    auto reg_updated = R"((chang|updat)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
-    const std::regex reg(created ? reg_created : reg_updated, std::regex::icase);
-    auto value = extract_value_from_output(output, reg);
+    return help_functions::get_output_from_program(cmd);
+}
+
+std::string host_based_features_t::extract_dns_date(const std::regex& reg) const
+{
+    auto value = extract_value_from_output(whois_response_, reg);
         if (value.find('.') != std::string::npos) {
         value = fmt::format("{}-{}-{}", value.substr(6,4), value.substr(3,2), value.substr(0,2));
     }
@@ -168,9 +172,35 @@ std::string host_based_features_t::extract_dns_date(bool created) const
     return value;
 }
 
+std::string host_based_features_t::get_dns_created(bool)
+{
+    whois_response_ = get_whois_response();
+    return get_dns_created();
+}
+
+std::string host_based_features_t::get_dns_updated(bool)
+{
+    whois_response_ = get_whois_response();
+    return get_dns_updated();
+}
+
+std::string host_based_features_t::get_dns_created() const
+{
+    auto reg_created = R"((creat|regist)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
+    const std::regex reg(reg_created, std::regex::icase);
+    return extract_dns_date(reg);
+}
+
+std::string host_based_features_t::get_dns_updated() const
+{
+    auto reg_updated = R"((chang|updat)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
+    const std::regex reg(reg_updated, std::regex::icase);
+    return extract_dns_date(reg);
+}
+
 double host_based_features_t::compute_value_dns_created() const
 {
-    auto created = extract_dns_date(true);
+    auto created = get_dns_created();
     if (created.empty()) {
         // could not find basic DNS record in traditional format
         return 1.;
@@ -180,17 +210,17 @@ double host_based_features_t::compute_value_dns_created() const
 
 double host_based_features_t::compute_value_dns_updated() const
 {
-    auto created = extract_dns_date(false);
-    if (created.empty()) {
+    auto updated = get_dns_updated();
+    if (updated.empty()) {
         // could not find basic DNS record in traditional format
         return 1.;
     }
-    return help_functions::normalize_date_string(created);
+    return help_functions::normalize_date_string(updated);
 }
 
 std::vector<std::string> host_based_features_t::get_ssl_response() const
 {
-    auto cmd = fmt::format("echo | timeout 2 openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
+    auto cmd = fmt::format("echo | timeout 1 openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
                            _parsed.getHost(), _parsed.getPort());
     return help_functions::get_output_from_program(cmd);
 }
@@ -398,6 +428,51 @@ double host_based_features_t::compute_similar_domain(bool)
 {
     sld_ = get_sld();
     return compute_similar_domain();
+}
+
+std::vector<std::string> host_based_features_t::extra_columns()
+{
+    std::vector<std::string> values;
+    if (_flags & feature_enum::dns_created) {
+        values.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_created)) + "_value");
+    }
+    if (_flags & feature_enum::dns_updated) {
+        values.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_updated)) + "_value");
+    }
+    if (_flags & feature_enum::ssl_created) {
+        values.push_back(std::string(feature_enum::column_names.at(feature_enum::ssl_created)) + "_value");
+    }
+    if (_flags & feature_enum::ssl_expire) {
+        values.push_back(std::string(feature_enum::column_names.at(feature_enum::ssl_expire)) + "_value");
+    }
+    if (_flags & feature_enum::asn) {
+        values.push_back(std::string(feature_enum::column_names.at(feature_enum::asn)) + "_value");
+    }
+    return values;
+}
+
+std::string host_based_features_t::extra_values()
+{
+    std::string values = "";
+    if (_flags & feature_enum::dns_created) {
+        values += get_dns_created() + ",";
+    }
+    if (_flags & feature_enum::dns_updated) {
+        values += get_dns_updated() + ",";
+    }
+    if (_flags & feature_enum::ssl_created) {
+        values += get_ssl_created() + ",";
+    }
+    if (_flags & feature_enum::ssl_expire) {
+        values += get_ssl_expire() + ",";
+    }
+    if (_flags & feature_enum::asn) {
+        values += get_asn() + ",";
+    }
+    if (values.empty())
+        return "";
+    if (values.back() == ',') values.pop_back();
+    return values;
 }
 
 double host_based_features_t::compute_value(feature_enum::id feature) const

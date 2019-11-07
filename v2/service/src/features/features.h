@@ -15,8 +15,12 @@ public:
     features_t(const std::string& url, uint64_t url_flags, uint64_t html_flags,
                uint64_t host_based_flags, int label);
 
-    std::vector<double> compute_feature_vector() const;
+    std::vector<double> compute_feature_vector();
+    std::string compute_extra_values() const;
     void set_html_features_opts(const std::string& node_bin, const std::string& html_script);
+    void set_verbose(bool verbose) {
+        verbose_ = verbose;
+    }
 protected:
     std::string _url;
     uint64_t _url_flags;
@@ -25,6 +29,10 @@ protected:
     int _label;
     Poco::URI _parsed;
     bool _url_is_ok;
+
+    bool verbose_{false};
+
+    std::string extra_values_{};
 
     std::string _node_bin;
     std::string _html_script;
