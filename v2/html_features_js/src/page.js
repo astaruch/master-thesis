@@ -75,7 +75,7 @@ class Page {
       results[this.columns[feature]] = this.tests[feature](dom, this.parsed)
       if (this.includeValues) {
         const valueProp = `${feature}Value`
-        if (this[valueProp]) {
+        if (typeof this[valueProp] === 'number') {
           results[`${this.columns[feature]}_value`] = this[valueProp]
         }
         // results[`${this.columns[feature]}_value`] = this[`${feature}Value`]

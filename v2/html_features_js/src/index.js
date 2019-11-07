@@ -27,6 +27,7 @@ const main = async () => {
     .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
     .describe('include-values', 'Prints also values used for tuning')
     .describe('include-url', 'Prints also source URL')
+    .describe('include-header', 'Prints also header for csv')
     .group(featureStrings, 'Features:')
     .describe(featureStrings[0], 'Flag wether check how many input tags has page')
     .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
@@ -81,9 +82,17 @@ const main = async () => {
   for await (const url of urls) {
     if (verbose) console.log(`--> Checking ${url}`)
     const page = new Page(url, argv.argv.includeValues)
+
     let badUrl = false
     const results = await page.performTests(features).catch(err => {
-      console.error(err.message)
+      const n = Object.keys(features).length
+      let print = []
+      if (argv.argv.includeUrl) {
+        print.push(`"${url}"`)
+      }
+      print.push(Array(n).fill(-1))
+      console.log(print.join(','))
+      if (verbose) console.error(err.message)
       badUrl = true
     })
     if (badUrl) continue
@@ -96,7 +105,7 @@ const main = async () => {
       })
     } else if (argv.argv.outputValuesString) {
       // print header only for the first time
-      if (firstRun) {
+      if (argv.argv.includeHeader && firstRun) {
         let columns = []
         if (argv.argv.includeUrl) {
           columns.push('url')

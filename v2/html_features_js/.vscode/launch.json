@@ -14,10 +14,13 @@
               // "--url", "https://a.ctnsnet.com/ase/banner?act=rfrm&aid=56837424&nid=304042&bv=W9lgiwABEQMKd9AGAASm1bF_QAAgbq5530Y9zw&exc=1&pguid=1c655e3c3d994575bb9998a8567926c2&cb=1540972683152&bip=7e218997f5c121e682ba36a874f6f954&exurl=&exsl=1&clk=https://adclick.g.doubleclick.net/aclk%3Fsa%3Dl%26ai%3DCZe5Yi2DZW4OiBIag3wPVzZKYC7Cop_lTq6j2voIBwI23ARABIABgzOHtgfwuggEXY2EtcHViLTYyNTI5MDE3NjI3NzE2MTSgAe3X4eQDyAEJqQIiBwLUFVK",
               // "--url", "http://s.amazon-adsystem.com/iu3?cm3ppd=1&d=dtb-pub&dl=an&dcc=t",
               // "--url", " http://watson.microsoft.com/StageOne/Generic/PCA2/setup_exe/0_0_0_0/setup_exe/unknown/unknown/200/-1.htm?LCID=1029&OS=6.1.7600.2.00010100.0.0.48.16385&SM=Hewlett-Packard&SPN=HP%20Compaq%20dc5850%20Small%20Form%20Factor&BV=786F6%20v03.14&MID=960BCEED-C31C-46BE-854D-30F74B18754C&Queue=1",
-              "--url", "https://ivys-st08-6.o2tv.cz/aa/fce8df4ae4c6bf7f63d5782ff70fd42c/1540975855102/a0ff7aaed1a46464595ba583a17567ae/dna-61924494877509114-pc/1101-1505/002016.m4s",
+              // "--url", "https://ivys-st08-6.o2tv.cz/aa/fce8df4ae4c6bf7f63d5782ff70fd42c/1540975855102/a0ff7aaed1a46464595ba583a17567ae/dna-61924494877509114-pc/1101-1505/002016.m4s",
+              "--url", "http://vysledky.lidovky.cz/soutez.php?stat=107&vek=1&typ=1&sport=2",
               "--feat-input-tag", "--feat-src-link", "--feat-form-handler", "--feat-invisible-iframe", "--feat-rewrite-statusbar", "--feat-disable-rightclick", "--feat-ahref-link", "--feat-popup-window", "--feat-favicon-link", "--feat-old-technologies", "--feat-missleading-link", "--feat-hostname-title",
               "--feat-hostname-title",
               "--output-values-string",
+              "--include-header",
+              "--include-url",
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
