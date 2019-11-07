@@ -4,7 +4,7 @@ const fetch = require('node-fetch')
 const { JSDOM, VirtualConsole } = require('jsdom')
 
 class Page {
-  constructor(url) {
+  constructor(url, includeValues) {
     this.url = url
     this.columns = {
       inputTag: 'input_tag',
@@ -35,6 +35,7 @@ class Page {
       missleadingLink: this.featureMissleadingLinkTest.bind(this),
       hostnameTitle: this.featureHostnameTitleTest.bind(this)
     }
+    this.includeValues = includeValues
     this.parsed = new URL(url)
   }
 
@@ -58,6 +59,13 @@ class Page {
     const results = {}
     Object.keys(features).forEach(feature => {
       results[this.columns[feature]] = this.tests[feature](dom, this.parsed)
+      if (this.includeValues) {
+        const valueProp = `${feature}Value`
+        if (this[valueProp]) {
+          results[`${this.columns[feature]}_value`] = this[valueProp]
+        }
+        // results[`${this.columns[feature]}_value`] = this[`${feature}Value`]
+      }
     })
     return results
   }
@@ -68,7 +76,8 @@ class Page {
    * @returns {Number} number of input elements
    */
   featureInputTag(dom) {
-    return dom.window.document.querySelectorAll('input').length
+    this.inputTagValue = dom.window.document.querySelectorAll('input').length
+    return this.inputTagValue
   }
 
   /**
@@ -85,9 +94,9 @@ class Page {
    *
    * @param {JSDOM} dom WebPage DOM
    * @param {URL} url URL which is investigated
-   * @returns {Number} ratio of links pointing to itself vs outer world
+   * @returns {Number} computed phishing value for this feature
    */
-  featureSrcLink(dom, url) {
+  featureSrcLinkTest(dom, url) {
     // https://developer.mozilla.org/en-US/docs/Web/API/NodeList
     // https://developer.mozilla.org/en-US/docs/Web/API/Element
     let differentLinks = 0
@@ -111,17 +120,7 @@ class Page {
       }
     })
     return (differentLinks / allLinks) || 0;
-  }
-
-  /**
-   *
-   * @param {JSDOM} dom WebPage DOM
-   * @param {URL} url URL which is investigated
-   * @returns {Number} computed phishing value for this feature
-   */
-  featureSrcLinkTest(dom, url) {
-    return this.featureSrcLink(dom, url)
-  }
+}
 
   featureFormHandler(dom) {
     let count = 0
@@ -136,6 +135,7 @@ class Page {
         count++
       }
     })
+    this.formHandlerValue = count
     return count
   }
 
@@ -165,6 +165,7 @@ class Page {
         count++
       }
     })
+    this.invisibleIframeValue = count
     return count
   }
 
@@ -173,7 +174,7 @@ class Page {
     return iframes > 0 ? 1 : 0
   }
 
-  featureRewriteStatusbar(dom) {
+  featureRewriteStatusbarTest(dom) {
     let rewriting = false
     dom.window.document.querySelectorAll('a').forEach(node => {
       const onmouseover = node.attributes.getNamedItem('onmouseover')
@@ -185,10 +186,6 @@ class Page {
       }
     })
     return Number(rewriting)
-  }
-
-  featureRewriteStatusbarTest(dom) {
-    return this.featureRewriteStatusbar(dom)
   }
 
   featureDisableRightclick(dom) {
@@ -204,10 +201,18 @@ class Page {
   }
 
   featureDisableRightclickTest(dom) {
-    return this.featureDisableRightclick(dom)
+    const body = dom.window.document.body
+    if (!body && !body.attributes) {
+      return 1
+    }
+    const oncontextmenu = body.attributes.getNamedItem('oncontextmenu')
+    if (oncontextmenu && oncontextmenu.value.includes('return false')) {
+      return 1
+    }
+    return 0
   }
 
-  featureAhrefLink(dom) {
+  featureAhrefLinkTest(dom) {
     let count = 0
     let allLinks = 0
     dom.window.document.querySelectorAll('a').forEach(node => {
@@ -228,10 +233,6 @@ class Page {
       }
     })
     return (count / allLinks) || 0
-  }
-
-  featureAhrefLinkTest(dom) {
-    return this.featureAhrefLink(dom)
   }
 
   featurePopupWindow(dom) {
@@ -263,6 +264,7 @@ class Page {
         }
       })
     })
+    this.popupWindowValue = count
     return count
   }
 
@@ -270,7 +272,7 @@ class Page {
     return this.featurePopupWindow(dom) > 0 ? 1 : 0
   }
 
-  featureFaviconLink(dom) {
+  featureFaviconLinkTest(dom) {
     let anotherSite = false
     dom.window.document.querySelectorAll('link').forEach(node => {
       const rel = node.attributes.getNamedItem('rel')
@@ -298,11 +300,7 @@ class Page {
     return Number(anotherSite)
   }
 
-  featureFaviconLinkTest(dom) {
-    return this.featureFaviconLink(dom)
-  }
-
-  featureOldTechnologies(dom) {
+  featureOldTechnologiesTest(dom) {
     const window = dom.window
     const document = dom.window.document
     if(!!window.React || !!document.querySelector('[data-reactroot], [data-reactid]')) {
@@ -322,10 +320,6 @@ class Page {
     if(!!window.Meteor) return 0
 
     return 1
-  }
-
-  featureOldTechnologiesTest(dom) {
-    return this.featureOldTechnologies(dom)
   }
 
   featureMissleadingLink(dom) {
@@ -357,6 +351,7 @@ class Page {
         }
       }
     })
+    this.missleadingLinkValue = value
     return value
   }
 
@@ -364,7 +359,7 @@ class Page {
     return this.featureMissleadingLink(dom) > 0 ? 1 : 0
   }
 
-  featureHostnameTitle(dom) {
+  featureHostnameTitleTest(dom) {
     const title = dom.window.document.title.toLowerCase()
     let hostname = this.parsed.hostname.match(/(?:www\.)?(?<HOST>.*)(?:\..*)/u)
     if (!hostname) {
@@ -375,10 +370,6 @@ class Page {
       return 0
     }
     return 1
-  }
-
-  featureHostnameTitleTest(dom) {
-    return this.featureHostnameTitle(dom)
   }
 }
 

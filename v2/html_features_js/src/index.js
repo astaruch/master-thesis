@@ -20,10 +20,11 @@ const main = async () => {
     .group(['url', 'stdin'], 'Input:')
     .describe('url', 'Enter one URL as parameter' )
     .describe('stdin', 'Take input URLs from stdin')
-    .group(['output-json', 'output-lines', 'output-values-string'], 'Output formats:')
+    .group(['output-json', 'output-lines', 'output-values-string', 'print-values'], 'Output formats:')
     .describe('output-json', 'Return results as escaped JSON' )
     .describe('output-values-string', 'Return results as one string in format "<value1>,..,<value2>"')
     .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
+    .describe('include-values', 'Prints also values used for tuning')
     .group(featureStrings, 'Features:')
     .describe(featureStrings[0], 'Flag wether check how many input tags has page')
     .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
@@ -76,7 +77,7 @@ const main = async () => {
     }
     for await (const url of urls) {
       console.log(`--> Checking ${url}`)
-      const page = new Page(url)
+      const page = new Page(url, argv.argv.includeValues)
       const results = await page.performTests(features)
 
       if (argv.argv.outputJson) {

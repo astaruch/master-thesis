@@ -46,13 +46,13 @@ const DOM2 = `
 
     it('should return 0.25 (1/4) of links to outer world', () => {
       const DOM = new JSDOM(DOM1)
-      const links = page.featureAhrefLink(DOM, url)
+      const links = page.featureAhrefLinkTest(DOM, url)
       assert.strictEqual(links, 0.25)
     })
 
     it('should return 1 (1/1) as all links are to outer world', () => {
       const DOM = new JSDOM(DOM2)
-      const value = page.featureAhrefLink(DOM, url)
+      const value = page.featureAhrefLinkTest(DOM, url)
       assert.strictEqual(value, 1)
     })
   })

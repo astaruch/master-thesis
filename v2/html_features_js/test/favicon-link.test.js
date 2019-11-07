@@ -33,22 +33,22 @@ describe('FeatureTests', function() {
 
     it('relative domain should return 0', () => {
       const DOM = new JSDOM(DOM1)
-      const value = page.featureFaviconLink(DOM)
+      const value = page.featureFaviconLinkTest(DOM)
       assert.strictEqual(value, 0)
     })
     it('same absolute domain should return 0', () => {
       const DOM = new JSDOM(DOM2)
-      const value = page.featureFaviconLink(DOM)
+      const value = page.featureFaviconLinkTest(DOM)
       assert.strictEqual(value, 0)
     })
     it('external site should return 1', () => {
       const DOM = new JSDOM(DOM3)
-      const value = page.featureFaviconLink(DOM)
+      const value = page.featureFaviconLinkTest(DOM)
       assert.strictEqual(value, 1)
     })
     it('default favicon should return 0', () => {
       const DOM = new JSDOM(DOM4)
-      const value = page.featureFaviconLink(DOM)
+      const value = page.featureFaviconLinkTest(DOM)
       assert.strictEqual(value, 0)
     })
   })

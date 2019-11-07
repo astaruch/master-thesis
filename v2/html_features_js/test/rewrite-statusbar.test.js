@@ -34,17 +34,17 @@ describe('FeatureTests', function() {
 
     it('phishy onmouseover should return 1', () => {
       const DOM = new JSDOM(DOM1)
-      const forms = page.featureRewriteStatusbar(DOM)
+      const forms = page.featureRewriteStatusbarTest(DOM)
       assert.strictEqual(forms, 1)
     })
     it('legit onmouseover should return 0', () => {
       const DOM = new JSDOM(DOM2)
-      const forms = page.featureRewriteStatusbar(DOM)
+      const forms = page.featureRewriteStatusbarTest(DOM)
       assert.strictEqual(forms, 0)
     })
     it('no event should return 0', () => {
       const DOM = new JSDOM(DOM3)
-      const forms = page.featureRewriteStatusbar(DOM)
+      const forms = page.featureRewriteStatusbarTest(DOM)
       assert.strictEqual(forms, 0)
     })
   })

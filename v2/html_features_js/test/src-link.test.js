@@ -42,22 +42,10 @@ const DOM2 = `
 `
     const page = new Page(url)
 
-    it('should return 75% ratio of links to outer world', () => {
-      const DOM = new JSDOM(DOM1)
-      const links = page.featureSrcLink(DOM, url)
-      assert.strictEqual(links, 0.75)
-    })
-
     it('should return 0.75 as phishing value', () => {
       const DOM = new JSDOM(DOM1)
       const value = page.featureSrcLinkTest(DOM, url)
       assert.strictEqual(value, 0.75)
-    })
-
-    it('should return 0% links to outer world', () => {
-      const DOM = new JSDOM(DOM2)
-      const links = page.featureSrcLink(DOM)
-      assert.strictEqual(links, 0)
     })
 
     it('should return 0 as phishing value', () => {
