@@ -120,8 +120,7 @@ void training_data::transform_urls_to_training_data()
     for (const auto& url: _urls) {
         if (verbose_) fmt::print(file_, "-> Checking {}\n", url);
         features_t features(url, _url_feature_flags, _html_feature_flags,
-            _host_based_feature_flags, _label);
-        features.set_verbose(verbose_);
+            _host_based_feature_flags, _label, verbose_);
         if (_html_feature_flags) {
             features.set_html_features_opts(std::string(node_bin_), std::string(html_script_), std::string(htmlfeatures_bin_));
         }

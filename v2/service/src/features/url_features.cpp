@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <regex>
 
+#include <fmt/format.h>
 #include <Poco/Exception.h>
 
 url_features_t::url_features_t(const std::string_view url)
@@ -16,19 +17,7 @@ try
 }
 catch (const Poco::SyntaxException& ex)
 {
-    // we didn't finish parsing an URL thus _url_is_ok is still false
-}
-
-url_features_t::url_features_t(const std::string_view url, const uint64_t flags)
-try
-   : _url(url)
-   , _flags(flags)
-   , _parsed(Poco::URI(url.begin()))
-   , _url_is_ok(true)
-{
-}
-catch (const Poco::SyntaxException& ex)
-{
+    fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
     // we didn't finish parsing an URL thus _url_is_ok is still false
 }
 
@@ -325,7 +314,7 @@ double url_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
     if (!_url_is_ok) {
-        return 1.;
+        return -1.;
     }
     switch (feature) {
     case feature_enum::ip_address: return compute_value_ip_address();

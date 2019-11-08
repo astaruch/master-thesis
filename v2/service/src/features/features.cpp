@@ -7,39 +7,27 @@
 #include <Poco/Exception.h>
 #include <fmt/format.h>
 
-features_t::features_t(const std::string& url)
-try
-    : _url(url)
-    , _url_flags(0)
-    , _html_flags(0)
-    , _host_based_flags(0)
-    , _label(0)
-    , _parsed(Poco::URI(url))
-    , _url_is_ok(true)
+features_t::features_t(const std::string& url, bool verbose = false)
+    : features_t(url, 0, 0, 0, 0, verbose)
 {
-}
-catch (const Poco::SyntaxException& ex)
-{
-    _parsed = Poco::URI();
-    _url_is_ok = false;
 }
 
 features_t::features_t(const std::string& url, uint64_t url_flags, uint64_t html_flags,
-                       uint64_t host_based_flags, int label)
-try
+                       uint64_t host_based_flags, int label, bool verbose = false)
     : _url(url)
     , _url_flags(url_flags)
     , _html_flags(html_flags)
     , _host_based_flags(host_based_flags)
     , _label(label)
-    , _parsed(Poco::URI(url))
     , _url_is_ok(true)
+    , verbose_(verbose)
 {
-}
-catch (const Poco::SyntaxException& ex)
-{
-    _parsed = Poco::URI();
-    _url_is_ok = false;
+    try {
+        _parsed = Poco::URI(url);
+    } catch (const Poco::SyntaxException& ex) {
+        if (verbose_) fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
+        _url_is_ok = false;
+    }
 }
 
 std::vector<double> features_t::compute_feature_vector()

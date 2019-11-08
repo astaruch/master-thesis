@@ -13,7 +13,6 @@
 class url_features_t {
 public:
     explicit url_features_t(const std::string_view url);
-    url_features_t(const std::string_view url, const uint64_t flags);
     url_features_t(const std::string_view url, const Poco::URI& parsed, const uint64_t flags,
         const bool url_is_ok);
 

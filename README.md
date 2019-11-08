@@ -73,3 +73,4 @@ To parse an URL from commandline, we are using program `faup`.
     $ pwd
     faup/build
     $ sudo cp src/lib/libfaup_static.a /usr/local/lib/
+https://a2plcpnl0535.prod.iad2.secureserver.net/~g0x7req4wfr6/SAC/wp-admin/user/https://www.itaucard.pontos.multiplus.com.br/index.php?id=30horas=1=2=$#%#$%#%#%$#%$#%#$%#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%$#%#%#%$#%$#%$#%#
