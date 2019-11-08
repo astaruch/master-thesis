@@ -31,6 +31,11 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     , _parsed(parsed)
     , _url_is_ok(url_is_ok)
 {
+    // we can't make query bcs our URL is malformed and we don't know host and other stuff
+    // we could perform some magic to recover it, but this should be more concise
+    if (!_url_is_ok) {
+        return;
+    }
     if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
         ssl_response_ = get_ssl_response();
     }
@@ -161,7 +166,7 @@ std::string host_based_features_t::extract_value_from_output(
 
 std::vector<std::string> host_based_features_t::get_whois_response() const
 {
-    auto cmd = fmt::format("whois {}", _parsed.getHost());
+    auto cmd = fmt::format("timeout 2 whois {}", _parsed.getHost());
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -388,7 +393,7 @@ std::string host_based_features_t::get_asn() const
 double host_based_features_t::compute_value_asn() const
 {
     // TODO: change to some meaningfull value after performing statistics
-    return get_asn().empty() ? 1 : 0;
+    return asn_.empty() ? 1 : 0;
 }
 
 std::string host_based_features_t::get_word_suggestion(std::string_view word) const
@@ -482,7 +487,7 @@ double host_based_features_t::compute_value(feature_enum::id feature) const
 {
     // if we couldn't parse an URL, we are marking all features as phishy
     if (!_url_is_ok) {
-        return 1.;
+        return -1.;
     }
     switch (feature) {
     // URL FEATURES IN ANOTHER FILE
