@@ -20,15 +20,14 @@ html_features_t::html_features_t(std::string_view url,
 
 html_features_t::html_features_t(std::string_view url,
                                  uint64_t flags,
-                                 std::string_view exe_path,
-                                 bool extra_values = false)
+                                 std::string_view exe_path)
     : url_(url)
     , flags_(flags)
     , exe_path_(exe_path)
 {
     auto args = create_args();
-    cmd_ = fmt::format("{} {} --output-values-string --url '{}' {}", exe_path_, args, url, (extra_values ? "--include-values" : ""));
-    fmt::print("{}\n", cmd_);
+    cmd_ = fmt::format("{} {} --output-values-string --url '{}'", exe_path_, args, url);
+    // fmt::print("{}\n", cmd_);
 }
 
 std::tuple<std::string, std::string> html_features_t::split_by_space(const std::string& str)

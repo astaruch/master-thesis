@@ -14,7 +14,7 @@ class html_features_t {
 public:
     html_features_t(std::string_view url, uint64_t flags, std::string_view node_bin,
         std::string_view html_script);
-    html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path, bool extra_values);
+    html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path);
 
     std::vector<double> compute_values();
     std::vector<double> get_values_from_external_script();
