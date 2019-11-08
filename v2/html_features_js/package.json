@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/*.test.js --exit",
+    "test": "standard --env mocha && mocha test/**/*.test.js --exit",
     "start": "node src/index.js",
     "lint": "eslint --ext js,ts,jsx,tsx ./src ./test",
     "fix-lint": "eslint --ext js,ts,jsx,tsx ./src ./test --fix"
@@ -17,9 +17,11 @@
   "devDependencies": {
     "@strv/eslint-config-node": "^2.1.2",
     "eslint": "^6.6.0",
-    "mocha": "^6.2.2"
+    "mocha": "^6.2.2",
+    "standard": "^14.3.1"
   },
   "dependencies": {
+    "abort-controller": "^3.0.0",
     "jsdom": "^15.2.0",
     "jsdom-devtools-formatter": "^1.0.0",
     "node-fetch": "^2.6.0",

@@ -80,7 +80,7 @@ const main = async () => {
   let firstRun = true
   for await (const url of urls) {
     if (verbose) console.log(`--> Checking ${url}`)
-    const page = new Page(url, argv.argv.includeValues)
+    const page = new Page(url, argv.argv.includeValues, verbose)
 
     let badUrl = false
     const results = await page.performTests(features).catch(err => {

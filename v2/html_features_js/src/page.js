@@ -1,11 +1,11 @@
 'use strict'
 
 const { fetchWithTimeout } = require('./fetchWithTimeout')
-
+const { AbortController } = require('abort-controller')
 const { JSDOM, VirtualConsole } = require('jsdom')
 
 class Page {
-  constructor (url, includeValues) {
+  constructor (url, includeValues, verbose) {
     this.url = url
     this.columns = {
       inputTag: 'input_tag',
@@ -38,24 +38,60 @@ class Page {
     }
     this.includeValues = includeValues
     this.parsed = new URL(url)
+    this.verbose = verbose
   }
 
+  // async getPage (url) {
+  //   return new Promise(fetchWithTimeout(url, {
+  //     headers: {
+  //       'Content-Type': 'text/html; charset=UTF-8'
+  //     },
+  //     signal: signal
+  //   }, 3000)
+  //     .then(res => res.text())
+  //     .catch(err => {
+  //       if (err.code === 'ENOTFOUND') {
+  //         throw new Error('ERROR: Site is down')
+  //       } else if (err.name === 'AbortError') {
+  //         throw new Error('ERROR: Cancelling request. Site is not finishing request')
+  //       }
+  //       throw err
+  //     }))
+  // }
+
   async getDOM (url) {
+    // we need to have a chance cancel weird request such as hanging 'http://w107fm.com/wp-admin/css/web/bt.com/clients/'
+    const controller = new AbortController()
+    const signal = controller.signal
+
+    const abortFetching = () => {
+      if (this.verbose) console.log(`Abort sent after 5s for '${this.url}'`)
+      controller.abort()
+    }
+
+    const abortTimeout = setTimeout(abortFetching, 5000)
+
     const page = await fetchWithTimeout(url, {
       headers: {
         'Content-Type': 'text/html; charset=UTF-8'
-      }
+      },
+      signal: signal
     }, 3000)
       .then(res => res.text())
       .catch(err => {
         if (err.code === 'ENOTFOUND') {
-          throw new Error('ERROR: Site is down')
+          throw new Error('WARNING: Site is down')
+        } else if (err.name === 'AbortError') {
+          throw new Error('WARNING: Request aborted (site didnt sent request in 5s)')
         }
         throw err
       })
+
     if (page.length === 0) {
-      throw new Error('ERROR: Empty page')
+      throw new Error('WARNING: Empty page')
     }
+    // we don't need to send abort cause we have page
+    clearTimeout(abortTimeout)
     const virtualConsole = new VirtualConsole()
     return new JSDOM(page, { virtualConsole })
   }
