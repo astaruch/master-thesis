@@ -84,6 +84,11 @@ double host_based_features_t::compute_value_redirect() const
 {
     auto cmd = fmt::format("curl --max-time 2 -s -w \"%{{http_code}}\" -o /dev/null '{}'", _url);
     auto output = help_functions::get_output_from_program(cmd);
+    if (output.empty()) {
+        // this happens if cURL can't get output (either weird URL, or contains \{\{\}\})
+        // but it's merely a few URLs so we don't need to handle it
+        return 0;
+    }
     auto http_code_str = output.front();
     try {
         auto http_code = std::stoi(http_code_str); // throws invalid_exception
@@ -384,7 +389,7 @@ std::string host_based_features_t::get_asn() const
         return {};
     }
     // 1st line of dig is IP address for a hostname
-    auto cmd = fmt::format("whois --verbose {} | grep -i origin", dig_response_[0]);
+    auto cmd = fmt::format("timeout 2 whois --verbose {} | grep -i origin", dig_response_[0]);
     auto output = help_functions::get_output_from_program(cmd);
     std::regex reg("(origin).* ([[:alnum:]]*)", std::regex::icase);
     return extract_value_from_output(output, reg);

@@ -80,6 +80,7 @@ host-based-features: build-debug
 		--enable-features \
 		--td-output-extra-values \
 		--td-output-url \
+		--td-output-name "host-based-output2.txt" \
 		${HOST_BASED_FEATURES}
 
 all-features: build-debug
