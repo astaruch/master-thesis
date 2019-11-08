@@ -54,49 +54,49 @@ TEST(DNSRegex, ExtractDate1)
 {
     host_based_features_t f("http://google.ro");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("20000717", date);
+    EXPECT_EQ("2000-07-17", date);
 }
 
 TEST(DNSRegex, ExtractDate2)
 {
     host_based_features_t f("http://staruch.sk");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("20180926", date);
+    EXPECT_EQ("2018-09-26", date);
 }
 
 TEST(DNSRegex, ExtractDate3)
 {
     host_based_features_t f("http://google.com");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("19970915", date);
+    EXPECT_EQ("1997-09-15", date);
 }
 
 TEST(DNSRegex, ExtractDate4)
 {
     host_based_features_t f("http://google.cn");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("20030317", date);
+    EXPECT_EQ("2003-03-17", date);
 }
 
 TEST(DNSRegex, ExtractDate5)
 {
     host_based_features_t f("http://youtube.jp");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("20070612", date);
+    EXPECT_EQ("2007-06-12", date);
 }
 
 TEST(DNSRegex, ExtractDate6)
 {
     host_based_features_t f("http://nic.cz");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("19971030", date);
+    EXPECT_EQ("1997-10-30", date);
 }
 
 TEST(DNSRegex, ExtractDate7)
 {
     host_based_features_t f("http://google.com.br");
     auto date = f.get_dns_created(true);
-    EXPECT_EQ("19990518", date);
+    EXPECT_EQ("1999-05-18", date);
 }
 
 TEST(DNSRegex, ExtractDate8)
@@ -111,7 +111,31 @@ TEST(DNSRegex, ExtractDateUpadted9)
     host_based_features_t f("http://google.com");
     auto date = f.get_dns_updated(true);
     // TODO ALERT: this is not unit test, it will change over time
-    EXPECT_EQ("20190909", date);
+    EXPECT_EQ("2019-09-09", date);
+}
+
+TEST(DNSRegex, ExtractDateUpadted10)
+{
+    host_based_features_t f("http://google.com.br");
+    auto date = f.get_dns_updated(true);
+    // TODO ALERT: this is not unit test, it will change over time
+    EXPECT_EQ("2019-04-17", date);
+}
+
+TEST(DNSRegex, ExtractDateUpadted11)
+{
+    host_based_features_t f("http://nic.cz");
+    auto date = f.get_dns_updated(true);
+    // TODO ALERT: this is not unit test, it will change over time
+    EXPECT_EQ("2016-11-22", date);
+}
+
+TEST(DNSRegex, ExtractDateUpadted12)
+{
+    host_based_features_t f("http://nic.sk");
+    auto date = f.get_dns_updated(true);
+    // TODO ALERT: this is not unit test, it will change over time
+    EXPECT_EQ("2019-10-14", date);
 }
 
 TEST(SSL, SubjectMatchHostname)
@@ -202,13 +226,6 @@ TEST(Headers, X_CONTENT_TYPE_OPTS_MISSING)
 {
     host_based_features_t f("https://paypal.com");
     EXPECT_EQ(1, f.compute_value_x_content_type(true));
-}
-
-TEST(Host, ASN)
-{
-    host_based_features_t f("https://google.com");
-    EXPECT_EQ(0, f.compute_value_asn(true));
-    EXPECT_EQ("AS15169", f.get_asn());
 }
 
 TEST(DomainSimilarity, SimilarDomain)

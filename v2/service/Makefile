@@ -89,6 +89,8 @@ all-features: build-debug
 		--td-stdin \
 		--td-class-value 0 \
 		--enable-features \
+		--td-output-url \
+		--td-output-extra-values \
 		--htmlfeatures-bin ${HTMLFEATURES_BIN} \
 		${URL_FEATURES} \
 		${HTML_FEATURES} \

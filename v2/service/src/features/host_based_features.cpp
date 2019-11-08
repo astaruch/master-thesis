@@ -181,7 +181,13 @@ std::string host_based_features_t::extract_dns_date(const std::regex& reg) const
         if (value.find('.') != std::string::npos) {
         value = fmt::format("{}-{}-{}", value.substr(6,4), value.substr(3,2), value.substr(0,2));
     }
+    // remove punctuation to have clear number
     value.erase(remove_if(value.begin(), value.end(), ispunct), value.end());
+    if (value.empty()) {
+        return "";
+    }
+    // add dashes to look it like a number
+    value = fmt::format("{}-{}-{}", value.substr(0, 4), value.substr(4, 2), value.substr(6, 2));
     return value;
 }
 
