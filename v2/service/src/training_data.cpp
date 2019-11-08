@@ -130,11 +130,9 @@ void training_data::transform_urls_to_training_data()
         line += std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
-        if (output_extra_values_) {
-            // this need to called after compute_feature_vector()
-            line += features.compute_extra_values();
-        }
-
-        fmt::print(file_, "{}{}\n", (output_include_url_ ? fmt::format("\"{}\",", url) : ""), line);
+        fmt::print(file_, "{}{}{}\n",
+            (output_include_url_ ? fmt::format("\"{}\",", url) : ""),
+            line,
+            (output_extra_values_ ? fmt::format(",{}", features.compute_extra_values()) : ""));
     }
 }

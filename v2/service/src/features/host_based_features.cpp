@@ -178,7 +178,7 @@ std::vector<std::string> host_based_features_t::get_whois_response() const
 std::string host_based_features_t::extract_dns_date(const std::regex& reg) const
 {
     auto value = extract_value_from_output(whois_response_, reg);
-        if (value.find('.') != std::string::npos) {
+    if (value.find('.') != std::string::npos) {
         value = fmt::format("{}-{}-{}", value.substr(6,4), value.substr(3,2), value.substr(0,2));
     }
     // remove punctuation to have clear number
@@ -205,14 +205,14 @@ std::string host_based_features_t::get_dns_updated(bool)
 
 std::string host_based_features_t::get_dns_created() const
 {
-    auto reg_created = R"((creat|regist)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
+    auto reg_created = R"(^\W*(creat|registration|registered)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
     const std::regex reg(reg_created, std::regex::icase);
     return extract_dns_date(reg);
 }
 
 std::string host_based_features_t::get_dns_updated() const
 {
-    auto reg_updated = R"((chang|updat)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
+    auto reg_updated = R"(^\W*(chang|updat)(?:.*)(\d{8}|\d{4}\/\d{2}\/\d{2}|\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}))";
     const std::regex reg(reg_updated, std::regex::icase);
     return extract_dns_date(reg);
 }
