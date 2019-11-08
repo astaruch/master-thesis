@@ -49,6 +49,7 @@ public:
     bool _training_data_output_stdout{false};
     double _training_data_class_value{0};
     bool _missing_training_data_class_value;
+    bool output_include_url{false};
 
     // General options
     bool help_{false};

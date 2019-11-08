@@ -117,6 +117,8 @@ program::program(int argc, char** argv)
             cxxopts::value<bool>(_training_data_output_stdout))
         ("td-class-value", "Sets the classification value for the training data",
             cxxopts::value<double>(_training_data_class_value))
+        ("td-output-url", "Add to output also column with source URL",
+            cxxopts::value<bool>(output_include_url))
     ;
 
     try {

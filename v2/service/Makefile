@@ -58,6 +58,7 @@ url-features: build-debug
 		--td-stdin \
 		--td-class-value 0 \
 		--enable-features \
+		--td-output-url \
 		${URL_FEATURES}
 
 html-features: build-debug

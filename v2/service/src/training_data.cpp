@@ -10,8 +10,9 @@
 
 #include <spdlog/spdlog.h>
 
-training_data::training_data(bool verbose)
+training_data::training_data(bool verbose, bool output_include_url = false)
     : verbose_(verbose)
+    , output_include_url_(output_include_url)
 {
 }
 
@@ -48,7 +49,8 @@ void training_data::set_html_features_opts(std::string_view node_bin, std::strin
 bool training_data::create_training_data()
 {
 
-    std::string csv_header = create_csv_header();
+    std::string csv_header = output_include_url_ ? "url," : "";
+    csv_header += create_csv_header();
     fmt::print(file_, "{}\n", csv_header);
 
     transform_urls_to_training_data();
@@ -130,6 +132,8 @@ void training_data::transform_urls_to_training_data()
         if (verbose_) {
             line += features.compute_extra_values();
         }
-        fmt::print(file_, "{}\n", line);
+        std::string csv_header = output_include_url_ ? "url," : "";
+
+        fmt::print(file_, "{}{}\n", (output_include_url_ ? fmt::format("\"{}\",", url) : ""), line);
     }
 }
