@@ -48,6 +48,9 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     if (_flags & (feature_enum::similar_domain)) {
         sld_ = get_sld();
     }
+    if (_flags & (feature_enum::asn)) {
+        asn_ = get_asn();
+    }
 }
 
 std::unordered_map<feature_enum::id, double> host_based_features_t::compute_values_map() const
@@ -467,7 +470,7 @@ std::string host_based_features_t::extra_values()
         values += get_ssl_expire() + ",";
     }
     if (_flags & feature_enum::asn) {
-        values += get_asn() + ",";
+        values += asn_ + ",";
     }
     if (values.empty())
         return "";

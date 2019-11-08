@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 
         auto url = app._training_data_url;
 
-        training_data td(app.verbose, app.output_include_url);
+        training_data td(app.verbose, app.output_include_url, app.output_extra_values);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
                      app.html_feature_flags(),

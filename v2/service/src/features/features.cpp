@@ -57,9 +57,7 @@ std::vector<double> features_t::compute_feature_vector()
         auto values = host_based_features.compute_values_vec();
         fvec.insert(fvec.end(), values.begin(), values.end());
 
-        if (verbose_) {
-            extra_values_ += host_based_features.extra_values();
-        }
+        extra_values_ += host_based_features.extra_values();
     }
 
     fvec.push_back(_label);

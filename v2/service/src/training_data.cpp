@@ -10,9 +10,10 @@
 
 #include <spdlog/spdlog.h>
 
-training_data::training_data(bool verbose, bool output_include_url = false)
+training_data::training_data(bool verbose, bool output_include_url = false, bool output_extra_values = false)
     : verbose_(verbose)
     , output_include_url_(output_include_url)
+    , output_extra_values_(output_extra_values)
 {
 }
 
@@ -82,7 +83,7 @@ std::string training_data::create_csv_header()
 
     columns.push_back("label");
 
-    if (verbose_) {
+    if (output_extra_values_) {
         if (_host_based_feature_flags & feature_enum::dns_created) {
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_created)) + "_value");
         }
@@ -99,7 +100,6 @@ std::string training_data::create_csv_header()
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::asn)) + "_value");
         }
     }
-
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
         [](const std::string& a, const std::string& b) -> std::string {
@@ -125,13 +125,15 @@ void training_data::transform_urls_to_training_data()
             features.set_html_features_opts(std::string(node_bin_), std::string(html_script_), std::string(htmlfeatures_bin_));
         }
         auto fvec = features.compute_feature_vector();
-        std::string line = std::accumulate(std::next(fvec.begin()), fvec.end(),
+        std::string line;
+
+        line += std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
-        if (verbose_) {
+        if (output_extra_values_) {
+            // this need to called after compute_feature_vector()
             line += features.compute_extra_values();
         }
-        std::string csv_header = output_include_url_ ? "url," : "";
 
         fmt::print(file_, "{}{}\n", (output_include_url_ ? fmt::format("\"{}\",", url) : ""), line);
     }

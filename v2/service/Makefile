@@ -73,10 +73,11 @@ html-features: build-debug
 host-based-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
-		--verbose \
 		--td-stdin \
 		--td-class-value 0 \
 		--enable-features \
+		--td-output-extra-values \
+		--td-output-url \
 		${HOST_BASED_FEATURES}
 
 all-features: build-debug

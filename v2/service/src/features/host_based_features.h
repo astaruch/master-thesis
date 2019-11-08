@@ -95,6 +95,7 @@ private:
     std::vector<std::string> get_whois_response() const;
     std::string get_sld() const;
     std::string get_word_suggestion(std::string_view word) const;
+    std::string asn_;
 
 };
 

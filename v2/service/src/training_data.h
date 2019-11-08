@@ -10,7 +10,7 @@
 class training_data {
 public:
     training_data() = default;
-    training_data(bool verbose, bool output_include_url);
+    training_data(bool verbose, bool output_include_url, bool output_extra_values);
     void set_flags(uint64_t all, uint64_t url, uint64_t html, uint64_t host_based);
 
     void set_input_data(std::vector<std::string> urls);
@@ -24,6 +24,7 @@ public:
 private:
     bool verbose_{false};
     bool output_include_url_{false};
+    bool output_extra_values_{false};
     /// Flags used to determine which features are enabled. See class \a feature_base
     uint64_t _feature_flags{0};
     uint64_t _url_feature_flags{0};

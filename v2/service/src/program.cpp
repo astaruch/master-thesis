@@ -119,6 +119,8 @@ program::program(int argc, char** argv)
             cxxopts::value<double>(_training_data_class_value))
         ("td-output-url", "Add to output also column with source URL",
             cxxopts::value<bool>(output_include_url))
+        ("td-output-extra-values", "Add to output also extra values used for feature computation (<feature>_value)",
+            cxxopts::value<bool>(output_extra_values))
     ;
 
     try {

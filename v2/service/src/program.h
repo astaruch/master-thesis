@@ -50,6 +50,7 @@ public:
     double _training_data_class_value{0};
     bool _missing_training_data_class_value;
     bool output_include_url{false};
+    bool output_extra_values{false};
 
     // General options
     bool help_{false};
