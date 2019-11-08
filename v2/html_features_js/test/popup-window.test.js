@@ -4,8 +4,8 @@ const Page = require('../src/page')
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-describe('FeatureTests', function() {
-  describe('popupWindow', function() {
+describe('FeatureTests', function () {
+  describe('popupWindow', function () {
     const url = 'https://google.com'
     const DOM1 = `
 <!DOCTYPE html>
@@ -34,7 +34,7 @@ function myFunction() {
 </body>
 </html>
 `
-    const DOM2=`
+    const DOM2 = `
 <!DOCTYPE html>
 <html>
 <body>
@@ -48,7 +48,7 @@ function myFunction() {
 </html>
 `
 
-    const DOM3=`
+    const DOM3 = `
 <!DOCTYPE html>
 <html>
 <body>

@@ -4,9 +4,8 @@ const Page = require('../src/page')
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-
-describe('FeatureTests', function() {
-  describe('faviconLink', function() {
+describe('FeatureTests', function () {
+  describe('faviconLink', function () {
     const url = 'https://google.com'
     const DOM1 = `
   <html>
@@ -20,13 +19,13 @@ describe('FeatureTests', function() {
 </html>
   `
 
-  const DOM3 = `
+    const DOM3 = `
 <html>
   <link rel="icon shortcut" href="https://cdn.sstatic.net/Sites/stackoverflow/img/favicon.ico?v=4f32ecc8f43d" type="image/x-icon" />
 </html>
   `
 
-  const DOM4 = `
+    const DOM4 = `
  <html/>
   `
     const page = new Page(url)

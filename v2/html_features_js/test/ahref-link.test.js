@@ -4,9 +4,8 @@ const Page = require('../src/page')
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-
-describe('FeatureTests', function() {
-  describe('ahrefLink', function() {
+describe('FeatureTests', function () {
+  describe('ahrefLink', function () {
     const url = 'https://google.com'
     const DOM1 = `
 <html>
@@ -21,7 +20,7 @@ describe('FeatureTests', function() {
 </html>
 `
 
-const DOM2 = `
+    const DOM2 = `
 <HTML>
   <HEAD>
     <TITLE>Your Title Here</TITLE>

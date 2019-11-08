@@ -4,9 +4,8 @@ const Page = require('../src/page')
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-
-describe('FeatureTests', function() {
-  describe('formHandler', function() {
+describe('FeatureTests', function () {
+  describe('formHandler', function () {
     const url = 'https://google.com'
     const DOM1 = `
 <html>
@@ -82,6 +81,5 @@ describe('FeatureTests', function() {
       const forms = page.featureFormHandler(DOM)
       assert.strictEqual(forms, 0)
     })
-
   })
 })

@@ -4,9 +4,8 @@ const Page = require('../src/page')
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-
-describe('FeatureTests', function() {
-  describe('hostnameTitle', function() {
+describe('FeatureTests', function () {
+  describe('hostnameTitle', function () {
     const url = 'https://google.com'
     const DOM1 = `
   <html>

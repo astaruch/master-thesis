@@ -3,9 +3,8 @@
 
 const yargs = require('yargs')
 const Page = require('./page')
-const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
+const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter')
 const readline = require('readline')
-
 
 const main = async () => {
   // These strings are used in the specific order in option arguments. Move with a caution!
@@ -19,10 +18,10 @@ const main = async () => {
     .help('help').alias('help', 'h')
     .describe('verbose', 'Flag wether enable verbose mode')
     .group(['url', 'stdin'], 'Input:')
-    .describe('url', 'Enter one URL as parameter' )
+    .describe('url', 'Enter one URL as parameter')
     .describe('stdin', 'Take input URLs from stdin')
     .group(['output-json', 'output-lines', 'output-values-string', 'print-values'], 'Output formats:')
-    .describe('output-json', 'Return results as escaped JSON' )
+    .describe('output-json', 'Return results as escaped JSON')
     .describe('output-values-string', 'Return results as one string in format "<value1>,..,<value2>"')
     .describe('output-lines', 'Return results as lines in format "<column name> <value>\\n"')
     .describe('include-values', 'Prints also values used for tuning')
@@ -46,7 +45,7 @@ const main = async () => {
     console.error('You have to provide URL to check or start as "--stdin"')
     process.exit(1)
   }
-  jsdomDevtoolsFormatter.install();
+  jsdomDevtoolsFormatter.install()
   const verbose = argv.argv.verbose
   const features = {}
   // We are relying on the order. check c++ file service/src/features/feature_enum.h
@@ -63,12 +62,12 @@ const main = async () => {
   if (argv.argv.featMissleadingLink) features.missleadingLink = 'missleadingLink'
   if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
 
-  let urls = []
+  const urls = []
   if (argv.argv.url) {
     urls.push(argv.argv.url)
   } else if (argv.argv.stdin) {
     const rl = readline.createInterface({
-      input: process.stdin,
+      input: process.stdin
     })
     for await (const line of rl) {
       urls.push(line)
@@ -86,7 +85,7 @@ const main = async () => {
     let badUrl = false
     const results = await page.performTests(features).catch(err => {
       const n = Object.keys(features).length
-      let print = []
+      const print = []
       if (argv.argv.includeUrl) {
         print.push(`"${url}"`)
       }
@@ -106,7 +105,7 @@ const main = async () => {
     } else if (argv.argv.outputValuesString) {
       // print header only for the first time
       if (argv.argv.includeHeader && firstRun) {
-        let columns = []
+        const columns = []
         if (argv.argv.includeUrl) {
           columns.push('url')
         }
@@ -114,7 +113,7 @@ const main = async () => {
         console.log(columns.join(','))
         firstRun = false
       }
-      let values = []
+      const values = []
       if (argv.argv.includeUrl) {
         values.push(`"${url}"`)
       }

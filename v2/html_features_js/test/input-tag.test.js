@@ -6,8 +6,8 @@ const { JSDOM } = require('jsdom')
 
 const url = 'https://google.com'
 
-describe('FeatureTests', function() {
-  describe('inputTag', function() {
+describe('FeatureTests', function () {
+  describe('inputTag', function () {
     const DOMInputTag = `
 <form action="/action_page.php">
   First name: <input type="text" name="fname"><br>
@@ -16,7 +16,7 @@ describe('FeatureTests', function() {
 </form>
 `
 
-const DOMNoInputTag = `
+    const DOMNoInputTag = `
 <HTML>
   <HEAD>
     <TITLE>Your Title Here</TITLE>
@@ -62,6 +62,5 @@ const DOMNoInputTag = `
       const value = page.featureInputTagTest(DOM)
       assert.strictEqual(value, 0)
     })
-
   })
 })

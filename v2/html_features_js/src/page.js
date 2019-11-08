@@ -1,12 +1,11 @@
 'use strict'
 
-const fetch = require('node-fetch')
 const { fetchWithTimeout } = require('./fetchWithTimeout')
 
 const { JSDOM, VirtualConsole } = require('jsdom')
 
 class Page {
-  constructor(url, includeValues) {
+  constructor (url, includeValues) {
     this.url = url
     this.columns = {
       inputTag: 'input_tag',
@@ -41,19 +40,19 @@ class Page {
     this.parsed = new URL(url)
   }
 
-  async getDOM(url) {
+  async getDOM (url) {
     const page = await fetchWithTimeout(url, {
       headers: {
         'Content-Type': 'text/html; charset=UTF-8'
-      },
-    }, 3000)
-    .then(res => res.text())
-    .catch(err => {
-      if (err.code === "ENOTFOUND") {
-        throw new Error('ERROR: Site is down')
       }
-      throw err
-    })
+    }, 3000)
+      .then(res => res.text())
+      .catch(err => {
+        if (err.code === 'ENOTFOUND') {
+          throw new Error('ERROR: Site is down')
+        }
+        throw err
+      })
     if (page.length === 0) {
       throw new Error('ERROR: Empty page')
     }
@@ -66,7 +65,7 @@ class Page {
    * @param {Object} features Object containing columns
    * @returns {Object} Object with value for each feature
    */
-  async performTests(features) {
+  async performTests (features) {
     const dom = await this.getDOM(this.url).catch(err => {
       throw err
     })
@@ -89,7 +88,7 @@ class Page {
    * @param {JSDOM} dom Webpage DOM
    * @returns {Number} number of input elements
    */
-  featureInputTag(dom) {
+  featureInputTag (dom) {
     this.inputTagValue = dom.window.document.querySelectorAll('input').length
     return this.inputTagValue
   }
@@ -99,7 +98,7 @@ class Page {
    * @param {JSDOM} dom WebPage DOM
    * @returns {Number} computed phishing value for this feature
    */
-   featureInputTagTest(dom) {
+  featureInputTagTest (dom) {
     const value = this.featureInputTag(dom)
     return value > 0 ? 1 : 0
   }
@@ -110,7 +109,7 @@ class Page {
    * @param {URL} url URL which is investigated
    * @returns {Number} computed phishing value for this feature
    */
-  featureSrcLinkTest(dom, url) {
+  featureSrcLinkTest (dom, url) {
     // https://developer.mozilla.org/en-US/docs/Web/API/NodeList
     // https://developer.mozilla.org/en-US/docs/Web/API/Element
     let differentLinks = 0
@@ -130,16 +129,15 @@ class Page {
         if (err instanceof TypeError) {
           // this is if src=<link> is relative URL. We are not interested in these URL
         }
-
       }
     })
-    return (differentLinks / allLinks) || 0;
-}
+    return (differentLinks / allLinks) || 0
+  }
 
-  featureFormHandler(dom) {
+  featureFormHandler (dom) {
     let count = 0
     // eslint-disable-next-line no-script-url
-    const suspiciousActions = ['', 'about:blank', 'blank', '#skip', '#', 'javascript:true' ]
+    const suspiciousActions = ['', 'about:blank', 'blank', '#skip', '#', 'javascript:true']
     dom.window.document.querySelectorAll('form').forEach(node => {
       const action = node.attributes.getNamedItem('action')
       if (!action) {
@@ -153,12 +151,12 @@ class Page {
     return count
   }
 
-  featureFormHandlerTest(dom) {
+  featureFormHandlerTest (dom) {
     const result = this.featureFormHandler(dom)
     return result > 1 ? 1 : 0
   }
 
-  featureInvisibleIframe(dom) {
+  featureInvisibleIframe (dom) {
     let count = 0
     dom.window.document.querySelectorAll('iframe').forEach(node => {
       // https://www.w3schools.com/tags/att_iframe_seamless.asp
@@ -183,26 +181,25 @@ class Page {
     return count
   }
 
-  featureInvisibleIframeTest(dom) {
+  featureInvisibleIframeTest (dom) {
     const iframes = this.featureInvisibleIframe(dom)
     return iframes > 0 ? 1 : 0
   }
 
-  featureRewriteStatusbarTest(dom) {
+  featureRewriteStatusbarTest (dom) {
     let rewriting = false
     dom.window.document.querySelectorAll('a').forEach(node => {
       const onmouseover = node.attributes.getNamedItem('onmouseover')
       const onmouseout = node.attributes.getNamedItem('onmouseout')
       if ((onmouseover && onmouseover.value.startsWith('window.status')) ||
-          (onmouseout && onmouseout.value.startsWith('window.status')))
-      {
+          (onmouseout && onmouseout.value.startsWith('window.status'))) {
         rewriting = true
       }
     })
     return Number(rewriting)
   }
 
-  featureDisableRightclick(dom) {
+  featureDisableRightclick (dom) {
     const body = dom.window.document.body
     if (!body && !body.attributes) {
       return 1
@@ -214,7 +211,7 @@ class Page {
     return 0
   }
 
-  featureDisableRightclickTest(dom) {
+  featureDisableRightclickTest (dom) {
     const body = dom.window.document.body
     if (!body && !body.attributes) {
       return 1
@@ -226,7 +223,7 @@ class Page {
     return 0
   }
 
-  featureAhrefLinkTest(dom) {
+  featureAhrefLinkTest (dom) {
     let count = 0
     let allLinks = 0
     dom.window.document.querySelectorAll('a').forEach(node => {
@@ -249,7 +246,7 @@ class Page {
     return (count / allLinks) || 0
   }
 
-  featurePopupWindow(dom) {
+  featurePopupWindow (dom) {
     let count = 0
     const scripts = dom.window.document.querySelectorAll('script')
     const popupStrings = ['prompt(', 'alert(', 'confirm(']
@@ -258,7 +255,7 @@ class Page {
       if (!onclick) {
         return
       }
-      for (let popup of popupStrings) {
+      for (const popup of popupStrings) {
         if (onclick.value.includes(popup)) {
           count++
           return
@@ -270,7 +267,7 @@ class Page {
         if (script.attributes.length > 0) {
           return
         }
-        for (let popup of popupStrings) {
+        for (const popup of popupStrings) {
           if (script.text.includes(popup)) {
             count++
             return
@@ -282,11 +279,11 @@ class Page {
     return count
   }
 
-  featurePopupWindowTest(dom) {
+  featurePopupWindowTest (dom) {
     return this.featurePopupWindow(dom) > 0 ? 1 : 0
   }
 
-  featureFaviconLinkTest(dom) {
+  featureFaviconLinkTest (dom) {
     let anotherSite = false
     dom.window.document.querySelectorAll('link').forEach(node => {
       const rel = node.attributes.getNamedItem('rel')
@@ -314,29 +311,28 @@ class Page {
     return Number(anotherSite)
   }
 
-  featureOldTechnologiesTest(dom) {
+  featureOldTechnologiesTest (dom) {
     const window = dom.window
     const document = dom.window.document
-    if(!!window.React || !!document.querySelector('[data-reactroot], [data-reactid]')) {
+    if (!!window.React || !!document.querySelector('[data-reactroot], [data-reactid]')) {
       return 0
     }
 
-    if(!!window.angular ||
+    if (!!window.angular ||
       !!document.querySelector('.ng-binding, [ng-app], [data-ng-app], [ng-controller], [data-ng-controller], [ng-repeat], [data-ng-repeat]') ||
-      !!document.querySelector('script[src*="angular.js"], script[src*="angular.min.js"]'))
-    {
+      !!document.querySelector('script[src*="angular.js"], script[src*="angular.min.js"]')) {
       return 0
     }
 
-    if(!!window.Backbone) return 0
-    if(!!window.Ember) return 0
-    if(!!window.Vue) return 0
-    if(!!window.Meteor) return 0
+    if (window.Backbone) return 0
+    if (window.Ember) return 0
+    if (window.Vue) return 0
+    if (window.Meteor) return 0
 
     return 1
   }
 
-  featureMissleadingLink(dom) {
+  featureMissleadingLink (dom) {
     let value = 0
     dom.window.document.querySelectorAll('a').forEach(node => {
       let text = node.text
@@ -369,11 +365,11 @@ class Page {
     return value
   }
 
-  featureMissleadingLinkTest(dom) {
+  featureMissleadingLinkTest (dom) {
     return this.featureMissleadingLink(dom) > 0 ? 1 : 0
   }
 
-  featureHostnameTitleTest(dom) {
+  featureHostnameTitleTest (dom) {
     let title = dom.window.document.querySelector('title')
     if (!title || !title.text) {
       return 1
@@ -383,7 +379,7 @@ class Page {
     if (!hostname) {
       return 0
     }
-    hostname = hostname.groups['HOST'].toLowerCase()
+    hostname = hostname.groups.HOST.toLowerCase()
     if (title.includes(hostname)) {
       return 0
     }

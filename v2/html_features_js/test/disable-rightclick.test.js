@@ -4,11 +4,10 @@ const Page = require('../src/page')
 const assert = require('assert')
 const { JSDOM } = require('jsdom')
 
-
-describe('FeatureTests', function() {
-  describe('disableRightclick', function() {
+describe('FeatureTests', function () {
+  describe('disableRightclick', function () {
     const url = 'https://google.com'
-    const DOM1 = `<body oncontextmenu="return false;">`
+    const DOM1 = '<body oncontextmenu="return false;">'
 
     const DOM2 = `
 <div>

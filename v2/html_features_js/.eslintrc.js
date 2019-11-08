@@ -4,17 +4,13 @@
 // directory, or a subdirectory if your project consists of both node.js and browser code.
 module.exports = {
   extends: [
-    '@strv/eslint-config-node/v10',
-    '@strv/eslint-config-node/optional',
+    'standard',
   ],
   overrides: [{
     files: [
       'src/**/*.js',
       'test/**/*.js',
     ],
-    rules: {
-      'no-console': 'off',
-    },
     env: {
       mocha: true
     }
