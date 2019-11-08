@@ -22,12 +22,12 @@ describe('FeatureTests', function () {
 
     it('different title should return 1', () => {
       const DOM = new JSDOM(DOM1)
-      const value = page.featureHostnameTitleTest(DOM)
+      const value = page.featureHostnameTitle(DOM)
       assert.strictEqual(value, 1)
     })
     it('same title should return 0', () => {
       const DOM = new JSDOM(DOM2)
-      const value = page.featureHostnameTitleTest(DOM)
+      const value = page.featureHostnameTitle(DOM)
       assert.strictEqual(value, 0)
     })
   })

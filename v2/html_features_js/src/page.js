@@ -9,32 +9,42 @@ class Page {
     this.url = url
     this.columns = {
       inputTag: 'input_tag',
+      inputTagValue: 'input_tag_value',
       srcLink: 'src_link',
       formHandler: 'form_handler',
+      formHandlerValue: 'form_handler_value',
       invisibleIframe: 'invisible_iframe',
+      invisibleIframeValue: 'invisible_iframe_value',
       rewriteStatusbar: 'rewrite_statusbar',
       disableRightclick: 'disable_rightclick',
       ahrefLink: 'ahref_link',
       popupWindow: 'popup_window',
+      popupWindowValue: 'popup_window_value',
       faviconLink: 'favicon_link',
       oldTechnologies: 'old_technologies',
       missleadingLink: 'missleading_link',
+      missleadingLinkValue: 'missleading_link_value',
       hostnameTitle: 'hostname_title'
     }
     this.tests = {
       // Without explicit binding, we would not have 'this' inside these functions
-      inputTag: this.featureInputTagTest.bind(this),
-      srcLink: this.featureSrcLinkTest.bind(this),
-      formHandler: this.featureFormHandlerTest.bind(this),
-      invisibleIframe: this.featureInvisibleIframeTest.bind(this),
-      rewriteStatusbar: this.featureRewriteStatusbarTest.bind(this),
-      disableRightclick: this.featureDisableRightclickTest.bind(this),
-      ahrefLink: this.featureAhrefLinkTest.bind(this),
-      popupWindow: this.featurePopupWindowTest.bind(this),
-      faviconLink: this.featureFaviconLinkTest.bind(this),
-      oldTechnologies: this.featureOldTechnologiesTest.bind(this),
-      missleadingLink: this.featureMissleadingLinkTest.bind(this),
-      hostnameTitle: this.featureHostnameTitleTest.bind(this)
+      inputTag: this.featureInputTag.bind(this),
+      inputTagValue: this.featureInputTagValue.bind(this),
+      srcLink: this.featureSrcLink.bind(this),
+      formHandler: this.featureFormHandler.bind(this),
+      formHandlerValue: this.featureFormHandlerValue.bind(this),
+      invisibleIframe: this.featureInvisibleIframe.bind(this),
+      invisibleIframeValue: this.featureInvisibleIframeValue.bind(this),
+      rewriteStatusbar: this.featureRewriteStatusbar.bind(this),
+      disableRightclick: this.featureDisableRightclick.bind(this),
+      ahrefLink: this.featureAhrefLink.bind(this),
+      popupWindow: this.featurePopupWindow.bind(this),
+      popupWindowValue: this.featurePopupWindowValue.bind(this),
+      faviconLink: this.featureFaviconLink.bind(this),
+      oldTechnologies: this.featureOldTechnologies.bind(this),
+      missleadingLink: this.featureMissleadingLink.bind(this),
+      missleadingLinkValue: this.featureMissleadingLinkValue.bind(this),
+      hostnameTitle: this.featureHostnameTitle.bind(this)
     }
     this.includeValues = includeValues
     this.parsed = new URL(url)
@@ -108,13 +118,6 @@ class Page {
     const results = {}
     Object.keys(features).forEach(feature => {
       results[this.columns[feature]] = this.tests[feature](dom, this.parsed)
-      if (this.includeValues) {
-        const valueProp = `${feature}Value`
-        if (typeof this[valueProp] === 'number') {
-          results[`${this.columns[feature]}_value`] = this[valueProp]
-        }
-        // results[`${this.columns[feature]}_value`] = this[`${feature}Value`]
-      }
     })
     return results
   }
@@ -124,7 +127,7 @@ class Page {
    * @param {JSDOM} dom Webpage DOM
    * @returns {Number} number of input elements
    */
-  featureInputTag (dom) {
+  featureInputTagValue (dom) {
     this.inputTagValue = dom.window.document.querySelectorAll('input').length
     return this.inputTagValue
   }
@@ -134,8 +137,8 @@ class Page {
    * @param {JSDOM} dom WebPage DOM
    * @returns {Number} computed phishing value for this feature
    */
-  featureInputTagTest (dom) {
-    const value = this.featureInputTag(dom)
+  featureInputTag (dom) {
+    const value = this.featureInputTagValue(dom)
     return value > 0 ? 1 : 0
   }
 
@@ -145,7 +148,7 @@ class Page {
    * @param {URL} url URL which is investigated
    * @returns {Number} computed phishing value for this feature
    */
-  featureSrcLinkTest (dom, url) {
+  featureSrcLink (dom, url) {
     // https://developer.mozilla.org/en-US/docs/Web/API/NodeList
     // https://developer.mozilla.org/en-US/docs/Web/API/Element
     let differentLinks = 0
@@ -170,7 +173,7 @@ class Page {
     return (differentLinks / allLinks) || 0
   }
 
-  featureFormHandler (dom) {
+  featureFormHandlerValue (dom) {
     let count = 0
     // eslint-disable-next-line no-script-url
     const suspiciousActions = ['', 'about:blank', 'blank', '#skip', '#', 'javascript:true']
@@ -187,12 +190,12 @@ class Page {
     return count
   }
 
-  featureFormHandlerTest (dom) {
-    const result = this.featureFormHandler(dom)
+  featureFormHandler (dom) {
+    const result = this.featureFormHandlerValue(dom)
     return result > 1 ? 1 : 0
   }
 
-  featureInvisibleIframe (dom) {
+  featureInvisibleIframeValue (dom) {
     let count = 0
     dom.window.document.querySelectorAll('iframe').forEach(node => {
       // https://www.w3schools.com/tags/att_iframe_seamless.asp
@@ -217,12 +220,12 @@ class Page {
     return count
   }
 
-  featureInvisibleIframeTest (dom) {
-    const iframes = this.featureInvisibleIframe(dom)
+  featureInvisibleIframe (dom) {
+    const iframes = this.featureInvisibleIframeValue(dom)
     return iframes > 0 ? 1 : 0
   }
 
-  featureRewriteStatusbarTest (dom) {
+  featureRewriteStatusbar (dom) {
     let rewriting = false
     dom.window.document.querySelectorAll('a').forEach(node => {
       const onmouseover = node.attributes.getNamedItem('onmouseover')
@@ -247,19 +250,7 @@ class Page {
     return 0
   }
 
-  featureDisableRightclickTest (dom) {
-    const body = dom.window.document.body
-    if (!body && !body.attributes) {
-      return 1
-    }
-    const oncontextmenu = body.attributes.getNamedItem('oncontextmenu')
-    if (oncontextmenu && oncontextmenu.value.includes('return false')) {
-      return 1
-    }
-    return 0
-  }
-
-  featureAhrefLinkTest (dom) {
+  featureAhrefLink (dom) {
     let count = 0
     let allLinks = 0
     dom.window.document.querySelectorAll('a').forEach(node => {
@@ -282,7 +273,7 @@ class Page {
     return (count / allLinks) || 0
   }
 
-  featurePopupWindow (dom) {
+  featurePopupWindowValue (dom) {
     let count = 0
     const scripts = dom.window.document.querySelectorAll('script')
     const popupStrings = ['prompt(', 'alert(', 'confirm(']
@@ -315,11 +306,11 @@ class Page {
     return count
   }
 
-  featurePopupWindowTest (dom) {
-    return this.featurePopupWindow(dom) > 0 ? 1 : 0
+  featurePopupWindow (dom) {
+    return this.featurePopupWindowValue(dom) > 0 ? 1 : 0
   }
 
-  featureFaviconLinkTest (dom) {
+  featureFaviconLink (dom) {
     let anotherSite = false
     dom.window.document.querySelectorAll('link').forEach(node => {
       const rel = node.attributes.getNamedItem('rel')
@@ -347,7 +338,7 @@ class Page {
     return Number(anotherSite)
   }
 
-  featureOldTechnologiesTest (dom) {
+  featureOldTechnologies (dom) {
     const window = dom.window
     const document = dom.window.document
     if (!!window.React || !!document.querySelector('[data-reactroot], [data-reactid]')) {
@@ -368,7 +359,7 @@ class Page {
     return 1
   }
 
-  featureMissleadingLink (dom) {
+  featureMissleadingLinkValue (dom) {
     let value = 0
     dom.window.document.querySelectorAll('a').forEach(node => {
       let text = node.text
@@ -401,11 +392,11 @@ class Page {
     return value
   }
 
-  featureMissleadingLinkTest (dom) {
-    return this.featureMissleadingLink(dom) > 0 ? 1 : 0
+  featureMissleadingLink (dom) {
+    return this.featureMissleadingLinkValue(dom) > 0 ? 1 : 0
   }
 
-  featureHostnameTitleTest (dom) {
+  featureHostnameTitle (dom) {
     let title = dom.window.document.querySelector('title')
     if (!title || !title.text) {
       return 1

@@ -13,7 +13,7 @@ class features_t {
 public:
     features_t(const std::string& url, bool verbose);
     features_t(const std::string& url, uint64_t url_flags, uint64_t html_flags,
-               uint64_t host_based_flags, int label, bool verbose);
+               uint64_t host_based_flags, int label, bool verbose, bool extra_values_flag);
 
     std::vector<double> compute_feature_vector();
     std::string compute_extra_values() const;
@@ -26,6 +26,7 @@ protected:
     int _label;
     bool _url_is_ok;
     bool verbose_{false};
+    bool extra_values_flag_;
 
     Poco::URI _parsed;
 

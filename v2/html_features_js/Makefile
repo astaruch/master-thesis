@@ -10,10 +10,10 @@ clean:
 	rm -rf node_modules bin
 
 run:
-	node src/index.js ${HTML_FEATURES} --output-lines --url http://google.cz
+	node src/index.js ${HTML_FEATURES} --output-values-string --include-url --verbose --url http://google.cz
 
 stdin:
-	node src/index.js ${HTML_FEATURES} --output-values-string --stdin --include-header --include-values --include-url
+	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --verbose --stdin
 
 pack: build
 	pkg src/index.js --targets node12-linux-x64 --output bin/htmlfeatures

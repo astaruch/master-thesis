@@ -48,18 +48,34 @@ const main = async () => {
   jsdomDevtoolsFormatter.install()
   const verbose = argv.argv.verbose
   const features = {}
+  const includeValues = argv.argv.includeValues
   // We are relying on the order. check c++ file service/src/features/feature_enum.h
-  if (argv.argv.featInputTag) features.inputTag = 'inputTag'
+  if (argv.argv.featInputTag) {
+    features.inputTag = 'inputTag'
+    if (includeValues) features.inputTagValue = 'inputTagValue'
+  }
   if (argv.argv.featSrcLink) features.srcLink = 'srcLink'
-  if (argv.argv.featFormHandler) features.formHandler = 'formHandler'
-  if (argv.argv.featInvisibleIframe) features.invisibleIframe = 'invisibleIframe'
+  if (argv.argv.featFormHandler) {
+    features.formHandler = 'formHandler'
+    if (includeValues) features.formHandlerValue = 'formHandlerValue'
+  }
+  if (argv.argv.featInvisibleIframe) {
+    features.invisibleIframe = 'invisibleIframe'
+    if (includeValues) features.invisibleIframeValue = 'invisibleIframeValue'
+  }
   if (argv.argv.featRewriteStatusbar) features.rewriteStatusbar = 'rewriteStatusbar'
   if (argv.argv.featDisableRightclick) features.disableRightclick = 'disableRightclick'
   if (argv.argv.featAhrefLink) features.ahrefLink = 'ahrefLink'
-  if (argv.argv.featPopupWindow) features.popupWindow = 'popupWindow'
+  if (argv.argv.featPopupWindow) {
+    features.popupWindow = 'popupWindow'
+    if (includeValues) features.popupWindowValue = 'popupWindowValue'
+  }
   if (argv.argv.featFaviconLink) features.faviconLink = 'faviconLink'
   if (argv.argv.featOldTechnologies) features.oldTechnologies = 'oldTechnologies'
-  if (argv.argv.featMissleadingLink) features.missleadingLink = 'missleadingLink'
+  if (argv.argv.featMissleadingLink) {
+    features.missleadingLink = 'missleadingLink'
+    if (includeValues) features.missleadingLinkValue = 'missleadingLinkValue'
+  }
   if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
 
   const urls = []
@@ -77,7 +93,16 @@ const main = async () => {
     console.error('Missing input type argument (e.g. --stdin)')
     process.exit(1)
   }
-  let firstRun = true
+  if (argv.argv.includeHeader) {
+    const page = new Page('http://example.com')
+    const columns = []
+    if (argv.argv.includeUrl) {
+      columns.push('url')
+    }
+    Object.keys(features).forEach(key => columns.push(page.columns[key]))
+    console.log(columns.join(','))
+  }
+
   for await (const url of urls) {
     if (verbose) console.log(`--> Checking ${url}`)
     const page = new Page(url, argv.argv.includeValues, verbose)
@@ -94,6 +119,7 @@ const main = async () => {
       if (verbose) console.error(err.message)
       badUrl = true
     })
+
     if (badUrl) continue
 
     if (argv.argv.outputJson) {
@@ -103,16 +129,6 @@ const main = async () => {
         console.log(`${feature} ${results[feature]}`)
       })
     } else if (argv.argv.outputValuesString) {
-      // print header only for the first time
-      if (argv.argv.includeHeader && firstRun) {
-        const columns = []
-        if (argv.argv.includeUrl) {
-          columns.push('url')
-        }
-        Object.keys(results).forEach(key => columns.push(key))
-        console.log(columns.join(','))
-        firstRun = false
-      }
       const values = []
       if (argv.argv.includeUrl) {
         values.push(`"${url}"`)

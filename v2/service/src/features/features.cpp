@@ -8,12 +8,13 @@
 #include <fmt/format.h>
 
 features_t::features_t(const std::string& url, bool verbose = false)
-    : features_t(url, 0, 0, 0, 0, verbose)
+    : features_t(url, 0, 0, 0, 0, verbose, false)
 {
 }
 
 features_t::features_t(const std::string& url, uint64_t url_flags, uint64_t html_flags,
-                       uint64_t host_based_flags, int label, bool verbose = false)
+                       uint64_t host_based_flags, int label, bool verbose = false,
+                       bool extra_values = false)
     : _url(url)
     , _url_flags(url_flags)
     , _html_flags(html_flags)
@@ -21,6 +22,7 @@ features_t::features_t(const std::string& url, uint64_t url_flags, uint64_t html
     , _label(label)
     , _url_is_ok(true)
     , verbose_(verbose)
+    , extra_values_flag_(extra_values)
 {
     try {
         _parsed = Poco::URI(url);
@@ -43,7 +45,7 @@ std::vector<double> features_t::compute_feature_vector()
     if (_html_flags) {
         std::vector<double> values;
         if (!htmlfeatures_bin_.empty()) {
-            html_features_t html_features(_url, _html_flags, htmlfeatures_bin_);
+            html_features_t html_features(_url, _html_flags, htmlfeatures_bin_, extra_values_flag_);
             values = html_features.get_values_from_external_script();
         } else {
             html_features_t html_features(_url, _html_flags, node_bin_, html_script_);

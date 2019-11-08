@@ -41,25 +41,25 @@ describe('FeatureTests', function () {
 
     it('should return 3 <input> tags', () => {
       const DOM = new JSDOM(DOMInputTag)
-      const tags = page.featureInputTag(DOM)
+      const tags = page.featureInputTagValue(DOM)
       assert.strictEqual(tags, 3)
     })
 
     it('should return 1 as phishing value', () => {
       const DOM = new JSDOM(DOMInputTag)
-      const value = page.featureInputTagTest(DOM)
+      const value = page.featureInputTag(DOM)
       assert.strictEqual(value, 1)
     })
 
     it('should return 0 <input> tags', () => {
       const DOM = new JSDOM(DOMNoInputTag)
-      const tags = page.featureInputTag(DOM)
+      const tags = page.featureInputTagValue(DOM)
       assert.strictEqual(tags, 0)
     })
 
     it('should return 0 as phishing value', () => {
       const DOM = new JSDOM(DOMNoInputTag)
-      const value = page.featureInputTagTest(DOM)
+      const value = page.featureInputTag(DOM)
       assert.strictEqual(value, 0)
     })
   })

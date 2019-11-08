@@ -31,17 +31,17 @@ describe('FeatureTests', function () {
 
     it('class seamless should return 1', () => {
       const DOM = new JSDOM(DOM1)
-      const forms = page.featureInvisibleIframe(DOM)
+      const forms = page.featureInvisibleIframeValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('zero dimensions should return 1', () => {
       const DOM = new JSDOM(DOM2)
-      const forms = page.featureInvisibleIframe(DOM)
+      const forms = page.featureInvisibleIframeValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('no iframe should return 0', () => {
       const DOM = new JSDOM(DOM3)
-      const forms = page.featureInvisibleIframe(DOM)
+      const forms = page.featureInvisibleIframeValue(DOM)
       assert.strictEqual(forms, 0)
     })
   })

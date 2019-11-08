@@ -48,37 +48,37 @@ describe('FeatureTests', function () {
 
     it('should return 1', () => {
       const DOM = new JSDOM(DOM1)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('should return 1', () => {
       const DOM = new JSDOM(DOM2)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('should return 1', () => {
       const DOM = new JSDOM(DOM3)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('should return 1', () => {
       const DOM = new JSDOM(DOM4)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('should return 1', () => {
       const DOM = new JSDOM(DOM5)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('should return 1', () => {
       const DOM = new JSDOM(DOM6)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 1)
     })
     it('should return 0', () => {
       const DOM = new JSDOM(DOM7)
-      const forms = page.featureFormHandler(DOM)
+      const forms = page.featureFormHandlerValue(DOM)
       assert.strictEqual(forms, 0)
     })
   })

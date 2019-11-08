@@ -22,12 +22,12 @@ describe('FeatureTests', function () {
 
     it('missleading link should return 1', () => {
       const DOM = new JSDOM(DOM1)
-      const value = page.featureMissleadingLink(DOM)
+      const value = page.featureMissleadingLinkValue(DOM)
       assert.strictEqual(value, 1)
     })
     it('normal link should return 0', () => {
       const DOM = new JSDOM(DOM2)
-      const value = page.featureMissleadingLink(DOM)
+      const value = page.featureMissleadingLinkValue(DOM)
       assert.strictEqual(value, 0)
     })
   })

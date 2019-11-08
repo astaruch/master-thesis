@@ -43,13 +43,13 @@ describe('FeatureTests', function () {
 
     it('should return 0.75 as phishing value', () => {
       const DOM = new JSDOM(DOM1)
-      const value = page.featureSrcLinkTest(DOM, url)
+      const value = page.featureSrcLink(DOM, url)
       assert.strictEqual(value, 0.75)
     })
 
     it('should return 0 as phishing value', () => {
       const DOM = new JSDOM(DOM2)
-      const value = page.featureSrcLinkTest(DOM)
+      const value = page.featureSrcLink(DOM)
       assert.strictEqual(value, 0)
     })
   })
