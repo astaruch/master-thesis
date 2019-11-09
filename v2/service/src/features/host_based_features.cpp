@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <regex>
 #include <string_view>
+#include <thread>
+#include <future>
 
 #include <edlib.h>
 #include <fmt/format.h>
@@ -36,25 +38,41 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     if (!_url_is_ok) {
         return;
     }
+    std::vector<std::thread> threads;
+    std::thread dig_thread; // need to be first resolved because ASN is depending on it
+    if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
+        // fmt::print("Spawning DIG response thread\n");
+        dig_thread = std::thread(&host_based_features_t::fill_dig_response, this);
+    }
     if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
-        ssl_response_ = get_ssl_response();
+        // fmt::print("Spawning SSL response thread\n");
+        threads.push_back(std::thread(&host_based_features_t::fill_ssl_response, this));
     }
     if (_flags & (feature_enum::hsts | feature_enum::xss_protection |
                   feature_enum::csp | feature_enum::x_content_type))
     {
-        http_resp_headers_ = get_http_resp_headers();
-    }
-    if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
-        dig_response_ = get_dig_response();
+        // fmt::print("Spawning HTTP response\n");
+        threads.push_back(std::thread(&host_based_features_t::fill_http_resp_headers, this));
     }
     if (_flags & (feature_enum::dns_created | feature_enum::dns_updated)) {
-        whois_response_ = get_whois_response();
+        // fmt::print("Spawning WHOIS response thread\n");
+        threads.push_back(std::thread(&host_based_features_t::fill_whois_response, this));
     }
     if (_flags & (feature_enum::similar_domain)) {
-        sld_ = get_sld();
+        // fmt::print("Spawning SLD response thread\n");
+        threads.push_back(std::thread(&host_based_features_t::fill_sld, this));
+    }
+    if (dig_thread.joinable()) {
+        dig_thread.join();
     }
     if (_flags & (feature_enum::asn)) {
-        asn_ = get_asn();
+        // we need to have dig response before we can operate with SLD due to IP address
+        // fmt::print("Spawning ASN response thread\n");
+        threads.push_back(std::thread(&host_based_features_t::fill_sld, this));
+    }
+    for (size_t i = 0; i < threads.size(); i++) {
+        // fmt::print("Joinin {} thread\n", i);
+        threads[i].join();
     }
 }
 
@@ -109,7 +127,7 @@ double host_based_features_t::compute_value_google_indexed() const
 
 std::vector<std::string> host_based_features_t::get_dig_response() const
 {
-    auto cmd = fmt::format("dig +timeout=2 +dnssec +short {}", _parsed.getHost());
+    auto cmd = fmt::format("dig +timeout={} +dnssec +short {}", 1, _parsed.getHost());
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -169,9 +187,17 @@ std::string host_based_features_t::extract_value_from_output(
     return value;
 }
 
+void host_based_features_t::fill_whois_response()
+{
+    if (whois_response_.empty()) {
+        whois_response_ = get_whois_response();
+    }
+}
+
+
 std::vector<std::string> host_based_features_t::get_whois_response() const
 {
-    auto cmd = fmt::format("timeout 2 whois {}", _parsed.getHost());
+    auto cmd = fmt::format("timeout {} whois {}", timeout_, _parsed.getHost());
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -239,8 +265,8 @@ double host_based_features_t::compute_value_dns_updated() const
 
 std::vector<std::string> host_based_features_t::get_ssl_response() const
 {
-    auto cmd = fmt::format("echo | timeout 2 openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
-                           _parsed.getHost(), _parsed.getPort());
+    auto cmd = fmt::format("echo | timeout {} openssl s_client -connect {}:{} 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null ",
+                           timeout_, _parsed.getHost(), _parsed.getPort());
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -395,7 +421,7 @@ std::string host_based_features_t::get_asn() const
         return {};
     }
     // 1st line of dig is IP address for a hostname
-    auto cmd = fmt::format("timeout 2 whois --verbose {} | grep -i origin", dig_response_[0]);
+    auto cmd = fmt::format("timeout {} whois --verbose {} | grep -i origin", 1, dig_response_[0]);
     auto output = help_functions::get_output_from_program(cmd);
     std::regex reg("(origin).* ([[:alnum:]]*)", std::regex::icase);
     return extract_value_from_output(output, reg);
@@ -434,6 +460,13 @@ double host_based_features_t::compute_similar_domain() const
     edlibFreeAlignResult(result);
     // fmt::print("{} - {} -- distance = {}\n", suggestion, sld_, distance);
     return 1. / static_cast<double>(distance);
+}
+
+void host_based_features_t::fill_sld()
+{
+    if (sld_.empty()) {
+        sld_ = get_sld();
+    }
 }
 
 std::string host_based_features_t::get_sld() const

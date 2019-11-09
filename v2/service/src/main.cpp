@@ -34,7 +34,6 @@ int main(int argc, char* argv[]) {
 
         if (!app._training_data_url.empty()) {
             urls.push_back(app._training_data_url);
-            urls.push_back(app._training_data_url);
         } else if (app.training_data_stdin) {
             for (std::string url; std::getline(std::cin, url);) {
                 urls.push_back(std::move(url));

@@ -93,10 +93,13 @@ private:
     std::vector<std::string> get_dig_response() const;
     void fill_dig_response();
     std::vector<std::string> get_whois_response() const;
+    void fill_whois_response();
     std::string get_sld() const;
+    void fill_sld();
     std::string get_word_suggestion(std::string_view word) const;
     std::string asn_;
 
+    const int timeout_{2};
 };
 
 #endif // PHISHSVC_FEATURE_HOST_BASED_FEATURES_H

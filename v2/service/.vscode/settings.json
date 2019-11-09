@@ -62,7 +62,8 @@
         "bit": "cpp",
         "binarystring": "cpp",
         "ios": "cpp",
-        "cfenv": "cpp"
+        "cfenv": "cpp",
+        "future": "cpp"
     },
     "C_Cpp.intelliSenseCacheSize": 512
 }
