@@ -98,6 +98,7 @@ private:
     void fill_sld();
     std::string get_word_suggestion(std::string_view word) const;
     std::string asn_;
+    void fill_asn();
 
     const int timeout_{2};
 };

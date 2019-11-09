@@ -68,7 +68,7 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     if (_flags & (feature_enum::asn)) {
         // we need to have dig response before we can operate with SLD due to IP address
         // fmt::print("Spawning ASN response thread\n");
-        threads.push_back(std::thread(&host_based_features_t::fill_sld, this));
+        threads.push_back(std::thread(&host_based_features_t::fill_asn, this));
     }
     for (size_t i = 0; i < threads.size(); i++) {
         // fmt::print("Joinin {} thread\n", i);
@@ -421,7 +421,12 @@ std::string host_based_features_t::get_asn() const
         return {};
     }
     // 1st line of dig is IP address for a hostname
-    auto cmd = fmt::format("timeout {} whois --verbose {} | grep -i origin", 1, dig_response_[0]);
+    std::regex reg_ipv4("()(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})");
+    auto ipv4 = extract_value_from_output(dig_response_, reg_ipv4);
+    if (ipv4.empty()) {
+        return {};
+    }
+    auto cmd = fmt::format("timeout {} whois --verbose {} | grep -i origin", 1, ipv4);
     auto output = help_functions::get_output_from_program(cmd);
     std::regex reg("(origin).* ([[:alnum:]]*)", std::regex::icase);
     return extract_value_from_output(output, reg);
@@ -431,6 +436,13 @@ double host_based_features_t::compute_value_asn() const
 {
     // TODO: change to some meaningfull value after performing statistics
     return asn_.empty() ? 1 : 0;
+}
+
+void host_based_features_t::fill_asn()
+{
+    if (asn_.empty()) {
+        asn_ = get_asn();
+    }
 }
 
 std::string host_based_features_t::get_word_suggestion(std::string_view word) const
