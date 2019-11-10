@@ -78,6 +78,7 @@ private:
     std::vector<std::string> extra_columns_;
 
     bool google_indexed_;
+    std::string similar_domain_;
 
     bool verbose_;
 
@@ -105,6 +106,9 @@ private:
     void fill_asn();
     bool get_is_google_indexed() const;
     void fill_google_index();
+    std::string get_similar_domain_name() const;
+    void fill_similar_domain_name();
+
 
 
     const int timeout_{2};

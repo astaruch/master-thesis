@@ -41,8 +41,12 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     std::vector<std::thread> threads;
     std::thread dig_thread; // need to be first resolved because ASN is depending on it
     if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
-        // fmt::print("Spawning DIG response thread\n");
         dig_thread = std::thread(&host_based_features_t::fill_dig_response, this);
+    }
+    std::thread sld_thread; // need to have separate thread because similar domain is dependant on sld
+    if (_flags & (feature_enum::similar_domain)) {
+        // fmt::print("Spawning SLD response thread\n");
+        sld_thread = std::thread(&host_based_features_t::fill_sld, this);
     }
     if (_flags & (feature_enum::ssl_created | feature_enum::ssl_expire | feature_enum::ssl_subject)) {
         // fmt::print("Spawning SSL response thread\n");
@@ -58,10 +62,6 @@ host_based_features_t::host_based_features_t(const std::string_view url,
         // fmt::print("Spawning WHOIS response thread\n");
         threads.push_back(std::thread(&host_based_features_t::fill_whois_response, this));
     }
-    if (_flags & (feature_enum::similar_domain)) {
-        // fmt::print("Spawning SLD response thread\n");
-        threads.push_back(std::thread(&host_based_features_t::fill_sld, this));
-    }
     if (_flags & (feature_enum::google_index)) {
         threads.push_back(std::thread(&host_based_features_t::fill_google_index, this));
     }
@@ -72,6 +72,13 @@ host_based_features_t::host_based_features_t(const std::string_view url,
         // we need to have dig response before we can operate with SLD due to IP address
         // fmt::print("Spawning ASN response thread\n");
         threads.push_back(std::thread(&host_based_features_t::fill_asn, this));
+    }
+    if (sld_thread.joinable()) {
+        sld_thread.join();
+    }
+    if (_flags & (feature_enum::similar_domain)) {
+        // similard omain name is dependant on sld, so we must first finish work in sld thread
+        threads.push_back(std::thread(&host_based_features_t::fill_similar_domain_name, this));
     }
     for (size_t i = 0; i < threads.size(); i++) {
         // fmt::print("Joinin {} thread\n", i);
@@ -472,9 +479,23 @@ std::string host_based_features_t::get_word_suggestion(std::string_view word) co
     return help_functions::get_line_from_program_if_exists(cmd, 0);
 }
 
+std::string host_based_features_t::get_similar_domain_name() const
+{
+    // we need to copmute sld beforehand
+    if (sld_.empty()) {
+        return "";
+    }
+    return get_word_suggestion(sld_);
+}
+
+void host_based_features_t::fill_similar_domain_name()
+{
+    similar_domain_ = get_similar_domain_name();
+}
+
 double host_based_features_t::compute_similar_domain() const
 {
-    auto suggestion = get_word_suggestion(sld_);
+    const auto& suggestion = similar_domain_;
     // we got something unusual/unknown
     if (suggestion.empty()) {
         return 1;
@@ -511,6 +532,7 @@ std::string host_based_features_t::get_sld() const
 double host_based_features_t::compute_similar_domain(bool)
 {
     sld_ = get_sld();
+    similar_domain_ = get_similar_domain_name();
     return compute_similar_domain();
 }
 
