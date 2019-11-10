@@ -30,6 +30,7 @@ public:
     double compute_value_redirect() const;
     double compute_value_redirect(bool);
     double compute_value_google_indexed() const;
+    double compute_value_google_indexed(bool);
     double compute_value_dns_a_record() const;
     double compute_value_dns_a_record(bool); // for testing purpose
     double compute_value_dnssec() const;
@@ -76,6 +77,8 @@ private:
     std::vector<std::string> extra_values_;
     std::vector<std::string> extra_columns_;
 
+    bool google_indexed_;
+
     bool verbose_;
 
     std::string extract_value(const std::vector<std::string>& output, const std::regex& reg) const;
@@ -100,6 +103,9 @@ private:
     std::string get_word_suggestion(std::string_view word) const;
     std::string asn_;
     void fill_asn();
+    bool get_is_google_indexed() const;
+    void fill_google_index();
+
 
     const int timeout_{2};
 };

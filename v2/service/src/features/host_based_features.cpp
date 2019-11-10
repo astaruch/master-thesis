@@ -62,6 +62,9 @@ host_based_features_t::host_based_features_t(const std::string_view url,
         // fmt::print("Spawning SLD response thread\n");
         threads.push_back(std::thread(&host_based_features_t::fill_sld, this));
     }
+    if (_flags & (feature_enum::google_index)) {
+        threads.push_back(std::thread(&host_based_features_t::fill_google_index, this));
+    }
     if (dig_thread.joinable()) {
         dig_thread.join();
     }
@@ -117,12 +120,29 @@ double host_based_features_t::compute_value_redirect() const
     return 1;
 }
 
-double host_based_features_t::compute_value_google_indexed() const
+void host_based_features_t::fill_google_index()
+{
+    google_indexed_ = get_is_google_indexed();
+}
+
+bool host_based_features_t::get_is_google_indexed() const
 {
     auto cmd = fmt::format("curl --max-time 2 -s 'https://www.google.com/search?hl=en&q=site%3A{}' -H '{}' --compressed | grep 'did not match any documents'",
                            _parsed.getHost(), _user_agent);
+    // we are looking for 'did not match any documents' => if there are not documents (empty results), site is not indexed
     auto output = help_functions::get_output_from_program(cmd);
-    return output.empty() ? 0 : 1;
+    return output.empty(); // => it is empty, because grep didn't find the term, so we had some results -> page is indexed
+}
+
+double host_based_features_t::compute_value_google_indexed(bool)
+{
+    fill_google_index();
+    return compute_value_google_indexed();
+}
+
+double host_based_features_t::compute_value_google_indexed() const
+{
+    return google_indexed_ ? 0 : 1;
 }
 
 std::vector<std::string> host_based_features_t::get_dig_response() const
