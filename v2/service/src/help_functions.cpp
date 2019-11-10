@@ -30,8 +30,8 @@ std::vector<std::string> help_functions::get_output_from_program(const char* cmd
     std::vector<std::string> lines;
     while (fgets(line.data(), 256, pipe.get()) != nullptr) {
         auto str = std::string(line.data());
-        if (str.back() == '\n') str.pop_back();
-        if (str.back() == '\r') str.pop_back();
+        if (!str.empty() && str.back() == '\n') str.pop_back();
+        if (!str.empty() && str.back() == '\r') str.pop_back();
         lines.push_back(std::move(str));
     }
     return lines;

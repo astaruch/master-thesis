@@ -14,6 +14,11 @@
             "label": "Build Release",
             "type": "shell",
             "command": "make build-release"
+        },
+        {
+          "label": "Build Tests",
+          "type": "shell",
+          "command": "export CMAKE_VCPKG_TOOLCHAIN=${env:CMAKE_VCPKG_TOOLCHAIN} && make build-tests",
         }
     ]
 }
