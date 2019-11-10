@@ -28,6 +28,7 @@ public:
     std::unordered_map<feature_enum::id, double> compute_values_map() const;
     double compute_value(feature_enum::id feature) const;
     double compute_value_redirect() const;
+    double compute_value_redirect(bool);
     double compute_value_google_indexed() const;
     double compute_value_dns_a_record() const;
     double compute_value_dns_a_record(bool); // for testing purpose

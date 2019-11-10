@@ -98,23 +98,23 @@ std::vector<double> host_based_features_t::compute_values_vec() const
     return values;
 }
 
+double host_based_features_t::compute_value_redirect(bool)
+{
+    fill_http_resp_headers();
+    return compute_value_redirect();
+}
+
 double host_based_features_t::compute_value_redirect() const
 {
-    auto cmd = fmt::format("curl --max-time 2 -s -w \"%{{http_code}}\" -o /dev/null '{}'", _url);
-    auto output = help_functions::get_output_from_program(cmd);
-    if (output.empty()) {
-        // this happens if cURL can't get output (either weird URL, or contains \{\{\}\})
-        // but it's merely a few URLs so we don't need to handle it
+    // we don't have a response, thus we can't determine if the code is 301
+    if (http_resp_headers_.empty()) {
         return 0;
     }
-    auto http_code_str = output.front();
-    try {
-        auto http_code = std::stoi(http_code_str); // throws invalid_exception
-        return http_code == 301 ? 1 : 0;
-    } catch (const std::invalid_argument& ex) {
+    auto status_line = http_resp_headers_[0];
+    if (status_line.find("301") == std::string::npos) {
         return 0;
     }
-    return 0;
+    return 1;
 }
 
 double host_based_features_t::compute_value_google_indexed() const

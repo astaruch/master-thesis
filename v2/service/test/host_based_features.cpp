@@ -4,13 +4,13 @@
 TEST(Redirect, 301)
 {
     host_based_features_t f("http://google.com");
-    EXPECT_EQ(1., f.compute_value_redirect());
+    EXPECT_EQ(1., f.compute_value_redirect(true));
 }
 
 TEST(Redirect, 200)
 {
     host_based_features_t f("https://www.google.com");
-    EXPECT_EQ(0, f.compute_value_redirect());
+    EXPECT_EQ(0, f.compute_value_redirect(true));
 }
 
 TEST(GoogleIndex, Indexed)
