@@ -19,7 +19,14 @@ function filter_url() {
     [ "${TRANSFER_ENCODING,,}" = "chunked" ] && echo "$URL"
 }
 
+JOBS=0
+
 while read -r URL; do
-    filter_url "$URL"
+    filter_url "$URL" &
+    JOBS=$((JOBS + 1))
+    if [ $JOBS = 64 ]; then
+        wait;
+        JOBS=0
+    fi
 done < "$INPUT"
 
