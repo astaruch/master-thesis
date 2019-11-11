@@ -2,21 +2,24 @@
 
 INPUT=$1
 
-while read -r url; do
-    # echo "$url"
-    output=$(timeout 3 curl -s -I -X GET "$url" | grep -i -E 'content-length|transfer-encoding' | tr '\r\n' ' ' | tr '\n' ' ')
-    # echo "$output"
-    header=$(echo "$output" | awk '{print $1}')
-    unset content_length
-    unset transfer_encoding
-    if [ "${header,,}" = "content-length:" ]; then
-        content_length=$(echo "$output" | awk '{print $2}')
-    elif [ "${header,,}" = "transfer-encoding:" ]; then
-        transfer_encoding=$(echo "$output" | awk '{print $2}')
+function filter_url() {
+    URL=$1
+    HEADER=$(timeout 3 curl -s -I -X GET "$URL" | grep -i -E 'content-length|transfer-encoding' | tr '\r\n' ' ' | tr '\n' ' ')
+    HEADER_NAME=$(echo "$HEADER" | awk '{print $1}')
+    CONTENT_LENGTH=0
+    TRANSFER_ENCODING=""
+    if [ "${HEADER_NAME,,}" = "content-length:" ]; then
+        CONTENT_LENGTH=$(echo "$HEADER" | awk '{print $2}')
+    elif [ "${HEADER_NAME,,}" = "transfer-encoding:" ]; then
+        TRANSFER_ENCODING=$(echo "$HEADER" | awk '{print $2}')
     else
-        continue
+        return
     fi
-    [ "$content_length" != "0" ] && echo "$url"
-    [ "${transfer_encoding,,}" = "chunked" ] && echo "$url"
+    [ "$CONTENT_LENGTH" != "0" ] && echo "$URL"
+    [ "${TRANSFER_ENCODING,,}" = "chunked" ] && echo "$URL"
+}
+
+while read -r URL; do
+    filter_url "$URL"
 done < "$INPUT"
 
