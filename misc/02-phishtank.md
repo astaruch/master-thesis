@@ -1,3 +1,0 @@
-Phishtank is main source of phishing addresses. The site provides database in a time for various formats (XML, CSV and JSON). To see how phishing sites alters during the time, we need to track them periodically. For that purpose, I made a script which is executed by CRON job and then downloaded and archived into Git repository.
-
-API code for phishtank - cdc400e08a81d1e231cfd3ea919291c8395f7c0289421671dff35be88b3b7558
