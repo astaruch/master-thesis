@@ -35,3 +35,21 @@ TEST(Utility, CheckThatEndLinesFromHeadersAreRemoved)
     };
     EXPECT_EQ(lines, expected);
 }
+
+TEST(Str2Vec, SimpleString)
+{
+    std::string str = "Test";
+    std::vector<std::string> vec{"Test"};
+    EXPECT_EQ(vec, help_functions::str2vec(str));
+}
+
+TEST(Str2Vec, HTTPHeader)
+{
+    // equivavelnt to:
+    // curl -s -I google.com | cat -A | head -n 2
+    // HTTP/1.1 301 Moved Permanently^M$
+    // Location: http://www.google.com/^M$
+    auto str = "HTTP/1.1 301 Moved Permanently\r\nLocation: http://www.google.com/\r\n";
+    std::vector<std::string> vec{"HTTP/1.1 301 Moved Permanently", "Location: http://www.google.com/"};
+    EXPECT_EQ(vec, help_functions::str2vec(str));
+}

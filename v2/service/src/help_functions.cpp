@@ -2,6 +2,7 @@
 
 #include <ctime>
 #include <chrono>
+#include <sstream>
 
 #include <fmt/format.h>
 
@@ -101,4 +102,20 @@ double help_functions::normalize_date_string(std::string_view date)
     time_t t = mktime(&tm);
     // fmt::print("{} {} {}\n", timestamp_start, t, timestamp_end);
     return normalize_value(timestamp_start, std::move(t), timestamp_end);
+}
+
+std::vector<std::string> help_functions::str2vec(std::string_view str)
+{
+    if (str.empty()) {
+        return {};
+    }
+    std::stringstream stream(str.data());
+    std::string line;
+    std::vector<std::string> lines;
+    while (std::getline(stream, line, '\n')) {
+        if (!line.empty() && line.back() == '\n') line.pop_back();
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        lines.push_back(line);
+    }
+    return lines;
 }
