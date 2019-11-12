@@ -15,6 +15,9 @@ run:
 stdin:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --verbose --stdin
 
+header:
+	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --print-only-header
+
 pack: build
 	pkg src/index.js --targets node12-linux-x64 --output bin/htmlfeatures
 

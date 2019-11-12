@@ -27,6 +27,7 @@ const main = async () => {
     .describe('include-values', 'Prints also values used for tuning')
     .describe('include-url', 'Prints also source URL')
     .describe('include-header', 'Prints also header for csv')
+    .describe('print-only-header', 'Prints CSV header and exits')
     .group(featureStrings, 'Features:')
     .describe(featureStrings[0], 'Flag wether check how many input tags has page')
     .describe(featureStrings[1], 'Flag wether check if src=<link> is matching hostname')
@@ -41,7 +42,7 @@ const main = async () => {
     .describe(featureStrings[10], 'Flag wether check if text value of <a> link is same as actual link')
     .describe(featureStrings[11], 'Flag wether check if hostname is matching title (0: yes, 1: no)')
 
-  if (!argv.argv.stdin && !argv.argv.url) {
+  if (!argv.argv.stdin && !argv.argv.url && !argv.argv.printOnlyHeader) {
     console.error('You have to provide URL to check or start as "--stdin"')
     process.exit(1)
   }
@@ -89,11 +90,11 @@ const main = async () => {
       urls.push(line)
       if (verbose) console.log(`Line from file: ${line}`)
     }
-  } else {
+  } else if (!argv.argv.printOnlyHeader) {
     console.error('Missing input type argument (e.g. --stdin)')
     process.exit(1)
   }
-  if (argv.argv.includeHeader) {
+  if (argv.argv.printOnlyHeader || argv.argv.includeHeader) {
     const page = new Page('http://example.com')
     const columns = []
     if (argv.argv.includeUrl) {
@@ -101,6 +102,9 @@ const main = async () => {
     }
     Object.keys(features).forEach(key => columns.push(page.columns[key]))
     console.log(columns.join(','))
+  }
+  if (argv.argv.printOnlyHeader) {
+    process.exit(0)
   }
 
   for await (const url of urls) {
