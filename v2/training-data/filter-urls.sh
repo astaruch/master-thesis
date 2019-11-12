@@ -1,7 +1,5 @@
 #!/bin/bash
 
-INPUT=$1
-
 function filter_url() {
     URL=$1
     HEADER=$(timeout 3 curl -s -I -X GET "$URL" | grep -i -E 'content-length|transfer-encoding' | tr '\r\n' ' ' | tr '\n' ' ')
@@ -28,5 +26,5 @@ while read -r URL; do
         wait;
         JOBS=0
     fi
-done < "$INPUT"
+done < "${1:-/dev/stdin}"
 
