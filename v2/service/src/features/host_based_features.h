@@ -13,6 +13,7 @@
 
 class host_based_features_t {
 public:
+    host_based_features_t() = default;
     explicit host_based_features_t(const std::string_view url);
     host_based_features_t(const std::string_view url, const Poco::URI& parsed,
         const uint64_t flags, const bool url_is_ok);
@@ -28,38 +29,39 @@ public:
     std::unordered_map<feature_enum::id, double> compute_values_map() const;
     double compute_value(feature_enum::id feature) const;
     double compute_value_redirect() const;
-    double compute_value_redirect(bool);
     double compute_value_google_indexed() const;
-    double compute_value_google_indexed(bool);
     double compute_value_dns_a_record() const;
-    double compute_value_dns_a_record(bool); // for testing purpose
     double compute_value_dnssec() const;
-    double compute_value_dnssec(bool); // for testing purpose
     double compute_value_dns_created() const;
     double compute_value_dns_updated() const;
     double compute_value_ssl_created() const;
-    double compute_value_ssl_created(bool); // for testing purpose
     double compute_value_ssl_expire() const;
-    double compute_value_ssl_expire(bool); // for testing purpose
     double compute_value_ssl_subject() const;
-    double compute_value_ssl_subject(bool); // for testing purpose
     double compute_value_hsts() const;
-    double compute_value_hsts(bool); // for testing purpose
     double compute_value_xss_protection() const;
-    double compute_value_xss_protection(bool);  // for testing purpose
     double compute_value_csp() const;
-    double compute_value_csp(bool);  // for testing purpose
     double compute_value_x_frame() const;
-    double compute_value_x_frame(bool);  // for testing purpose
     double compute_value_x_content_type() const;
-    double compute_value_x_content_type(bool);  // for testing purpose
     double compute_value_asn() const;
-    double compute_value_asn(bool); // for testing purpose
-    std::string get_asn() const;
     double compute_similar_domain() const;
-    double compute_similar_domain(bool);
-    std::string get_dns_created(bool);
-    std::string get_dns_updated(bool);
+// protected:
+    double compute_value_redirect(std::string_view str);
+    double compute_value_google_indexed(std::string_view str);
+    double compute_value_dns_a_record(std::string_view str); // for testing purpose
+    double compute_value_dnssec(std::string_view str); // for testing purpose
+    double compute_value_ssl_created(std::string_view str); // for testing purpose
+    double compute_value_ssl_expire(std::string_view str); // for testing purpose
+    double compute_value_ssl_subject(std::string_view str); // for testing purpose
+    double compute_value_hsts(std::string_view str); // for testing purpose
+    double compute_value_xss_protection(std::string_view str);  // for testing purpose
+    double compute_value_csp(std::string_view str);  // for testing purpose
+    double compute_value_x_frame(std::string_view str);  // for testing purpose
+    double compute_value_x_content_type(std::string_view str);  // for testing purpose
+    double compute_value_asn(std::string_view str); // for testing purpose
+    double compute_similar_domain(std::string_view str, std::string_view str2);
+    std::string get_asn() const;
+    std::string get_dns_created(std::string_view str);
+    std::string get_dns_updated(std::string_view str);
 private:
     const std::string_view _url;
     const uint64_t _flags{0};
@@ -105,6 +107,7 @@ private:
     std::string asn_;
     void fill_asn();
     bool get_is_google_indexed() const;
+
     void fill_google_index();
     std::string get_similar_domain_name() const;
     void fill_similar_domain_name();

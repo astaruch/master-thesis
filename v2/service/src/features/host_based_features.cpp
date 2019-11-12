@@ -108,9 +108,9 @@ std::vector<double> host_based_features_t::compute_values_vec() const
     return values;
 }
 
-double host_based_features_t::compute_value_redirect(bool)
+double host_based_features_t::compute_value_redirect(std::string_view str)
 {
-    fill_http_resp_headers();
+    http_resp_headers_ = help_functions::str2vec(str);
     return compute_value_redirect();
 }
 
@@ -141,9 +141,10 @@ bool host_based_features_t::get_is_google_indexed() const
     return output.empty(); // => it is empty, because grep didn't find the term, so we had some results -> page is indexed
 }
 
-double host_based_features_t::compute_value_google_indexed(bool)
+double host_based_features_t::compute_value_google_indexed(std::string_view str)
 {
-    fill_google_index();
+
+    google_indexed_ = str.empty();
     return compute_value_google_indexed();
 }
 
@@ -154,7 +155,7 @@ double host_based_features_t::compute_value_google_indexed() const
 
 std::vector<std::string> host_based_features_t::get_dig_response() const
 {
-    auto cmd = fmt::format("dig +timeout={} +dnssec +short {}", 1, _parsed.getHost());
+    auto cmd = fmt::format("dig +timeout={} +dnssec +short {}", timeout_, _parsed.getHost());
     return help_functions::get_output_from_program(cmd);
 }
 
@@ -170,9 +171,9 @@ double host_based_features_t::compute_value_dns_a_record() const
     return dig_response_.empty() ? 1 : 0;
 }
 
-double host_based_features_t::compute_value_dns_a_record(bool)
+double host_based_features_t::compute_value_dns_a_record(std::string_view str)
 {
-    fill_dig_response();
+    dig_response_ = help_functions::str2vec(str);
     return compute_value_dns_a_record();
 }
 
@@ -181,9 +182,9 @@ double host_based_features_t::compute_value_dnssec() const
     return dig_response_.size() > 1 ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_dnssec(bool)
+double host_based_features_t::compute_value_dnssec(std::string_view str)
 {
-    fill_dig_response();
+    dig_response_ = help_functions::str2vec(str);
     return compute_value_dnssec();
 }
 
@@ -244,15 +245,15 @@ std::string host_based_features_t::extract_dns_date(const std::regex& reg) const
     return value;
 }
 
-std::string host_based_features_t::get_dns_created(bool)
+std::string host_based_features_t::get_dns_created(std::string_view str)
 {
-    whois_response_ = get_whois_response();
+    whois_response_ = help_functions::str2vec(str);
     return get_dns_created();
 }
 
-std::string host_based_features_t::get_dns_updated(bool)
+std::string host_based_features_t::get_dns_updated(std::string_view str)
 {
-    whois_response_ = get_whois_response();
+    whois_response_ = help_functions::str2vec(str);
     return get_dns_updated();
 }
 
@@ -312,9 +313,9 @@ std::string host_based_features_t::get_ssl_created() const
     return value;
 }
 
-double host_based_features_t::compute_value_ssl_created(bool)
+double host_based_features_t::compute_value_ssl_created(std::string_view str)
 {
-    fill_ssl_response();
+    ssl_response_ = help_functions::str2vec(str);
     return compute_value_ssl_created();
 }
 
@@ -332,9 +333,9 @@ std::string host_based_features_t::get_ssl_expire() const
     return value;
 }
 
-double host_based_features_t::compute_value_ssl_expire(bool)
+double host_based_features_t::compute_value_ssl_expire(std::string_view str)
 {
-    fill_ssl_response();
+    ssl_response_ = help_functions::str2vec(str);
     return compute_value_ssl_expire();
 }
 
@@ -351,9 +352,9 @@ std::string host_based_features_t::get_ssl_subject() const
     return value;
 }
 
-double host_based_features_t::compute_value_ssl_subject(bool)
+double host_based_features_t::compute_value_ssl_subject(std::string_view str)
 {
-    fill_ssl_response();
+    ssl_response_ = help_functions::str2vec(str);
     return compute_value_ssl_subject();
 }
 
@@ -375,9 +376,9 @@ std::vector<std::string> host_based_features_t::get_http_resp_headers() const
     return help_functions::get_output_from_program(cmd);
 }
 
-double host_based_features_t::compute_value_hsts(bool)
+double host_based_features_t::compute_value_hsts(std::string_view str)
 {
-    fill_http_resp_headers();
+    http_resp_headers_ = help_functions::str2vec(str);
     return compute_value_hsts();
 }
 
@@ -387,9 +388,9 @@ double host_based_features_t::compute_value_hsts() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_xss_protection(bool)
+double host_based_features_t::compute_value_xss_protection(std::string_view str)
 {
-    fill_http_resp_headers();
+    http_resp_headers_ = help_functions::str2vec(str);
     return compute_value_xss_protection();
 }
 
@@ -399,9 +400,9 @@ double host_based_features_t::compute_value_xss_protection() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_csp(bool)
+double host_based_features_t::compute_value_csp(std::string_view str)
 {
-    fill_http_resp_headers();
+    http_resp_headers_ = help_functions::str2vec(str);
     return compute_value_csp();
 }
 
@@ -411,9 +412,9 @@ double host_based_features_t::compute_value_csp() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_x_frame(bool)
+double host_based_features_t::compute_value_x_frame(std::string_view str)
 {
-    fill_http_resp_headers();
+    http_resp_headers_ = help_functions::str2vec(str);
     return compute_value_x_frame();
 }
 
@@ -423,9 +424,9 @@ double host_based_features_t::compute_value_x_frame() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_x_content_type(bool)
+double host_based_features_t::compute_value_x_content_type(std::string_view str)
 {
-    fill_http_resp_headers();
+    http_resp_headers_ = help_functions::str2vec(str);
     return compute_value_x_content_type();
 }
 
@@ -435,9 +436,9 @@ double host_based_features_t::compute_value_x_content_type() const
     return check_value_in_output(http_resp_headers_, reg) ? 0 : 1;
 }
 
-double host_based_features_t::compute_value_asn(bool)
+double host_based_features_t::compute_value_asn(std::string_view str)
 {
-    fill_dig_response();
+    asn_ = str;
     return compute_value_asn();
 }
 
@@ -529,10 +530,10 @@ std::string host_based_features_t::get_sld() const
     return help_functions::get_line_from_program_if_exists(cmd, 0);
 }
 
-double host_based_features_t::compute_similar_domain(bool)
+double host_based_features_t::compute_similar_domain(std::string_view str, std::string_view str2)
 {
-    sld_ = get_sld();
-    similar_domain_ = get_similar_domain_name();
+    similar_domain_ = str;
+    sld_ = str2;
     return compute_similar_domain();
 }
 

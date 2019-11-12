@@ -3,12 +3,10 @@
 
 TEST(Utility, GetOutPutFromProgram)
 {
-    std::string cmd = R"(echo "1\n2\n34")";
-    auto lines = help_functions::get_output_from_program(cmd.c_str());
+    auto cmd = R"(echo "1")";
+    auto lines = help_functions::get_output_from_program(cmd);
     std::vector<std::string> expected = {
         "1",
-        "2",
-        "34"
     };
     EXPECT_EQ(lines, expected);
 }
