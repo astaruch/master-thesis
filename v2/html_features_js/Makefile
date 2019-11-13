@@ -13,7 +13,7 @@ run:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-url --verbose --url http://google.cz
 
 stdin:
-	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --verbose --stdin
+	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --stdin
 
 header:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --print-only-header

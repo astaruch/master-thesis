@@ -45,7 +45,7 @@ std::vector<double> features_t::compute_feature_vector()
     if (_html_flags) {
         std::vector<double> values;
         if (!htmlfeatures_bin_.empty()) {
-            html_features_t html_features(_url, _html_flags, htmlfeatures_bin_);
+            html_features_t html_features(_url, _html_flags, htmlfeatures_bin_, extra_values_flag_);
             values = html_features.get_values_from_external_script();
         } else {
             html_features_t html_features(_url, _html_flags, node_bin_, html_script_);

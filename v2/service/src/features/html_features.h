@@ -14,10 +14,12 @@ class html_features_t {
 public:
     html_features_t(std::string_view url, uint64_t flags, std::string_view node_bin,
         std::string_view html_script);
-    html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path);
+    html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path,
+        bool extra_values);
 
     std::vector<double> compute_values();
     std::vector<double> get_values_from_external_script();
+    std::string get_header();
 
     const std::unordered_map<feature_enum::id, std::string_view> html_feature_arg{
         { feature_enum::input_tag, "--feat-input-tag" },

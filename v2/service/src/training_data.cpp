@@ -69,9 +69,24 @@ std::string training_data::create_csv_header()
         }
     }
 
-    for (const auto id: feature_enum::html) {
-        if (_html_feature_flags & id) {
-            columns.push_back(std::string(feature_enum::column_names.at(id)));
+    // for (const auto id: feature_enum::html) {
+    //     if (_html_feature_flags & id) {
+    //         columns.push_back(std::string(feature_enum::column_names.at(id)));
+    //     }
+    // }
+    if (_html_feature_flags) {
+        html_features_t html("", _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
+        auto html_header = html.get_header();
+        fmt::print("HEADER = {}\n", html_header);
+        size_t pos = 0;
+        std::string token;
+        while ((pos = html_header.find(',')) != std::string::npos) {
+            token = html_header.substr(0, pos);
+            columns.push_back(token);
+            html_header.erase(0, pos + 1);
+        }
+        if (!html_header.empty()) {
+            columns.push_back(html_header);
         }
     }
 
@@ -130,9 +145,16 @@ void training_data::transform_urls_to_training_data()
         line += std::accumulate(std::next(fvec.begin()), fvec.end(),
                                            fmt::format("{}", fvec[0]),
                                            combine_doubles);
+        std::string extra_host_features = "";
+        if (output_extra_values_) {
+            extra_host_features = features.compute_extra_values();
+        }
+        if (!extra_host_features.empty()) {
+            extra_host_features = fmt::format(",{}", extra_host_features);
+        }
         fmt::print(file_, "{}{}{}\n",
             (output_include_url_ ? fmt::format("\"{}\",", url) : ""),
             line,
-            (output_extra_values_ ? fmt::format(",{}", features.compute_extra_values()) : ""));
+            extra_host_features);
     }
 }
