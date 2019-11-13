@@ -104,6 +104,27 @@ double help_functions::normalize_date_string(std::string_view date)
     return normalize_value(timestamp_start, std::move(t), timestamp_end);
 }
 
+double help_functions::normalize_iso_date_string(std::string_view date)
+{
+    long timestamp_start = std::time(0) - 94'608'000; // start date 3 years ago
+    long timestamp_end = std::time(0) + 94'608'000; // end date is 3 years in the future
+    struct tm tm;
+    auto iso_data = fmt::format("{}{}{}", date.substr(0, 4), date.substr(4, 2), date.substr(6));
+    // printf("%s\n", iso_data.c_str());
+    // Apr 30 12:00:00 2021 GMT
+    // %b %d %H:%M:%S %Y
+    strptime(date.begin(), "%b %d %H:%M:%S %Y", &tm);
+    // If the std::tm object was obtained from std::get_time or the POSIX strptime, the value of
+    // tm_isdst is indeterminate, and needs to be set explicitly before calling mktime.
+    tm.tm_isdst = 0;
+    tm.tm_hour = 0;
+    tm.tm_min = 0;
+    tm.tm_sec = 0;
+    time_t t = mktime(&tm);
+    fmt::print("{} {} {}\n", timestamp_start, t, timestamp_end);
+    return normalize_value(timestamp_start, std::move(t), timestamp_end);
+}
+
 std::vector<std::string> help_functions::str2vec(std::string_view str)
 {
     if (str.empty()) {

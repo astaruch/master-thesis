@@ -64,6 +64,8 @@ public:
     std::string get_asn() const;
     std::string get_dns_created(std::string_view str);
     std::string get_dns_updated(std::string_view str);
+    std::string get_ssl_created(std::string_view str);
+    std::string get_ssl_expire(std::string_view str);
 private:
     const std::string_view _url;
     const uint64_t _flags{0};

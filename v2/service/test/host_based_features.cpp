@@ -267,3 +267,51 @@ TEST(DomainSimilarity, MultipleCharDifferent)
     host_based_features_t f("http://gaagle.com");
     EXPECT_EQ(0.5, f.compute_similar_domain(similar_domain_gaagle, sld_gaagle));
 }
+
+TEST(SSLDate, Created1)
+{
+    host_based_features_t f;
+    EXPECT_EQ("Oct 16 12:28:32 2019 GMT", f.get_ssl_created(ssl_www_google_com));
+}
+
+TEST(SSLDate, CreatedEmpty)
+{
+    host_based_features_t f;
+    EXPECT_EQ("", f.get_ssl_created(ssl_empty));
+}
+
+TEST(SSLDate, Expiry)
+{
+    host_based_features_t f;
+    EXPECT_EQ("Jan  8 12:28:32 2020 GMT", f.get_ssl_expire(ssl_www_google_com));
+}
+
+TEST(SSLDate, ExpireEmpty)
+{
+    host_based_features_t f;
+    EXPECT_EQ("", f.get_ssl_created(ssl_empty));
+}
+
+TEST(SSLCreated, Now)
+{
+    host_based_features_t f;
+    EXPECT_NEAR(0.5, f.compute_value_ssl_created(ssl_www_google_com), 0.1);
+}
+
+TEST(SSLCreated, NoValue)
+{
+    host_based_features_t f;
+    EXPECT_EQ(1, f.compute_value_ssl_created(ssl_empty));
+}
+
+TEST(SSLExpire, Till2Years)
+{
+    host_based_features_t f;
+    EXPECT_NEAR(0.5, f.compute_value_ssl_expire(ssl_www_google_com), 0.1);
+}
+
+TEST(SSLExpire, NoValue)
+{
+    host_based_features_t f;
+    EXPECT_EQ(1, f.compute_value_ssl_expire(ssl_empty));
+}

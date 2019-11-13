@@ -309,6 +309,18 @@ void host_based_features_t::fill_ssl_response()
     }
 }
 
+std::string host_based_features_t::get_ssl_created(std::string_view str)
+{
+    ssl_response_ = help_functions::str2vec(str);
+    return get_ssl_created();
+}
+
+std::string host_based_features_t::get_ssl_expire(std::string_view str)
+{
+    ssl_response_ = help_functions::str2vec(str);
+    return get_ssl_expire();
+}
+
 std::string host_based_features_t::get_ssl_created() const
 {
     const std::regex reg("(notBefore)=(.*)", std::regex::icase);
@@ -326,14 +338,16 @@ double host_based_features_t::compute_value_ssl_created(std::string_view str)
 double host_based_features_t::compute_value_ssl_created() const
 {
     auto date = get_ssl_created();
-    return 0;
+    if (date.empty()) {
+        return 1;
+    }
+    return help_functions::normalize_iso_date_string(date);
 }
 
 std::string host_based_features_t::get_ssl_expire() const
 {
     const std::regex reg("(notAfter)=(.*)", std::regex::icase);
     auto value = extract_value_from_output(ssl_response_, reg);
-    // fmt::print(value);
     return value;
 }
 
@@ -346,7 +360,10 @@ double host_based_features_t::compute_value_ssl_expire(std::string_view str)
 double host_based_features_t::compute_value_ssl_expire() const
 {
     auto date = get_ssl_expire();
-    return 0;
+    if (date.empty()) {
+        return 1;
+    }
+    return help_functions::normalize_iso_date_string(date);
 }
 
 std::string host_based_features_t::get_ssl_subject() const
