@@ -271,6 +271,20 @@ double host_based_features_t::compute_value_dns_created() const
     return help_functions::normalize_date_string(created);
 }
 
+double host_based_features_t::compute_value_dns_created(std::string_view str)
+{
+    whois_response_ = help_functions::str2vec(str);
+    return compute_value_dns_created();
+}
+
+double host_based_features_t::compute_value_dns_updated(std::string_view str)
+{
+    whois_response_ = help_functions::str2vec(str);
+    return compute_value_dns_updated();
+}
+
+
+
 double host_based_features_t::compute_value_dns_updated() const
 {
     auto updated = get_dns_updated();

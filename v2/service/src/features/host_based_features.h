@@ -49,6 +49,8 @@ public:
     double compute_value_google_indexed(std::string_view str);
     double compute_value_dns_a_record(std::string_view str); // for testing purpose
     double compute_value_dnssec(std::string_view str); // for testing purpose
+    double compute_value_dns_created(std::string_view str);
+    double compute_value_dns_updated(std::string_view str);
     double compute_value_ssl_created(std::string_view str); // for testing purpose
     double compute_value_ssl_expire(std::string_view str); // for testing purpose
     double compute_value_ssl_subject(std::string_view str); // for testing purpose

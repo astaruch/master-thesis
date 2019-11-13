@@ -134,6 +134,30 @@ TEST(DNSRegex, ExtractDateUpadted12)
     EXPECT_EQ("2019-10-14", date);
 }
 
+TEST(DNSCreated, LongTimeAgo)
+{
+    host_based_features_t f;
+    EXPECT_GT(0.1, /* > */ f.compute_value_dns_created(whois_nic_cz));
+}
+
+TEST(DNSCreated, FreshSite)
+{
+    host_based_features_t f;
+    EXPECT_LT(0.9, /* < */ f.compute_value_dns_created(whois_staruch_sk));
+}
+
+TEST(DNSUpdated, ChangedRecently)
+{
+    host_based_features_t f;
+    EXPECT_LT(0.9, /* < */ f.compute_value_dns_updated(whois_google_com_br));
+}
+
+TEST(DNSUpdated, Missing)
+{
+    host_based_features_t f;
+    EXPECT_EQ(1, f.compute_value_dns_updated(whois_google_cn));
+}
+
 TEST(SSL, SubjectMatchHostname)
 {
     host_based_features_t f("https://www.google.com");

@@ -14,6 +14,10 @@ test: build-tests
 	@echo $@
 	Debug/test/all_tests
 
+test-fail: build-tests
+	@echo $@
+	Debug/test/all_tests --gtest_break_on_failure
+
 ctest: build-tests
 	@echo $@
 	cd Debug && ctest

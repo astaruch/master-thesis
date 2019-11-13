@@ -87,10 +87,10 @@ double help_functions::normalize_value(long min, long value, long max)
 
 double help_functions::normalize_date_string(std::string_view date)
 {
-    long timestamp_start = 0;
-    long timestamp_end = 2147483647;
+    long timestamp_start = 946684800; // start date at 2000-1-1
+    long timestamp_end = std::time(0); // end date is today
     struct tm tm;
-    auto iso_data = fmt::format("{}-{}-{}", date.substr(0, 4), date.substr(4, 2), date.substr(6));
+    auto iso_data = fmt::format("{}{}{}", date.substr(0, 4), date.substr(4, 2), date.substr(6));
     // printf("%s\n", iso_data.c_str());
     strptime(iso_data.c_str(), "%Y-%m-%d", &tm);
     // If the std::tm object was obtained from std::get_time or the POSIX strptime, the value of
