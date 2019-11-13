@@ -1,14 +1,16 @@
 #include "training_data.h"
 
 #include "features/feature_enum.h"
-#include "features/features.h"
 #include "features/url_features.h"
 #include "features/html_features.h"
+#include "features/host_based_features.h"
 
 #include <algorithm>
 #include <numeric>
 
 #include <spdlog/spdlog.h>
+#include <Poco/URI.h>
+#include <Poco/Exception.h>
 
 training_data::training_data(bool verbose, bool output_include_url = false, bool output_extra_values = false)
     : verbose_(verbose)
@@ -133,28 +135,52 @@ void training_data::transform_urls_to_training_data()
     };
 
     for (const auto& url: _urls) {
-        if (verbose_) fmt::print(file_, "-> Checking {}\n", url);
-        features_t features(url, _url_feature_flags, _html_feature_flags,
-            _host_based_feature_flags, _label, verbose_, output_extra_values_);
-        if (_html_feature_flags) {
-            features.set_html_features_opts(std::string(node_bin_), std::string(html_script_), std::string(htmlfeatures_bin_));
-        }
-        auto fvec = features.compute_feature_vector();
-        std::string line;
+        if (verbose_) fmt::print(file_, "--> Checking {}\n", url);
+        try {
+            const Poco::URI parsed = Poco::URI(url); // throws SyntaxException on bad URL
+            std::vector<double> fvec; // feature vector for an URL
 
-        line += std::accumulate(std::next(fvec.begin()), fvec.end(),
-                                           fmt::format("{}", fvec[0]),
-                                           combine_doubles);
-        std::string extra_host_features = "";
-        if (output_extra_values_) {
-            extra_host_features = features.compute_extra_values();
+            if (_url_feature_flags) {
+                url_features_t url_features(url, parsed, _url_feature_flags, true);
+                auto values = url_features.compute_values_vec();
+                fvec.insert(fvec.end(), values.begin(), values.end());
+            }
+
+            if (_html_feature_flags) {
+                std::vector<double> values;
+                if (!htmlfeatures_bin_.empty()) {
+                    html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
+                    values = html_features.get_values_from_external_script();
+                } else {
+                    html_features_t html_features(url, _html_feature_flags, node_bin_, html_script_);
+                    values = html_features.compute_values();
+                }
+                fvec.insert(fvec.end(), values.begin(), values.end());
+            }
+
+            std::string host_extra_values = "";
+            if (_host_based_feature_flags) {
+                host_based_features_t host_based_features(url, parsed, _host_based_feature_flags, true);
+                auto values = host_based_features.compute_values_vec();
+                fvec.insert(fvec.end(), values.begin(), values.end());
+
+                if (output_extra_values_) {
+                    host_extra_values = ',' + host_based_features.extra_values();
+                }
+            }
+            std::string line;
+
+            line += std::accumulate(std::next(fvec.begin()), fvec.end(),
+                                            fmt::format("{}", fvec[0]),
+                                            combine_doubles);
+            fmt::print(file_, "{}{}{}\n",
+                (output_include_url_ ? fmt::format("\"{}\",", url) : ""),
+                line,
+                host_extra_values);
+
+        } catch (const Poco::SyntaxException& ex) {
+            if (verbose_) fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
+            continue;
         }
-        if (!extra_host_features.empty()) {
-            extra_host_features = fmt::format(",{}", extra_host_features);
-        }
-        fmt::print(file_, "{}{}{}\n",
-            (output_include_url_ ? fmt::format("\"{}\",", url) : ""),
-            line,
-            extra_host_features);
     }
 }
