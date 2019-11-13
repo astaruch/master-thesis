@@ -82,6 +82,17 @@ host-based-features: build-debug
 		--td-output-url \
 		${HOST_BASED_FEATURES}
 
+url-host: build-debug
+	Debug/phishsvc \
+		--enable-training-data \
+		--td-stdin \
+		--td-class-value 0 \
+		--enable-features \
+		--td-output-extra-values \
+		--td-output-url \
+		${URL_FEATURES} \
+		${HOST_BASED_FEATURES}
+
 all-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
