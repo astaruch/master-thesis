@@ -16,28 +16,19 @@ host_based_features_t::host_based_features_t(const std::string_view url)
 try
    : _url(url)
    , _parsed(Poco::URI(url.begin()))
-   , _url_is_ok(true)
 {
 }
 catch (const Poco::SyntaxException& ex)
 {
-    // we didn't finish parsing an URL thus _url_is_ok is still false
 }
 
 host_based_features_t::host_based_features_t(const std::string_view url,
                                              const Poco::URI& parsed,
-                                             const uint64_t flags,
-                                             const bool url_is_ok)
+                                             const uint64_t flags)
     : _url(url)
     , _flags(flags)
     , _parsed(parsed)
-    , _url_is_ok(url_is_ok)
 {
-    // we can't make query bcs our URL is malformed and we don't know host and other stuff
-    // we could perform some magic to recover it, but this should be more concise
-    if (!_url_is_ok) {
-        return;
-    }
     std::vector<std::thread> threads;
     std::thread dig_thread; // need to be first resolved because ASN is depending on it
     if (_flags & (feature_enum::dns_a_record | feature_enum::dnssec | feature_enum::asn)) {
@@ -143,7 +134,6 @@ bool host_based_features_t::get_is_google_indexed() const
 
 double host_based_features_t::compute_value_google_indexed(std::string_view str)
 {
-
     google_indexed_ = str.empty();
     return compute_value_google_indexed();
 }
@@ -584,10 +574,6 @@ std::string host_based_features_t::extra_values()
 
 double host_based_features_t::compute_value(feature_enum::id feature) const
 {
-    // if we couldn't parse an URL, we are marking all features as phishy
-    if (!_url_is_ok) {
-        return -1.;
-    }
     switch (feature) {
     // URL FEATURES IN ANOTHER FILE
     case feature_enum::ip_address:

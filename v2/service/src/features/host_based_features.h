@@ -16,7 +16,7 @@ public:
     host_based_features_t() = default;
     explicit host_based_features_t(const std::string_view url);
     host_based_features_t(const std::string_view url, const Poco::URI& parsed,
-        const uint64_t flags, const bool url_is_ok);
+        const uint64_t flags);
 
     void set_verbose(bool verbose) {
         verbose_ = verbose;
@@ -66,7 +66,6 @@ private:
     const std::string_view _url;
     const uint64_t _flags{0};
     const Poco::URI _parsed{};
-    const bool _url_is_ok{false};
 
     const std::string_view _user_agent{"user-agent: Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"};
     std::string sld_; // second level domain (hostname without TLD and subdomains)

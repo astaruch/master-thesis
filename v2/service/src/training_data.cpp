@@ -160,7 +160,7 @@ void training_data::transform_urls_to_training_data()
 
             std::string host_extra_values = "";
             if (_host_based_feature_flags) {
-                host_based_features_t host_based_features(url, parsed, _host_based_feature_flags, true);
+                host_based_features_t host_based_features(url, parsed, _host_based_feature_flags);
                 auto values = host_based_features.compute_values_vec();
                 fvec.insert(fvec.end(), values.begin(), values.end());
 
