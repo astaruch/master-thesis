@@ -1,6 +1,7 @@
 #include "host_based_features.h"
 
 #include "../help_functions.h"
+#include "asn_rogue_index.h"
 
 #include <algorithm>
 #include <regex>
@@ -460,6 +461,7 @@ double host_based_features_t::compute_value_x_content_type() const
 double host_based_features_t::compute_value_asn(std::string_view str)
 {
     asn_ = str;
+    std::transform(asn_.begin(), asn_.end(), asn_.begin(), ::toupper);
     return compute_value_asn();
 }
 
@@ -483,14 +485,17 @@ std::string host_based_features_t::get_asn() const
 
 double host_based_features_t::compute_value_asn() const
 {
-    // TODO: change to some meaningfull value after performing statistics
-    return asn_.empty() ? 1 : 0;
+    if (asn_.empty() || asn_rogue_index.count(asn_) == 0) {
+        return 1;
+    }
+    return asn_rogue_index.at(asn_);
 }
 
 void host_based_features_t::fill_asn()
 {
     if (asn_.empty()) {
         asn_ = get_asn();
+        std::transform(asn_.begin(), asn_.end(), asn_.begin(), ::toupper);
     }
 }
 

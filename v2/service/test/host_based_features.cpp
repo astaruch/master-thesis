@@ -315,3 +315,4 @@ TEST(SSLExpire, NoValue)
     host_based_features_t f;
     EXPECT_EQ(1, f.compute_value_ssl_expire(ssl_empty));
 }
+

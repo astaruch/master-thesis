@@ -121,7 +121,7 @@ double help_functions::normalize_iso_date_string(std::string_view date)
     tm.tm_min = 0;
     tm.tm_sec = 0;
     time_t t = mktime(&tm);
-    fmt::print("{} {} {}\n", timestamp_start, t, timestamp_end);
+    // fmt::print("{} {} {}\n", timestamp_start, t, timestamp_end);
     return normalize_value(timestamp_start, std::move(t), timestamp_end);
 }
 
