@@ -4,6 +4,11 @@ const { fetchWithTimeout } = require('./fetchWithTimeout')
 const { AbortController } = require('abort-controller')
 const { JSDOM, VirtualConsole } = require('jsdom')
 
+function computeValue (min, value, max) {
+  value = Math.max(min, Math.min(value, max))
+  return (value - min) / (max - min)
+}
+
 class Page {
   constructor (url, includeValues, verbose) {
     this.url = url
@@ -50,24 +55,6 @@ class Page {
     this.parsed = new URL(url)
     this.verbose = verbose
   }
-
-  // async getPage (url) {
-  //   return new Promise(fetchWithTimeout(url, {
-  //     headers: {
-  //       'Content-Type': 'text/html; charset=UTF-8'
-  //     },
-  //     signal: signal
-  //   }, 3000)
-  //     .then(res => res.text())
-  //     .catch(err => {
-  //       if (err.code === 'ENOTFOUND') {
-  //         throw new Error('ERROR: Site is down')
-  //       } else if (err.name === 'AbortError') {
-  //         throw new Error('ERROR: Cancelling request. Site is not finishing request')
-  //       }
-  //       throw err
-  //     }))
-  // }
 
   async getDOM (url) {
     // we need to have a chance cancel weird request such as hanging 'http://w107fm.com/wp-admin/css/web/bt.com/clients/'
@@ -139,7 +126,7 @@ class Page {
    */
   featureInputTag (dom) {
     const value = this.featureInputTagValue(dom)
-    return value > 0 ? 1 : 0
+    return computeValue(0, value, 50)
   }
 
   /**
@@ -192,7 +179,7 @@ class Page {
 
   featureFormHandler (dom) {
     const result = this.featureFormHandlerValue(dom)
-    return result > 1 ? 1 : 0
+    return computeValue(0, result, 5)
   }
 
   featureInvisibleIframeValue (dom) {
@@ -222,7 +209,7 @@ class Page {
 
   featureInvisibleIframe (dom) {
     const iframes = this.featureInvisibleIframeValue(dom)
-    return iframes > 0 ? 1 : 0
+    return computeValue(0, iframes, 12)
   }
 
   featureRewriteStatusbar (dom) {
@@ -307,7 +294,8 @@ class Page {
   }
 
   featurePopupWindow (dom) {
-    return this.featurePopupWindowValue(dom) > 0 ? 1 : 0
+    const value = this.featurePopupWindowValue(dom)
+    return computeValue(0, value, 20)
   }
 
   featureFaviconLink (dom) {
@@ -393,7 +381,8 @@ class Page {
   }
 
   featureMissleadingLink (dom) {
-    return this.featureMissleadingLinkValue(dom) > 0 ? 1 : 0
+    const value = this.featureMissleadingLinkValue(dom)
+    return computeValue(0, value, 100)
   }
 
   featureHostnameTitle (dom) {
