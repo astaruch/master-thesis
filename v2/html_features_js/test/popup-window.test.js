@@ -105,28 +105,28 @@ function myFunction() {
 `
     const page = new Page(url)
 
-    it('prompt inside function should return 1', () => {
+    it('prompt inside function should return 1/20', () => {
       const DOM = new JSDOM(DOM1)
       const value = page.featurePopupWindow(DOM, url)
-      assert.strictEqual(value, 1)
+      assert.strictEqual(value, 1 / 20)
     })
 
-    it('onclick alert should return 1 ', () => {
+    it('onclick alert should return 1/20 ', () => {
       const DOM = new JSDOM(DOM2)
       const value = page.featurePopupWindow(DOM, url)
-      assert.strictEqual(value, 1)
+      assert.strictEqual(value, 1 / 20)
     })
 
-    it('alert inside function should return 1', () => {
+    it('alert inside function should return 1/20', () => {
       const DOM = new JSDOM(DOM3)
       const value = page.featurePopupWindow(DOM, url)
-      assert.strictEqual(value, 1)
+      assert.strictEqual(value, 1 / 20)
     })
 
-    it('confirm should return 1 ', () => {
+    it('confirm should return 1/20 ', () => {
       const DOM = new JSDOM(DOM4)
       const value = page.featurePopupWindow(DOM, url)
-      assert.strictEqual(value, 1)
+      assert.strictEqual(value, 1 / 20)
     })
 
     it('window open should should return 0', () => {

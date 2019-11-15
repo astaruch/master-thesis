@@ -45,10 +45,10 @@ describe('FeatureTests', function () {
       assert.strictEqual(tags, 3)
     })
 
-    it('should return 1 as phishing value', () => {
+    it('should return 3/50', () => {
       const DOM = new JSDOM(DOMInputTag)
       const value = page.featureInputTag(DOM)
-      assert.strictEqual(value, 1)
+      assert.strictEqual(value, 3 / 50)
     })
 
     it('should return 0 <input> tags', () => {
@@ -60,7 +60,7 @@ describe('FeatureTests', function () {
     it('should return 0 as phishing value', () => {
       const DOM = new JSDOM(DOMNoInputTag)
       const value = page.featureInputTag(DOM)
-      assert.strictEqual(value, 0)
+      assert.strictEqual(value, 0 / 50)
     })
   })
 })
