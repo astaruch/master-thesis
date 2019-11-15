@@ -98,7 +98,6 @@ std::string training_data::create_csv_header()
         }
     }
 
-    columns.push_back("label");
 
     if (output_extra_values_) {
         if (_host_based_feature_flags & feature_enum::dns_created) {
@@ -117,6 +116,7 @@ std::string training_data::create_csv_header()
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::asn)) + "_value");
         }
     }
+    columns.push_back("label");
 
     return std::accumulate(columns.begin(), columns.end(), std::string(),
         [](const std::string& a, const std::string& b) -> std::string {
@@ -173,10 +173,11 @@ void training_data::transform_urls_to_training_data()
             line += std::accumulate(std::next(fvec.begin()), fvec.end(),
                                             fmt::format("{}", fvec[0]),
                                             combine_doubles);
-            fmt::print(file_, "{}{}{}\n",
+            fmt::print(file_, "{}{}{},{}\n",
                 (output_include_url_ ? fmt::format("\"{}\",", url) : ""),
                 line,
-                host_extra_values);
+                host_extra_values,
+                _label);
 
         } catch (const Poco::SyntaxException& ex) {
             if (verbose_) fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
