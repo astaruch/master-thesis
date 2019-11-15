@@ -134,6 +134,12 @@ TEST(DNSRegex, ExtractDateUpadted12)
     EXPECT_EQ("2019-10-14", date);
 }
 
+TEST(DNSRegex, ExtractDate13)
+{
+    host_based_features_t f;
+    EXPECT_EQ("2015-08-20", f.get_dns_created(whois_kjmtelecom_com_br));
+}
+
 TEST(DNSCreated, LongTimeAgo)
 {
     host_based_features_t f;
@@ -315,4 +321,3 @@ TEST(SSLExpire, NoValue)
     host_based_features_t f;
     EXPECT_EQ(1, f.compute_value_ssl_expire(ssl_empty));
 }
-

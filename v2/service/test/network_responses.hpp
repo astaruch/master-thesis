@@ -553,6 +553,45 @@ Registrar:                    WEBG-0001
 Created:                      2018-02-03
 Updated:                      2018-02-03)";
 
+// whois --verbose kjmtelecom.com.br
+auto whois_kjmtelecom_com_br = R"([Querying whois.registro.br]
+[whois.registro.br]
+
+% Copyright (c) Nic.br
+%  The use of the data below is only permitted as described in
+%  full by the terms of use at https://registro.br/termo/en.html ,
+%  being prohibited its distribution, commercialization or
+%  reproduction, in particular, to use it for advertising or
+%  any similar purpose.
+%  2019-11-15T16:00:30-03:00
+
+domain:      kjmtelecom.com.br
+owner:       Rosa Karina Souza Santana
+ownerid:     003.211.135-51
+country:     BR
+owner-c:     RKSSA11
+admin-c:     RKSSA11
+tech-c:      RKSSA11
+billing-c:   RKSSA11
+nserver:     ns54.prodns.com.br
+nsstat:      20191110 AA
+nslastaa:    20191110
+nserver:     ns55.prodns.com.br
+nsstat:      20191110 AA
+nslastaa:    20191110
+saci:        yes
+created:     20150820 #14574811
+changed:     20190507
+expires:     20220820
+status:      published
+
+nic-hdl-br:  RKSSA11
+person:      Rosa Karina Souza Santana
+e-mail:      adm.kjmtelecom@gmail.com
+country:     BR
+created:     20190405
+changed:     20190405)";
+
 // openssl s_client -connect www.google.com:443 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null
 auto ssl_www_google_com = R"(subject=C = US, ST = California, L = Mountain View, O = Google LLC, CN = www.google.com
 notBefore=Oct 16 12:28:32 2019 GMT
