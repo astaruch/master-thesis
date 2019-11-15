@@ -1,9 +1,9 @@
 #!/bin/bash
 
 function print_header() {
-    cat <<EOF 
+    cat <<EOF
 #pragma once
-  
+
 #ifndef PHISHSVC_ASN_ROGUE_INDEX_H
 #define PHISHSVC_ASN_ROGUE_INDEX_H
 
@@ -29,5 +29,5 @@ EOF
 }
 
 print_header
-print_mappings
+print_mappings $1
 print_end
