@@ -1166,7 +1166,6 @@ static const std::unordered_map<std::string_view, double> asn_rogue_index{
     { "AS9198", 1 },
     { "AS9790", 0 },
     { "AS199391", 1 },
-    { "AS31377", 0 },
     { "AS35913", 1 },
     { "AS44976", 1 },
 };
