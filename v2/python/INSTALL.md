@@ -26,3 +26,12 @@ Go on the IP address of Docker container with entered port in docker-compose
 Visit link <http://172.17.0.3:10000> and in lower part of the site setup with token `d678366c6db8c8cc3348add31372554bf0ea1bbf25ab68bc` your new password, so after next visit of site, you don't need a token (which is generated on each startup of a container).
 
 
+# Python checker
+
+
+    $ sudo apt install python3-pip virtualenv
+    $ pip3 install virtualenv
+    $ virtualenv --python=python3
+    $ source venv/bin/activate
+    $ pip install -r requirements.txt
+

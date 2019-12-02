@@ -30,12 +30,12 @@ url_features_t::url_features_t(const std::string_view url, const Poco::URI& pars
 {
 }
 
-std::unordered_map<feature_enum::id, double> url_features_t::compute_values()
+std::unordered_map<std::string_view, double> url_features_t::compute_values_map() const
 {
-    std::unordered_map<feature_enum::id, double> values;
+    std::unordered_map<std::string_view, double> values;
     for (const auto feature: feature_enum::url) {
         if (_flags & feature) {
-            values[feature] = compute_value(feature);
+            values[feature_enum::column_names.at(feature)] = compute_value(feature);
         }
     }
     return values;

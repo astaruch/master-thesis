@@ -79,7 +79,7 @@ std::string training_data::create_csv_header()
     if (_html_feature_flags) {
         html_features_t html("", _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
         auto html_header = html.get_header();
-        fmt::print("HEADER = {}\n", html_header);
+        // fmt::print("HEADER = {}\n", html_header);
         size_t pos = 0;
         std::string token;
         while ((pos = html_header.find(',')) != std::string::npos) {
@@ -123,6 +123,43 @@ std::string training_data::create_csv_header()
             return a + (a.length() > 0 ? "," : "") + b;
         }
     );
+}
+
+std::vector<std::unordered_map<std::string_view, double>> training_data::get_data_for_model()
+{
+    std::vector<std::unordered_map<std::string_view, double>> data;
+    for (const auto& url: _urls) {
+        if (verbose_) fmt::print(file_, "--> Checking {}\n", url);
+        try {
+            const Poco::URI parsed = Poco::URI(url); // throws SyntaxException on bad URL
+            std::unordered_map<std::string_view, double> fmap;
+
+            if (_url_feature_flags) {
+                url_features_t url_features(url, parsed, _url_feature_flags, true);
+                auto values = url_features.compute_values_map();
+                fmap.merge(values);
+            }
+
+            // TODO: serialize with JSON
+            // if (_html_feature_flags) {
+            //     std::vector<double> values;
+            //     html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
+            //     values = html_features.get_values_from_external_script();
+            //     fvec.insert(fvec.end(), values.begin(), values.end());
+            // }
+
+            if (_host_based_feature_flags) {
+                host_based_features_t host_based_features(url, parsed, _host_based_feature_flags);
+                auto values = host_based_features.compute_values_map();
+                fmap.merge(values);
+            }
+            data.push_back(fmap);
+        } catch (const Poco::SyntaxException& ex) {
+            if (verbose_) fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
+            continue;
+        }
+    }
+    return data;
 }
 
 void training_data::transform_urls_to_training_data()

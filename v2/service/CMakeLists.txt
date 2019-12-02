@@ -53,6 +53,10 @@ else()
   message(FATAL_ERROR "Can't find edlib library")
 endif()
 
+### JSON
+find_package(nlohmann_json CONFIG REQUIRED)
+
+
 ## ======================================================================================##
 ## Subdirectories and source files
 ## ======================================================================================##
@@ -82,6 +86,7 @@ set(ALL_LIBRARIES
   fmt::fmt
   fmt::fmt-header-only
   ${LIBEDLIB}
+  nlohmann_json nlohmann_json::nlohmann_json
 )
 
 ## ======================================================================================##

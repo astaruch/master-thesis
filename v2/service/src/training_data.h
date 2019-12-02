@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 class training_data {
 public:
@@ -21,6 +22,7 @@ public:
 
     /// Method for generating the training data
     bool create_training_data();
+    std::vector<std::unordered_map<std::string_view, double>> get_data_for_model();
 private:
     bool verbose_{false};
     bool output_include_url_{false};

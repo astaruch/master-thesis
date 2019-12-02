@@ -16,7 +16,7 @@ public:
     url_features_t(const std::string_view url, const Poco::URI& parsed, const uint64_t flags,
         const bool url_is_ok);
 
-    std::unordered_map<feature_enum::id, double> compute_values();
+    std::unordered_map<std::string_view, double> compute_values_map() const;
     std::vector<double> compute_values_vec() const;
     double compute_value(feature_enum::id feature) const;
     double compute_value_ip_address() const;

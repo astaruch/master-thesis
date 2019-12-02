@@ -64,6 +64,29 @@
           "preLaunchTask": "Build Debug"
       },
       {
+        "name": "Debug Model Checking",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceRoot}/Debug/phishsvc",
+        "args": ["--enable-model-checking",
+          "--mc-htmlfeatures-bin", "/home/xstaruch/master-thesis/v2/html_features_js/bin/htmlfeatures",
+          "--mc-model-checker-path", "/home/xstaruch/master-thesis/v2/python/bin/model-checker",
+          "--mc-input-url", "https://nab-ib.app/id/MDQ0Nzg5Ode4Mg",
+          "--verbose"
+        ],
+        "cwd": "${workspaceFolder}",
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ],
+        "preLaunchTask": "Build Debug"
+    },
+      {
         "type": "bashdb",
         "request": "launch",
         "name": "Bash-Debug (hardcoded script name)",

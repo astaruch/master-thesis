@@ -22,11 +22,11 @@ public:
         verbose_ = verbose;
     }
 
+    std::unordered_map<std::string_view, double> compute_values_map() const;
     std::vector<double> compute_values_vec() const;
     std::string extra_values();
     std::vector<std::string> extra_columns();
 
-    std::unordered_map<feature_enum::id, double> compute_values_map() const;
     double compute_value(feature_enum::id feature) const;
     double compute_value_redirect() const;
     double compute_value_google_indexed() const;

@@ -634,3 +634,68 @@ auto sld_gaagle = "gaagle";
 auto asn_google_com = "AS15169";
 
 #endif // PHISHSVC_NETWORK_RESPONSES_H
+
+// whois zakarpat-rada.gov.ua
+// [Querying whois.ua]
+// [whois.ua]
+// % Request from 89.102.25.191
+// % This is the Ukrainian Whois query server #I.
+// % The Whois is subject to Terms of use
+// % See https://hostmaster.ua/services/
+// %
+// % IN THE PROCESS OF DELEGATION OF A DOMAIN NAME,
+// % THE REGISTRANT IS AN ENTITY WHO USES AND MANAGES A CERTAIN DOMAIN NAME,
+// % AND THE REGISTRAR IS A BUSINESS ENTITY THAT PROVIDES THE REGISTRANT
+// % WITH THE SERVICES NECESSARY FOR THE TECHNICAL MAINTENANCE OF THE REGISTRATION AND OPERATION OF THE DOMAIN NAME.
+// % FOR INFORMATION ABOUT THE REGISTRANT OF THE DOMAIN NAME, YOU SHOULD CONTACT THE REGISTRAR.
+
+
+// % % .UA whois
+// % Domain Record:
+// % =============
+// domain:     zakarpat-rada.gov.ua
+// admin-c:    ZKRD2-UANIC
+// tech-c:     ZIC-UANIC
+// status:     OK-UNTIL 20200131151411
+// nserver:    ns.ic.uz.ua
+// nserver:    ns2.ic.uz.ua
+// remark:     Закарпатська Обласна Рада
+// remark:     Transcarpathian Regional Council
+// created:    0-UANIC 20070131151411
+// changed:    UARR149-UANIC 20190215133349
+// source:     UANIC
+
+
+// % Administrative Contact:
+// % ======================
+// nic-handle:   ZKRD2-UANIC
+// organization: Закарпатська обласна рада
+// address:      площа Народна, 4
+// address:      88008 Закарпатська УЖГОРОД
+// address:      UA
+// phone:        +380 (312) 613140
+// e-mail:       zak-rada@ukr.net
+// org-id:       25435963
+// mnt-by:       NONE
+// changed:      ZKRD2-UANIC 20190215125507
+// source:       UANIC
+
+// % Technical Contact:
+// % =================
+// nic-handle:   ZIC-UANIC
+// organization: ТОВ "Закарпатінфоком"
+// address:      Собранецька, 46
+// address:      88000 Закарпатська обл., М. УЖГОРОД
+// address:      UA
+// phone:        +380 (312) 619206
+// e-mail:       root@ic.uz.ua
+// org-id:       N/A
+// mnt-by:       NONE
+// changed:      ZIC-UANIC 20120911153153
+// source:       UANIC
+
+
+// % % .UA whois
+
+// % Query time:     9 msec
+

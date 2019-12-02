@@ -99,13 +99,11 @@ url-host: build-debug
 
 check-model: build-debug
 	Debug/phishsvc \
-		--enable-training-data \
-		--td-stdin \
-		--td-class-value 0 \
-		--enable-features \
-		--td-output-url \
-		--htmlfeatures-bin ${HTMLFEATURES_BIN} \
-		${MODEL_FEATURES}
+		--enable-model-checking \
+		--mc-input-stdin \
+		--mc-htmlfeatures-bin ${HTMLFEATURES_BIN} \
+		--mc-model-checker-path ${MODEL_CHECKER_PATH} \
+		--verbose
 
 all-features: build-debug
 	Debug/phishsvc \

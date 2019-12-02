@@ -8,10 +8,13 @@
 #include <pqxx/pqxx>
 #include <Poco/URI.h>
 #include <Poco/Exception.h>
+#include <nlohmann/json.hpp>
 
 #include "database.h"
 #include "program.h"
 #include "training_data.h"
+
+using json = nlohmann::json;
 
 int main(int argc, char* argv[]) {
     program app(argc, argv);
@@ -45,8 +48,6 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        auto url = app._training_data_url;
-
         training_data td(app.verbose, app.output_include_url, app.output_extra_values);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
@@ -61,6 +62,34 @@ int main(int argc, char* argv[]) {
         if (!td.create_training_data()) {
             fmt::print(stderr, "Not finished correctly.\n");
             return 1;
+        }
+        return 0;
+    }
+
+    if (app.enable_model_checking) {
+        std::vector<std::string> urls;
+        if (app.input_stdin) {
+            for (std::string url; std::getline(std::cin, url);) {
+                urls.push_back(url);
+            }
+        } else {
+            urls.push_back(app.input_url);
+        }
+
+        training_data td(app.verbose, app.output_include_url, false);
+        td.set_flags(app.feature_flags(),
+                     app.url_feature_flags(),
+                     app.html_feature_flags(),
+                     app.host_based_feature_flags());
+        td.set_input_data(urls);
+        td.set_label(-1);
+        td.set_html_features_opts("", "", app.htmlfeatures_bin);
+        td.set_output(stdout);
+
+        auto data = td.get_data_for_model();
+        for (const auto& data_row: data) {
+            json j(data_row);
+            fmt::print("{}\n", j.dump(2));
         }
         return 0;
     }

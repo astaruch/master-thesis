@@ -61,6 +61,14 @@ public:
     std::string node_bin{};
     std::string html_script{};
     std::string htmlfeatures_bin{};
+
+    /// Model checker
+    std::string model_checker_path{};
+    bool input_stdin{false};
+    std::string input_url{};
+
+    /// Disambiguation options
+    bool enable_model_checking;
 private:
     cxxopts::Options _options;
 
@@ -69,7 +77,6 @@ private:
     bool _enable_database;
     bool _enable_table_manipulation;
     bool _enable_training_data;
-    bool _enable_intermediate_value;
 
     std::string _host;
     std::string _port;

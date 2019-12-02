@@ -1,5 +1,11 @@
 import pickle
 import argparse
+from sklearn.ensemble import ExtraTreesClassifier
+# hidden imports for pyinstaller
+import sklearn.utils._cython_blas 
+import sklearn.neighbors.typedefs 
+import sklearn.neighbors.quad_tree
+import sklearn.tree._utils
 
 def load_model(pkl_filename='extra_trees_model_15features.pkl'):
     with open(pkl_filename, 'rb') as file:

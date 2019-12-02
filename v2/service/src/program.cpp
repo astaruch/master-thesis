@@ -123,6 +123,20 @@ program::program(int argc, char** argv)
             cxxopts::value<bool>(output_extra_values))
     ;
 
+    _options.add_options("Model check")
+        ("enable-model-checking", "Flag whether we are checking our model",
+            cxxopts::value<bool>(enable_model_checking))
+        ("mc-model-checker-path", "Path to the model checker",
+            cxxopts::value<std::string>(model_checker_path))
+        ("mc-htmlfeatures-bin", "Path to the binary with HTML features",
+            cxxopts::value<std::string>(htmlfeatures_bin))
+        ("mc-input-stdin", "Flag that we are using standard input as source",
+            cxxopts::value<bool>(input_stdin))
+        ("mc-input-url", "One URL to be checked",
+            cxxopts::value<std::string>(input_url))
+    ;
+
+
     try {
         auto _result = _options.parse(argc, argv);
         _missing_training_data_class_value = _result.count("td-class-value") == 0;
@@ -224,12 +238,12 @@ void program::check_options()
         std::error_code ec;
         if (_html_feature_flags) {
             if (htmlfeatures_bin.empty() && node_bin.empty() && html_script.empty()) {
-                fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-exe <path>)\n");
+                fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-bin <path>)\n");
                 exit(1);
             }
             if (!htmlfeatures_bin.empty()) {
                 if (!fs::exists(htmlfeatures_bin, ec)) {
-                    fmt::print(stderr, "No such file (--htmlfeatures-exe <path>): {}\n", node_bin);
+                    fmt::print(stderr, "No such file (--htmlfeatures-bin <path>): {}\n", node_bin);
                     exit(1);
                 }
             } else if (node_bin.empty() || html_script.empty()) {
@@ -256,6 +270,49 @@ void program::check_options()
         if (_feature_flags == 0) {
             fmt::print(stderr, "Feature flags are empty. Maybe you forgot to set what features you want?\n");
         }
+    }
+
+    if (enable_model_checking) {
+        if (!input_stdin && input_url.empty()) {
+            fmt::print(stderr, "You have to provide source type for a data (e.g. --mc-input-stdin)\n");
+            exit(1);
+        }
+        if (htmlfeatures_bin.empty()) {
+            fmt::print(stderr, "Please set path to htmlfeatures program (--mc-htmlfeatures-bin <path>)\n");
+            exit(1);
+        }
+        std::error_code ec;
+        if (!fs::exists(htmlfeatures_bin, ec)) {
+            fmt::print(stderr, "No such file (--htmlfeatures-bin <path>): {}\n", node_bin);
+            exit(1);
+        }
+        if (model_checker_path.empty()) {
+            fmt::print(stderr, "Please set path to model checker program (--model-checker <path>)\n");
+            exit(1);
+        }
+        if (!fs::exists(model_checker_path, ec)) {
+            fmt::print(stderr, "No such file (--model-checker <path>): {}\n", node_bin);
+            exit(1);
+        }
+        // we need the following columns for the model prediction
+        // --feat-asn --feat-similar-domain --feat-dnssec --feat-gtld --feat-src-link --feat-dns-updated
+        // --feat-host-length --feat-dns-created --feat-ahref-link --feat-favicon-link --feat-spec-keywords
+        // --feat-path-length --feat-url-length --feat-spec-chars-query --feat-spec-chars-path
+        check_url_feature_option(true, feature_enum::id::host_length, "host length"sv);
+        check_url_feature_option(true, feature_enum::id::spec_keywords, "special keywords"sv);
+        check_url_feature_option(true, feature_enum::id::path_length, "path length"sv);
+        check_url_feature_option(true, feature_enum::id::url_length, "url length"sv);
+        check_url_feature_option(true, feature_enum::id::spec_chars_query, "special chars query"sv);
+        check_url_feature_option(true, feature_enum::id::spec_chars_path, "special chars path"sv);
+        check_html_feature_option(true, feature_enum::ahref_link, "<a href=\"\"> link"sv);
+        check_html_feature_option(true, feature_enum::favicon_link, "favicon link"sv);
+        check_html_feature_option(true, feature_enum::src_link, "src link"sv);
+        check_host_based_feature_option(true, feature_enum::asn, "ASN"sv);
+        check_host_based_feature_option(true, feature_enum::similar_domain, "similar domain"sv);
+        check_host_based_feature_option(true, feature_enum::dnssec, "dnssecn"sv);
+        check_host_based_feature_option(true, feature_enum::gtld, "global TLD"sv);
+        check_host_based_feature_option(true, feature_enum::dns_updated, "dns updated"sv);
+        check_host_based_feature_option(true, feature_enum::dns_created, "dns created"sv);
     }
 
     // check database options

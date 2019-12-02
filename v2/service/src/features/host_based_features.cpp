@@ -78,12 +78,12 @@ host_based_features_t::host_based_features_t(const std::string_view url,
     }
 }
 
-std::unordered_map<feature_enum::id, double> host_based_features_t::compute_values_map() const
+std::unordered_map<std::string_view, double> host_based_features_t::compute_values_map() const
 {
-    std::unordered_map<feature_enum::id, double> values;
+    std::unordered_map<std::string_view, double> values;
     for (const auto& feature: feature_enum::host_based) {
         if (_flags & feature) {
-            values[feature] = compute_value(feature);
+            values[feature_enum::column_names.at(feature)] = compute_value(feature);
         }
     }
     return values;
