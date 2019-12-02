@@ -97,6 +97,16 @@ url-host: build-debug
 		${URL_FEATURES} \
 		${HOST_BASED_FEATURES}
 
+check-model: build-debug
+	Debug/phishsvc \
+		--enable-training-data \
+		--td-stdin \
+		--td-class-value 0 \
+		--enable-features \
+		--td-output-url \
+		--htmlfeatures-bin ${HTMLFEATURES_BIN} \
+		${MODEL_FEATURES}
+
 all-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
