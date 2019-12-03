@@ -84,7 +84,8 @@
       "queue": "cpp",
       "stack": "cpp",
       "forward_list": "cpp",
-      "valarray": "cpp"
+      "valarray": "cpp",
+      "filesystem": "cpp"
     },
-    "C_Cpp.intelliSenseCacheSize": 512
+    "C_Cpp.intelliSenseCacheSize": 128
 }

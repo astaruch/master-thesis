@@ -140,13 +140,11 @@ std::vector<std::unordered_map<std::string_view, double>> training_data::get_dat
                 fmap.merge(values);
             }
 
-            // TODO: serialize with JSON
-            // if (_html_feature_flags) {
-            //     std::vector<double> values;
-            //     html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
-            //     values = html_features.get_values_from_external_script();
-            //     fvec.insert(fvec.end(), values.begin(), values.end());
-            // }
+            if (_html_feature_flags) {
+                html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_);
+                auto values = html_features.compute_values_map();
+                fmap.merge(values);
+            }
 
             if (_host_based_feature_flags) {
                 host_based_features_t host_based_features(url, parsed, _host_based_feature_flags);

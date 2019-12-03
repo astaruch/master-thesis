@@ -15,6 +15,9 @@ run:
 stdin:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --stdin
 
+json:
+	node src/index.js ${HTML_FEATURES} --output-json --url http://google.cz
+
 header:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --print-only-header
 

@@ -4,6 +4,9 @@
 
 #include <sstream>
 #include <fmt/format.h>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 html_features_t::html_features_t(std::string_view url,
                                  uint64_t flags,
@@ -33,6 +36,20 @@ html_features_t::html_features_t(std::string_view url,
         url,
         extra_values ? "--include-values" : "");
     // fmt::print("{}\n", cmd_);
+}
+
+html_features_t::html_features_t(std::string_view url,
+                                 uint64_t flags,
+                                 std::string_view exe_path)
+    : url_(url)
+    , flags_(flags)
+    , exe_path_(exe_path)
+{
+    auto args = create_args();
+    cmd_ = fmt::format("{} {} --output-json --url '{}'",
+        exe_path_,
+        args,
+        url);
 }
 
 std::string html_features_t::get_header()
@@ -70,6 +87,22 @@ std::vector<double> html_features_t::get_values_from_external_script()
         result.push_back(std::stod(value_str));
     }
     return result;
+}
+
+#include <iostream>
+
+std::unordered_map<std::string_view, double> html_features_t::compute_values_map() const
+{
+    auto output_json = help_functions::get_output_from_program_in_string(cmd_.c_str());
+    json parsed = json::parse(output_json);
+    std::unordered_map<std::string_view, double> values;
+    for (const auto feature: feature_enum::html) {
+        if (flags_ & feature) {
+            auto col = feature_enum::column_names.at(feature);
+            values[col] = parsed[std::string(col)];
+        }
+    }
+    return values;
 }
 
 std::string html_features_t::create_args()
