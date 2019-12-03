@@ -20,7 +20,6 @@ import sklearn.tree._utils
 def load_model(filename='extra_trees_model_15features.pkl'):
     # correct path in bundle
     # https://stackoverflow.com/questions/13946650/pyinstaller-2-0-bundle-file-as-onefile
-    print(dirname(abspath(__file__)))
     if hasattr(sys, '_MEIPASS'):
         chdir(sys._MEIPASS)
         filename = join(sys._MEIPASS, filename)
