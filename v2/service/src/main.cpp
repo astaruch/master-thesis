@@ -13,6 +13,7 @@
 #include "database.h"
 #include "program.h"
 #include "training_data.h"
+#include "model_checker.h"
 
 using json = nlohmann::json;
 
@@ -87,7 +88,7 @@ int main(int argc, char* argv[]) {
         td.set_output(stdout);
 
 
-        auto unescape = [](std::string& str) {
+        auto unescape = [](std::string& str) -> void {
             for (size_t i = 0, end = str.size(); i < end; ++i) {
                 if (str[i] == '"') {
                     str.replace(i, 1, "\\\"");
@@ -96,12 +97,29 @@ int main(int argc, char* argv[]) {
                 }
             }
         };
+
+        // auto unescape = [](std::string json) -> std::string {
+        //     for (size_t i = 0, end = json.size(); i < end; ++i) {
+        //         if (json[i] == '"') {
+        //             json.replace(i, 1, "\\\"");
+        //             end++;
+        //             i++;
+        //         }
+        //     }
+        //     return json;
+        // };
+
+        model_checker_t model(app.model_checker_path);
+
         const auto data = td.get_data_for_model();
         for (const auto& data_row: data) {
             json j(data_row);
             std::string str = j.dump();
             unescape(str);
-            fmt::print("{}\n", str);
+            if (app.verbose) fmt::print("{}\n", str);
+            auto phishing_score = model.predict(str);
+            if (app.verbose) fmt::print("Phishing score is: ");
+            fmt::print("{}\n", static_cast<int>(phishing_score * 100));
         }
         return 0;
     }
