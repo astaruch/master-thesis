@@ -304,13 +304,13 @@ void program::check_options()
         check_url_feature_option(true, feature_enum::id::url_length, "url length"sv);
         check_url_feature_option(true, feature_enum::id::spec_chars_query, "special chars query"sv);
         check_url_feature_option(true, feature_enum::id::spec_chars_path, "special chars path"sv);
+        check_url_feature_option(true, feature_enum::gtld, "global TLD"sv);
         check_html_feature_option(true, feature_enum::ahref_link, "<a href=\"\"> link"sv);
         check_html_feature_option(true, feature_enum::favicon_link, "favicon link"sv);
         check_html_feature_option(true, feature_enum::src_link, "src link"sv);
         check_host_based_feature_option(true, feature_enum::asn, "ASN"sv);
         check_host_based_feature_option(true, feature_enum::similar_domain, "similar domain"sv);
         check_host_based_feature_option(true, feature_enum::dnssec, "dnssecn"sv);
-        check_host_based_feature_option(true, feature_enum::gtld, "global TLD"sv);
         check_host_based_feature_option(true, feature_enum::dns_updated, "dns updated"sv);
         check_host_based_feature_option(true, feature_enum::dns_created, "dns created"sv);
     }

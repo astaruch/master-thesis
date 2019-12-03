@@ -89,8 +89,6 @@ std::vector<double> html_features_t::get_values_from_external_script()
     return result;
 }
 
-#include <iostream>
-
 std::unordered_map<std::string_view, double> html_features_t::compute_values_map() const
 {
     auto output_json = help_functions::get_output_from_program_in_string(cmd_.c_str());

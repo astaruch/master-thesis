@@ -86,10 +86,22 @@ int main(int argc, char* argv[]) {
         td.set_html_features_opts("", "", app.htmlfeatures_bin);
         td.set_output(stdout);
 
+
+        auto unescape = [](std::string& str) {
+            for (size_t i = 0, end = str.size(); i < end; ++i) {
+                if (str[i] == '"') {
+                    str.replace(i, 1, "\\\"");
+                    end++;
+                    i++;
+                }
+            }
+        };
         const auto data = td.get_data_for_model();
         for (const auto& data_row: data) {
             json j(data_row);
-            fmt::print("{}\n", j.dump(2));
+            std::string str = j.dump();
+            unescape(str);
+            fmt::print("{}\n", str);
         }
         return 0;
     }
