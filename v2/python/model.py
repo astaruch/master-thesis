@@ -40,7 +40,10 @@ def main():
             print(phishingness)
     elif args.data_json:
         try:
-            json.load('args.data_json')
+            fvec = json.loads(args.data_json)
+            to_check = np.array([[(val) for key, val in sorted(fvec.items())]])
+            phishingness = model.predict(to_check)[0]
+            print(phishingness)
         except json.decoder.JSONDecodeError:
             print("Invalid JSON. Try to encode it properly")
             sys.exit(1)
