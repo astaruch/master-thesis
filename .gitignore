@@ -4,3 +4,5 @@
 old_project_structure/data-sets
 **/code/junk
 src/.vscode
+*.csv
+*.txt
