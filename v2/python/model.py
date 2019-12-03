@@ -5,6 +5,11 @@ import sys
 from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
 
+from os.path import dirname
+from os.path import join
+from os.path import abspath
+from os import chdir
+
 # hidden imports for pyinstaller
 import sklearn.utils._cython_blas
 import sklearn.neighbors.typedefs
@@ -12,11 +17,19 @@ import sklearn.neighbors.quad_tree
 import sklearn.tree._utils
 
 
-def load_model(pkl_filename='extra_trees_model_15features.pkl'):
-    with open(pkl_filename, 'rb') as file:
+def load_model(filename='extra_trees_model_15features.pkl'):
+    # correct path in bundle
+    # https://stackoverflow.com/questions/13946650/pyinstaller-2-0-bundle-file-as-onefile
+    print(dirname(abspath(__file__)))
+    if hasattr(sys, '_MEIPASS'):
+        chdir(sys._MEIPASS)
+        filename = join(sys._MEIPASS, filename)
+    else:
+        filename = join(dirname(abspath(__file__)), filename)
+    with open(filename, 'rb') as file:
         pickle_model = pickle.load(file)
         return pickle_model
-    raise 'Invalid path %s' % pkl_filename
+    raise 'Invalid path %s' % filename
 
 
 def main():
