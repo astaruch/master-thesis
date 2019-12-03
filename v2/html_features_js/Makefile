@@ -16,7 +16,11 @@ stdin:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --stdin
 
 json:
-	node src/index.js ${HTML_FEATURES} --output-json --url http://google.cz
+	node src/index.js --feat-src-link --feat-ahref-link --feat-favicon-link --output-json --url 'http://google.cz/aaa'
+
+json2:
+	node src/index.js --feat-src-link --feat-ahref-link --feat-favicon-link --output-json --url 'https://nab-ib.app/id/MDQ0Nzg5Ode4Mg'
+
 
 header:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-header --include-values --include-url --print-only-header

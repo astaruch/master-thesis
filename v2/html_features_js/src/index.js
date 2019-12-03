@@ -119,7 +119,13 @@ const main = async () => {
         print.push(`"${url}"`)
       }
       print.push(Array(n).fill(-1))
-      console.log(print.join(','))
+      if (argv.argv.outputJson) {
+        const res = {}
+        Object.keys(features).forEach(feature => { res[page.columns[feature]] = -1 })
+        console.log(JSON.stringify(res))
+      } else {
+        console.log(print.join(','))
+      }
       if (verbose) console.error(err.message)
       badUrl = true
     })

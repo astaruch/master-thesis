@@ -27,6 +27,23 @@
                 "${workspaceFolder}/**/*.js"
             ],
             "runtimeExecutable": "${env:NODE_BIN}"
-        }
+        },
+        {
+          "type": "node",
+          "request": "launch",
+          "name": "Debug JSON",
+          "program": "${workspaceFolder}/src/index.js",
+          "args": [
+            "--feat-src-link",
+            "--feat-ahref-link",
+            "--feat-favicon-link",
+            "--output-json",
+            "--url", "'https://nab-ib.app/id/MDQ0Nzg5Ode4Mg'"
+          ],
+          "outFiles": [
+              "${workspaceFolder}/**/*.js"
+          ],
+          "runtimeExecutable": "${env:NODE_BIN}"
+      }
     ]
 }
