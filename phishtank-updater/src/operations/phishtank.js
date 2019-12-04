@@ -42,7 +42,7 @@ const objectRecordsToDbRecords = records => records.map(row => ({
   submissionTime: row.submission_time,
   verificationTime: row.verification_time,
   online: Boolean(row.online),
-  target: row.target,
+  target: row.target
 }))
 
 /**
@@ -152,7 +152,7 @@ const processCsv = async (filename, connection) => {
   const lastDate = await getLastUpdated(repositoryLastUpdated, 'phishtank')
 
   if (lastDate >= currentDate) {
-    logger.info(`Skipping: database has newer records than a given file`)
+    logger.info('Skipping: database has newer records than a given file')
     return
   }
 

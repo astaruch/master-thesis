@@ -1,6 +1,4 @@
 'use strict'
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-sync */
 const path = require('path')
 const yargs = require('yargs')
 
@@ -14,11 +12,11 @@ if (require.main === module) {
     .help('help').alias('help', 'h')
     .option('init', {
       alias: 'i',
-      description: 'Initialize Postgre database with prepared csv files',
+      description: 'Initialize Postgre database with prepared csv files'
     })
     .option('csv-folder', {
       alias: 'p',
-      description: 'Path containing Phishtank csv files',
+      description: 'Path containing Phishtank csv files'
     })
     .option('query', {
       alias: 'q',
@@ -27,16 +25,16 @@ if (require.main === module) {
 
   if (argv.argv.init) {
     if (!argv.argv.csvFolder) {
-      throw new Error(`You have to specifiy folder containing csv files!`)
+      throw new Error('You have to specifiy folder containing csv files!')
     }
     const dir = path.join(process.cwd(), argv.argv.csvFolder)
     phishtank.initFromCsv(dir).catch(err => logger.error(err))
-    return
+    process.exit(0)
   }
 
   if (argv.argv.query) {
     phishtank.fetchFromPhishtankSite()
-    return
+    process.exit(0)
   }
 
   argv.showHelp()

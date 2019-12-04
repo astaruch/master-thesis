@@ -30,7 +30,7 @@ const obtainCsv = fullpath => {
   const csvContent = fs.readFileSync(fullpath)
   return parse(csvContent.toString('utf8'), {
     columns: true,
-    delimiter: ',',
+    delimiter: ','
   })
 }
 

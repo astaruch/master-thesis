@@ -5,7 +5,7 @@ const typeorm = require('typeorm')
 const name = 'last_updated'
 
 class CreateLastUpdated1555897004589 {
-  async up(queryRunner) {
+  async up (queryRunner) {
     await queryRunner.createTable(new typeorm.Table({
       name,
       columns: [
@@ -13,21 +13,21 @@ class CreateLastUpdated1555897004589 {
           name: 'id',
           type: 'int',
           isPrimary: true,
-          isGenerated: true,
+          isGenerated: true
         },
         {
           name: 'table_name',
-          type: 'varchar',
+          type: 'varchar'
         },
         {
           name: 'last_updated',
-          type: 'timestamp with time zone',
-        },
-      ],
+          type: 'timestamp with time zone'
+        }
+      ]
     }), true)
   }
 
-  async down(queryRunner) {
+  async down (queryRunner) {
     await queryRunner.dropTable(name)
   }
 }

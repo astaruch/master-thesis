@@ -29,7 +29,7 @@ const getLastUpdated = async (repository, tableName) => {
  */
 const setLastUpdated = async (repository, tableName, lastUpdated) => {
   try {
-    await repository.update({ tableName }, {lastUpdated})
+    await repository.update({ tableName }, { lastUpdated })
   } catch (err) {
     logger.warn(`Table ${tableName} doesn't exist. Error: ${err}`)
   }

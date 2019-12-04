@@ -14,7 +14,7 @@ module.exports = new typeorm.EntitySchema({
     },
     tableName: {
       type: 'varchar',
-      name: 'table_name',
+      name: 'table_name'
     },
     lastUpdated: {
       type: 'timestamp with time zone',

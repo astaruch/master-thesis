@@ -1,7 +1,7 @@
 'use strict'
 
 class LastUpdated {
-  constructor(id, tableName, lastUpdated) {
+  constructor (id, tableName, lastUpdated) {
     this.id = id
     this.tableName = tableName
     this.lastUpdated = lastUpdated

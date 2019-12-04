@@ -1,7 +1,7 @@
 'use strict'
 
 class Phishtank {
-  constructor(id, phishId, phishDetailUrl, url, submissionTime, verificationTime,online, target, endTime) {
+  constructor (id, phishId, phishDetailUrl, url, submissionTime, verificationTime, online, target, endTime) {
     this.id = id
     this.phishId = phishId
     this.phishDetailUrl = phishDetailUrl

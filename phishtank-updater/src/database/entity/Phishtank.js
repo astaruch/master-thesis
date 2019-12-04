@@ -15,7 +15,7 @@ module.exports = new typeorm.EntitySchema({
     phishId: {
       type: 'int',
       name: 'phish_id',
-      unique: true,
+      unique: true
     },
     phishDetailUrl: {
       type: 'varchar',
@@ -26,7 +26,7 @@ module.exports = new typeorm.EntitySchema({
     },
     submissionTime: {
       type: 'timestamp with time zone',
-      name: 'submission_time',
+      name: 'submission_time'
     },
     verificationTime: {
       type: 'timestamp with time zone',
@@ -45,4 +45,3 @@ module.exports = new typeorm.EntitySchema({
     }
   }
 })
-
