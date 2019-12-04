@@ -17,6 +17,27 @@
 
 using json = nlohmann::json;
 
+auto unescape = [](std::string& str) -> void {
+    for (size_t i = 0, end = str.size(); i < end; ++i) {
+        if (str[i] == '"') {
+            str.replace(i, 1, "\\\"");
+            end++;
+            i++;
+        }
+    }
+};
+
+auto unescape_copy = [](std::string str) -> std::string {
+    for (size_t i = 0, end = str.size(); i < end; ++i) {
+        if (str[i] == '"') {
+            str.replace(i, 1, "\\\"");
+            end++;
+            i++;
+        }
+    }
+    return str;
+};
+
 int main(int argc, char* argv[]) {
     program app(argc, argv);
 
@@ -25,6 +46,15 @@ int main(int argc, char* argv[]) {
     if (!app.check_url.empty()) {
         spdlog::info("Starting application to check '{}'", app.check_url);
         database db;
+        if (!db.table_exists("phish_score")) {
+            db.create_table_phish_score();
+        }
+        auto score = db.check_phishing_score(app.check_url);
+        if (score != -1) {
+            json obj = json::object();
+            obj[app.check_url] = score;
+            fmt::print("{}\n", unescape_copy(obj.dump()));
+        }
 
         return 0;
     }
@@ -96,15 +126,7 @@ int main(int argc, char* argv[]) {
         td.set_output(stdout);
 
 
-        auto unescape = [](std::string& str) -> void {
-            for (size_t i = 0, end = str.size(); i < end; ++i) {
-                if (str[i] == '"') {
-                    str.replace(i, 1, "\\\"");
-                    end++;
-                    i++;
-                }
-            }
-        };
+
 
         // auto unescape = [](std::string json) -> std::string {
         //     for (size_t i = 0, end = json.size(); i < end; ++i) {

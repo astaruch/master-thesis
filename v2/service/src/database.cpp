@@ -48,6 +48,41 @@ std::string database::create_conn_string()
     return conn_string;
 }
 
+bool database::table_exists(const std::string& table_name)
+{
+    try {
+        spdlog::info("Checking table: {}", table_name);
+        pqxx::work txn(_conn);
+        auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<string>();
+        spdlog::info("OK");
+        return true;
+    } catch (const pqxx::conversion_error& ex) {
+        spdlog::warn("Table does not exist: {}", table_name);
+        return false;
+    }
+}
+
+void database::create_table_phish_score()
+{
+    spdlog::info("Creating table 'phish_score'");
+    auto sql = R"(
+CREATE TABLE IF NOT EXISTS phish_score (
+    id SERIAL PRIMARY KEY,
+    url TEXT NOT NULL,
+    score INT NOT NULL,
+    expire TIMESTAMP);)";
+
+    pqxx::work txn(_conn);
+    txn.exec(sql);
+    txn.commit();
+    spdlog::info("OK");
+}
+
+int database::check_phishing_score(const std::string& )
+{
+    return 10;
+}
+
 void database::prepare_update_url_parts(const std::string& table_name, pqxx::work& txn)
 {
     _conn.prepare(

@@ -75,6 +75,9 @@ public:
 
     void debug_record(const db_record& record);
 
+    bool table_exists(const std::string& table);
+    void create_table_phish_score();
+    int check_phishing_score(const std::string& url);
 private:
     pqxx::connection _conn;
     // pqxx::work _txn;
