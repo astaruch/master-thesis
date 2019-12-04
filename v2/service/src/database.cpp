@@ -51,7 +51,7 @@ std::string database::create_conn_string()
 bool database::table_exists(const std::string& table_name)
 {
     try {
-        spdlog::info("Checking table: {}", table_name);
+        spdlog::info("Checking existence of table in db: {}", table_name);
         pqxx::work txn(_conn);
         auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<string>();
         spdlog::info("OK");
@@ -80,20 +80,30 @@ CREATE TABLE IF NOT EXISTS phish_score (
 
 int database::check_phishing_score(const std::string& url)
 {
+    spdlog::info("Checking URL in the cache");
     try {
         pqxx::work txn(_conn);
         auto row = txn.exec_params1(
             "SELECT score, expire FROM phish_score WHERE url = $1", url);
         auto score = row[0].as<int>();
-        auto expire = row[1].as<std::string>();
-        spdlog::info("{} {}", score, expire);
+        // auto expire = row[1].as<string>();
+        spdlog::info("URL found");
+        return score;
     } catch (const pqxx::unexpected_rows& ex) {
-        spdlog::debug("URL not in cache: {}", url);
+        spdlog::info("URL not found");
         return -1;
-    } catch (const pqxx::conversion_error& ex) {
-        return -1;
+    // } catch (const pqxx::conversion_error& ex) {
+    //     return -1;
     }
-    return -1;
+}
+
+bool database::check_url_in_phishtank(const std::string& url)
+{
+    pqxx::work txn(_conn);
+    spdlog::info("Checking URL in the phishtank");
+    auto result = txn.exec_params("SELECT 1 FROM phishtank WHERE url = $1", url);
+    spdlog::info("URL {}found", result.empty() ? "not " : "");
+    return !result.empty();
 }
 
 void database::prepare_update_url_parts(const std::string& table_name, pqxx::work& txn)

@@ -50,9 +50,25 @@ int main(int argc, char* argv[]) {
             db.create_table_phish_score();
         }
         auto score = db.check_phishing_score(app.check_url);
+        json obj = json::object();
+        // 1. check whether we have phishing score in our cache
         if (score != -1) {
-            json obj = json::object();
             obj[app.check_url] = score;
+            fmt::print("{}\n", unescape_copy(obj.dump()));
+            return 0;
+        }
+        // 2a. check our local phishtank instance
+        bool found = false;
+        if (db.table_exists("phishtank")) {
+            found = db.check_url_in_phishtank(app.check_url);
+            if (found) {
+                score = 100;
+                obj[app.check_url] = score;
+                // TODO: skip other computations and store this in our database
+            }
+        }
+
+        if (found) {
             fmt::print("{}\n", unescape_copy(obj.dump()));
         }
 
