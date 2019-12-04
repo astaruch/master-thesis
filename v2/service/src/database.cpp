@@ -78,9 +78,22 @@ CREATE TABLE IF NOT EXISTS phish_score (
     spdlog::info("OK");
 }
 
-int database::check_phishing_score(const std::string& )
+int database::check_phishing_score(const std::string& url)
 {
-    return 10;
+    try {
+        pqxx::work txn(_conn);
+        auto row = txn.exec_params1(
+            "SELECT score, expire FROM phish_score WHERE url = $1", url);
+        auto score = row[0].as<int>();
+        auto expire = row[1].as<std::string>();
+        spdlog::info("{} {}", score, expire);
+    } catch (const pqxx::unexpected_rows& ex) {
+        spdlog::debug("URL not in cache: {}", url);
+        return -1;
+    } catch (const pqxx::conversion_error& ex) {
+        return -1;
+    }
+    return -1;
 }
 
 void database::prepare_update_url_parts(const std::string& table_name, pqxx::work& txn)

@@ -17,7 +17,7 @@
 
 using json = nlohmann::json;
 
-auto unescape = [](std::string& str) -> void {
+auto unescape_inline = [](std::string& str) -> void {
     for (size_t i = 0, end = str.size(); i < end; ++i) {
         if (str[i] == '"') {
             str.replace(i, 1, "\\\"");
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
         for (const auto& data_row: data) {
             json j(data_row);
             std::string str = j.dump();
-            unescape(str);
+            unescape_inline(str);
             if (app.verbose) fmt::print("{}\n", str);
             auto phishing_score = model.predict(str);
             if (app.verbose) fmt::print("Phishing score is: ");
