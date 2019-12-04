@@ -149,7 +149,7 @@ program::program(int argc, char** argv)
 void program::check_options()
 {
     if (help_) {
-        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "HTML feature settings", "Training data"}));
+        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "HTML feature settings", "Training data", "Model check"}));
         exit(0);
     }
 
