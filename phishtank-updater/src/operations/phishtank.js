@@ -12,7 +12,7 @@ const path = require('path')
 const fs = require('fs')
 const typeorm = require('typeorm')
 const apiKey = require('../config').phishtankApiKey
-const request = require('request-promise')
+const fetch = require('node-fetch')
 
 /**
  * Sets the 'online' param to false for records which aren't in current records.
@@ -192,15 +192,27 @@ const initFromCsv = async folder => {
  * @returns {*}
  */
 const fetchFromPhishtankSite = async () => {
-  const url = `http://data.phishtank.com/data/${apiKey}/online-valid.json`
-  logger.info(`Querying ${url}`)
-  const recordsString = await request(url)
-  const recordsObj = JSON.parse(recordsString)
-
   const connection = await dbConn
-  const date = new Date().toISOString()
+  try {
+    await connection.manager.getRepository(Phishtank)
+  } catch (err) {
+    logger.error('Table \'phishtank\' does not exists. Fix this manually or run migration scripts')
+    process.exit(1)
+  }
 
-  await doUpdate(connection, recordsObj, date)
+  const url = `http://data.phishtank.com/data/${apiKey}/online-valid.json`
+  // const url = `http://google.com`
+  logger.info(`Querying ${url}`)
+  try {
+    const response = await fetch(url)
+    logger.info('Parsing response')
+    const json = await response.json()
+    const date = new Date().toISOString()
+
+    await doUpdate(connection, json, date)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 module.exports = {

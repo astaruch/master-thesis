@@ -6,7 +6,7 @@ const phishtank = require('./operations/phishtank')
 
 const logger = require('./utils/logger')
 
-if (require.main === module) {
+const main = async () => {
   const argv = yargs
     .usage('Phishing URL fetcher\n\nUsage: $0 [options]')
     .help('help').alias('help', 'h')
@@ -33,9 +33,18 @@ if (require.main === module) {
   }
 
   if (argv.argv.query) {
-    phishtank.fetchFromPhishtankSite()
+    try {
+      await phishtank.fetchFromPhishtankSite()
+    } catch (err) {
+      console.err(err)
+      process.exit(1)
+    }
     process.exit(0)
   }
 
   argv.showHelp()
+}
+
+if (require.main === module) {
+  main()
 }
