@@ -54,8 +54,6 @@ services:
         - astaruch/thesis-runtime
         # - thesis-app
     network_mode: bridge
-    depends_on:
-      - "thesis-db"
 
   thesis-tests:
     image: thesis-tests
