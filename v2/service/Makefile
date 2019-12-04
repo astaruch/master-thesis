@@ -10,6 +10,10 @@ build:
 run: build
 	@$(MAKE) -f $(THIS_FILE) all-features
 
+check-url: build-debug
+	@echo $@
+	Debug/phishsvc --check-url 'http://google.com'
+
 test: build-tests
 	@echo $@
 	Debug/test/all_tests

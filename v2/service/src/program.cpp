@@ -136,6 +136,11 @@ program::program(int argc, char** argv)
             cxxopts::value<std::string>(input_url))
     ;
 
+    _options.add_options("Main application")
+        ("check-url", "Compute phishing score for this URL",
+            cxxopts::value<std::string>(check_url))
+    ;
+
 
     try {
         auto _result = _options.parse(argc, argv);
@@ -149,7 +154,7 @@ program::program(int argc, char** argv)
 void program::check_options()
 {
     if (help_) {
-        fmt::print("{}\n", _options.help({"General", "Database", "Table manipulation", "Features", "HTML feature settings", "Training data", "Model check"}));
+        fmt::print("{}\n", _options.help({"General", "Main application", "Database", "Table manipulation", "Features", "HTML feature settings", "Training data", "Model check"}));
         exit(0);
     }
 

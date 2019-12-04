@@ -69,6 +69,9 @@ public:
 
     /// Disambiguation options
     bool enable_model_checking;
+
+    /// Main application
+    std::string check_url;
 private:
     cxxopts::Options _options;
 

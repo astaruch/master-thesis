@@ -22,6 +22,14 @@ int main(int argc, char* argv[]) {
 
     app.check_options();
 
+    if (!app.check_url.empty()) {
+        spdlog::info("Starting application to check '{}'", app.check_url);
+        database db;
+
+        return 0;
+    }
+
+    // Following lines were used during a development
     std::FILE* output;
     if (!app._training_data_output_name.empty()) {
         output = std::fopen(app._training_data_output_name.c_str(), "w");
@@ -123,6 +131,8 @@ int main(int argc, char* argv[]) {
         }
         return 0;
     }
+
+
 
     auto db_string = app.get_conn_string();
 

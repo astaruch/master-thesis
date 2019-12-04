@@ -24,10 +24,8 @@ public:
         bool ok = false; /// Whether parsing of URL was OK
     };
 
-    /// Default constructor. Creates a connection to database
-    /**
-     * Initializes private member _conn and _txn for later use.
-     */
+
+    explicit database();
     explicit database(const std::string& conn_string);
 
     /// Insert new columns for URL parts into given table
@@ -70,7 +68,6 @@ public:
     bool fill_db_with_url_parts(const std::string& table_name,
         std::vector<database::db_record>& records);
 
-    /// Test whether connection is valid
     void test_connection();
 
     /// Parse URLs from the given table into new columns
@@ -81,6 +78,8 @@ public:
 private:
     pqxx::connection _conn;
     // pqxx::work _txn;
+
+    static std::string create_conn_string();
 };
 
 #endif // PHISHSVC_DATABASE_H

@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include "database.h"
+#include "env.h"
 
 using std::set;
 using std::string;
@@ -13,6 +14,38 @@ database::database(const std::string& conn_string)
     : _conn(conn_string)
 {
     test_connection();
+}
+
+database::database()
+    : _conn(create_conn_string())
+{
+    test_connection();
+}
+
+std::string database::create_conn_string()
+{
+    spdlog::info("Retrieving connection string to a database");
+    auto conn_string = get_env_var("THESIS_DB_CONN_STRING");
+    spdlog::info("THESIS_DB_CONN_STRING={}", conn_string);
+    if (!conn_string.empty()) {
+        return conn_string;
+    }
+    auto host = get_env_var("THESIS_DB_HOST");
+    spdlog::info("THESIS_DB_HOST={}", host);
+    auto port = get_env_var("THESIS_DB_PORT");
+    spdlog::info("THESIS_DB_PORT={}", port);
+    auto dbname = get_env_var("THESIS_DB_DBNAME");
+    spdlog::info("THESIS_DB_DBNAME={}", dbname);
+    auto user = get_env_var("THESIS_DB_USER");
+    spdlog::info("THESIS_DB_USER={}", user);
+    auto password = get_env_var("THESIS_DB_PASSWORD");
+    spdlog::info("THESIS_DB_PASSWORD={}", password);
+    auto timeout = get_env_var("THESIS_DB_TIMEOUT", "2");
+    spdlog::info("THESIS_DB_TIMEOUT={}", timeout);
+    conn_string = fmt::format("host = '{}' port = '{}' dbname = '{}' user = '{}' password = '{}' connect_timeout='{}'",
+        host, port, dbname, user, password, timeout);
+    spdlog::info("CONN_STRING={}", conn_string);
+    return conn_string;
 }
 
 void database::prepare_update_url_parts(const std::string& table_name, pqxx::work& txn)
@@ -180,14 +213,14 @@ std::set<std::string> database::get_column_names(const std::string& table_name)
 
 void database::test_connection()
 {
-    pqxx::work txn(_conn);
     try {
+        pqxx::work txn(_conn);
         txn.exec1("SELECT '1'");
-    } catch (const std::exception& ex) {
+    } catch (const pqxx::broken_connection& ex) {
         spdlog::error("There is a problem with connection: {}", ex.what());
         exit(1);
     }
-    spdlog::info("Connected");
+    spdlog::info("Connected to database");
 }
 
 void database::process_table_and_parse_urls(const std::string& table_name)
