@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <ctime>
 
 #include <pqxx/except>
 #include <pqxx/pqxx>
@@ -6,9 +7,6 @@
 
 #include "database.h"
 #include "env.h"
-
-using std::set;
-using std::string;
 
 database::database(const std::string& conn_string)
     : _conn(conn_string)
@@ -53,7 +51,7 @@ bool database::table_exists(const std::string& table_name)
     try {
         spdlog::info("Checking existence of table in db: {}", table_name);
         pqxx::work txn(_conn);
-        auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<string>();
+        auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<std::string>();
         spdlog::info("OK");
         return true;
     } catch (const pqxx::conversion_error& ex) {
@@ -68,9 +66,9 @@ void database::create_table_phish_score()
     auto sql = R"(
 CREATE TABLE IF NOT EXISTS phish_score (
     id SERIAL PRIMARY KEY,
-    url TEXT NOT NULL,
+    url TEXT NOT NULL UNIQUE,
     score INT NOT NULL,
-    expire TIMESTAMP);)";
+    expire TIMESTAMP WITHOUT TIME ZONE NOT NULL);)";
 
     pqxx::work txn(_conn);
     txn.exec(sql);
@@ -84,18 +82,50 @@ int database::check_phishing_score(const std::string& url)
     try {
         pqxx::work txn(_conn);
         auto row = txn.exec_params1(
-            "SELECT score, expire FROM phish_score WHERE url = $1", url);
+            "SELECT score, extract(epoch from expire)::bigint "
+            " FROM phish_score WHERE url = $1", url);
+        // if there is no record, we are throwing an exception that
+        // exec_params1 return other than 1 row
+        spdlog::info("URL found in database");
         auto score = row[0].as<int>();
-        // auto expire = row[1].as<string>();
-        spdlog::info("URL found");
+        time_t expire = row[1].as<time_t>();
+        time_t current = std::time(0);
+        if (expire < current) {
+            spdlog::info("The cached record has expired. Discarding");
+            return -1;
+        }
         return score;
     } catch (const pqxx::unexpected_rows& ex) {
         spdlog::info("URL not found");
         return -1;
-    // } catch (const pqxx::conversion_error& ex) {
-    //     return -1;
     }
 }
+
+void database::store_phishing_score(const std::string& url, int score)
+{
+    spdlog::info("Saving score in database");
+    auto one_day = 86'400;
+    time_t time = std::time(0) + 2 * one_day;
+    std::string expire = std::asctime(std::gmtime(&time));
+
+    pqxx::work txn(_conn);
+    auto res = txn.exec_params(
+        "INSERT INTO phish_score(url, score, expire) VALUES($1::text, $2::integer, $3::timestamp) "
+        " ON CONFLICT(url) "
+        " DO UPDATE SET score = $2::integer, expire = $3::timestamp;",
+        url.c_str(), score, expire.c_str()
+    );
+    if (res.affected_rows() == 1) {
+        spdlog::info("Saved");
+        txn.commit();
+    } else {
+        spdlog::warn("Not updated correctly. Please check manually the data.");
+        spdlog::info("Query: {}", res.query());
+        spdlog::warn("$1: {}", url);
+        spdlog::warn("$2: {}", score);
+        spdlog::warn("$3: {}", expire);
+    }
+ }
 
 bool database::check_url_in_phishtank(const std::string& url)
 {
@@ -169,7 +199,7 @@ std::vector<database::db_record> database::get_all_records(const std::string& ta
         std::vector<db_record> records;
         for (const auto& row: rows) {
             auto id = row[0].as<int>();
-            auto full_url = row[1].as<string>();
+            auto full_url = row[1].as<std::string>();
             if (!full_url.empty()) {
                 db_record record;
                 record.id = id;
@@ -264,7 +294,7 @@ std::set<std::string> database::get_column_names(const std::string& table_name)
 
     std::set<std::string> schema;
     for (const auto& row: rows) {
-        schema.insert(row[0].as<string>());
+        schema.insert(row[0].as<std::string>());
     }
     return schema;
 }
@@ -290,7 +320,7 @@ void database::process_table_and_parse_urls(const std::string& table_name)
     }
     try {
         pqxx::work txn(_conn);
-        auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<string>();
+        auto str = txn.exec_params1("SELECT to_regclass($1)", table_name)[0].as<std::string>();
         spdlog::info("Table '{}' exists", str);
     } catch (const pqxx::conversion_error& ex) {
         spdlog::error("Table '{}' doesn't exist", table_name);

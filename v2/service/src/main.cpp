@@ -57,6 +57,7 @@ int main(int argc, char* argv[]) {
         // 1. check whether we have phishing score in our cache
         if (score != -1) {
             obj["score"] = score;
+            spdlog::info("Phishing score: {}", score);
             fmt::print("{}\n", unescape_copy(obj.dump()));
             return 0;
         }
@@ -67,6 +68,7 @@ int main(int argc, char* argv[]) {
             if (unsafe) {
                 score = 100;
                 obj["score"] = score;
+                spdlog::info("Phishing score: {}", score);
                 fmt::print("{}\n", unescape_copy(obj.dump()));
                 return 0;
             }
@@ -83,6 +85,7 @@ int main(int argc, char* argv[]) {
             if (unsafe) {
                 score = 100;
                 obj["score"] = score;
+                spdlog::info("Phishing score: {}", score);
                 fmt::print("{}\n", unescape_copy(obj.dump()));
                 return 0;
             }
@@ -115,7 +118,12 @@ int main(int argc, char* argv[]) {
         if (app.verbose) fmt::print("{}\n", data_str);
         score = static_cast<int>(model.predict(data_str) * 100);
         obj["score"] = score;
+        spdlog::info("Phishing score: {}", score);
         fmt::print("{}\n", unescape_copy(obj.dump()));
+
+        // 5. store our results to a cache (db)
+        db.store_phishing_score(app.check_url, score);
+
         return 0;
     }
 

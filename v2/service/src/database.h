@@ -79,6 +79,7 @@ public:
     void create_table_phish_score();
     int check_phishing_score(const std::string& url);
     bool check_url_in_phishtank(const std::string& url);
+    void store_phishing_score(const std::string& url, int score);
 private:
     pqxx::connection _conn;
     // pqxx::work _txn;
