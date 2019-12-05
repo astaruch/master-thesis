@@ -5,8 +5,10 @@ const yargs = require('yargs')
 const Page = require('./page')
 const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter')
 const readline = require('readline')
+const net = require('net')
 
 const checkUrl = async (url, features, argv, verbose) => {
+  const service = argv.argv.service
   if (verbose) console.log(`--> Checking ${url}`)
   const page = new Page(url, argv.argv.includeValues, verbose)
 
@@ -21,9 +23,17 @@ const checkUrl = async (url, features, argv, verbose) => {
     if (argv.argv.outputJson) {
       const res = {}
       Object.keys(features).forEach(feature => { res[page.columns[feature]] = -1 })
-      console.log(JSON.stringify(res))
+      if (service) {
+        return res
+      } else {
+        console.log(JSON.stringify(res))
+      }
     } else {
-      console.log(print.join(','))
+      if (service) {
+        return print.join(',')
+      } else {
+        console.log(print.join(','))
+      }
     }
     if (verbose) console.error(err.message)
     badUrl = true
@@ -34,7 +44,11 @@ const checkUrl = async (url, features, argv, verbose) => {
   }
 
   if (argv.argv.outputJson) {
-    console.log(JSON.stringify(results))
+    if (service) {
+      return results
+    } else {
+      console.log(JSON.stringify(results))
+    }
   } else if (argv.argv.outputLines) {
     Object.keys(results).forEach(feature => {
       console.log(`${feature} ${results[feature]}`)
@@ -67,10 +81,6 @@ const getCmdlineArgs = () => {
       alias: 's',
       type: 'boolean',
       describe: 'start as service which is listening for '
-    }).option('daemon', {
-      alias: 'd',
-      type: 'boolean',
-      describe: 'run as a daemon'
     }).option('port', {
       alias: 'p',
       type: 'number',
@@ -138,9 +148,63 @@ const parseFeatures = argv => {
 
 const main = async () => {
   const argv = getCmdlineArgs()
+  const verbose = argv.argv.verbose
 
   if (argv.argv.service) {
-    console.log('Starting server')
+    console.log('Starting service for HTML features analysis')
+    const port = argv.argv.port || process.env.THESIS_HTML_ANALYSIS_PORT || 12000
+    const server = net.createServer(connection => {
+      // 'connection' listener
+      verbose && console.log('Client connected')
+      connection.on('end', () => {
+        verbose && console.log('Client disconnected')
+      })
+      connection.pipe(connection)
+      connection.on('data', async data => {
+        verbose && console.log(`received: ${data}`)
+        try {
+          const json = JSON.parse(data)
+          verbose && console.log(json)
+          const url = json.url
+          if (!url) {
+            connection.write(JSON.stringify({
+              error: 'BAD_INPUT',
+              message: 'Missing "url"'
+            }))
+            return
+          }
+          const argv = {
+            argv: {
+              outputJson: true,
+              service: true,
+              ...json.features
+            }
+          }
+          const features = parseFeatures(argv)
+          if (Object.keys(features).length === 0) {
+            connection.write(JSON.stringify({
+              error: 'BAD_INPUT',
+              message: 'Missing what features need to checked (featSrcLink...)'
+            }))
+            return
+          }
+          const values = await checkUrl(url, features, argv, verbose)
+          verbose && console.log('Response ', values)
+          connection.write(JSON.stringify(values))
+        } catch (err) {
+          connection.write(JSON.stringify({
+            error: 'BAD_INPUT',
+            message: err.message
+          }))
+        }
+      })
+    })
+    server.on('error', (err) => {
+      throw err
+    })
+    server.listen(port, () => {
+      console.log(`server is listening on port ${port}`)
+    })
     return
   }
 
@@ -149,7 +213,6 @@ const main = async () => {
     process.exit(1)
   }
   jsdomDevtoolsFormatter.install()
-  const verbose = argv.argv.verbose
   const features = parseFeatures(argv)
 
   const urls = []
