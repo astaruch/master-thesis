@@ -6,18 +6,76 @@ const Page = require('./page')
 const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter')
 const readline = require('readline')
 
-const main = async () => {
+const checkUrl = async (url, features, argv, verbose) => {
+  if (verbose) console.log(`--> Checking ${url}`)
+  const page = new Page(url, argv.argv.includeValues, verbose)
+
+  let badUrl = false
+  const results = await page.performTests(features).catch(err => {
+    const n = Object.keys(features).length
+    const print = []
+    if (argv.argv.includeUrl) {
+      print.push(`"${url}"`)
+    }
+    print.push(Array(n).fill(-1))
+    if (argv.argv.outputJson) {
+      const res = {}
+      Object.keys(features).forEach(feature => { res[page.columns[feature]] = -1 })
+      console.log(JSON.stringify(res))
+    } else {
+      console.log(print.join(','))
+    }
+    if (verbose) console.error(err.message)
+    badUrl = true
+  })
+
+  if (badUrl) {
+    return
+  }
+
+  if (argv.argv.outputJson) {
+    console.log(JSON.stringify(results))
+  } else if (argv.argv.outputLines) {
+    Object.keys(results).forEach(feature => {
+      console.log(`${feature} ${results[feature]}`)
+    })
+  } else if (argv.argv.outputValuesString) {
+    const values = []
+    if (argv.argv.includeUrl) {
+      values.push(`"${url}"`)
+    }
+    Object.keys(results).forEach(key => values.push(results[key]))
+    console.log(values.join(','))
+  } else {
+    console.error('You need to set output format')
+    process.exit(1)
+  }
+}
+
+const getCmdlineArgs = () => {
   // These strings are used in the specific order in option arguments. Move with a caution!
   const featureStrings = [
     'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
     'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window', 'feat-favicon-link', 'feat-old-technologies',
     'feat-missleading-link', 'feat-hostname-title'
   ]
-  const argv = yargs
+  const args = yargs
     .usage('Application for phishing defence\nUsage:\n$0 [OPTION...]')
     .help('help').alias('help', 'h')
     .describe('verbose', 'Flag wether enable verbose mode')
-    .group(['url', 'stdin'], 'Input:')
+    .option('service', {
+      alias: 's',
+      type: 'boolean',
+      describe: 'start as service which is listening for '
+    }).option('daemon', {
+      alias: 'd',
+      type: 'boolean',
+      describe: 'run as a daemon'
+    }).option('port', {
+      alias: 'p',
+      type: 'number',
+      describe: 'port to bind on'
+    }).group(['url', 'stdin'], 'Input:')
     .describe('url', 'Enter one URL as parameter')
     .describe('stdin', 'Take input URLs from stdin')
     .group(['output-json', 'output-lines', 'output-values-string', 'print-values'], 'Output formats:')
@@ -40,14 +98,11 @@ const main = async () => {
     .describe(featureStrings[8], 'Flag wether check if favicon is pointing to another site')
     .describe(featureStrings[9], 'Flag wether check if site is not running new technologies')
     .describe(featureStrings[10], 'Flag wether check if text value of <a> link is same as actual link')
-    .describe(featureStrings[11], 'Flag wether check if hostname is matching title (0: yes, 1: no)')
+    .describe(featureStrings[11], 'Flag wether check if hostname is matching title')
+  return args
+}
 
-  if (!argv.argv.stdin && !argv.argv.url && !argv.argv.printOnlyHeader) {
-    console.error('You have to provide URL to check or start as "--stdin"')
-    process.exit(1)
-  }
-  jsdomDevtoolsFormatter.install()
-  const verbose = argv.argv.verbose
+const parseFeatures = argv => {
   const features = {}
   const includeValues = argv.argv.includeValues
   // We are relying on the order. check c++ file service/src/features/feature_enum.h
@@ -78,6 +133,24 @@ const main = async () => {
     if (includeValues) features.missleadingLinkValue = 'missleadingLinkValue'
   }
   if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
+  return features
+}
+
+const main = async () => {
+  const argv = getCmdlineArgs()
+
+  if (argv.argv.service) {
+    console.log('Starting server')
+    return
+  }
+
+  if (!argv.argv.stdin && !argv.argv.url && !argv.argv.printOnlyHeader) {
+    console.error('You have to provide URL to check or start as "--stdin"')
+    process.exit(1)
+  }
+  jsdomDevtoolsFormatter.install()
+  const verbose = argv.argv.verbose
+  const features = parseFeatures(argv)
 
   const urls = []
   if (argv.argv.url) {
@@ -108,47 +181,7 @@ const main = async () => {
   }
 
   for await (const url of urls) {
-    if (verbose) console.log(`--> Checking ${url}`)
-    const page = new Page(url, argv.argv.includeValues, verbose)
-
-    let badUrl = false
-    const results = await page.performTests(features).catch(err => {
-      const n = Object.keys(features).length
-      const print = []
-      if (argv.argv.includeUrl) {
-        print.push(`"${url}"`)
-      }
-      print.push(Array(n).fill(-1))
-      if (argv.argv.outputJson) {
-        const res = {}
-        Object.keys(features).forEach(feature => { res[page.columns[feature]] = -1 })
-        console.log(JSON.stringify(res))
-      } else {
-        console.log(print.join(','))
-      }
-      if (verbose) console.error(err.message)
-      badUrl = true
-    })
-
-    if (badUrl) continue
-
-    if (argv.argv.outputJson) {
-      console.log(JSON.stringify(results))
-    } else if (argv.argv.outputLines) {
-      Object.keys(results).forEach(feature => {
-        console.log(`${feature} ${results[feature]}`)
-      })
-    } else if (argv.argv.outputValuesString) {
-      const values = []
-      if (argv.argv.includeUrl) {
-        values.push(`"${url}"`)
-      }
-      Object.keys(results).forEach(key => values.push(results[key]))
-      console.log(values.join(','))
-    } else {
-      console.error('You need to set output format')
-      process.exit(1)
-    }
+    await checkUrl(url, features, argv, verbose)
   }
   process.exit(0)
 }
