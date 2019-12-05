@@ -53,9 +53,10 @@ int main(int argc, char* argv[]) {
         }
         auto score = db.check_phishing_score(app.check_url);
         json obj = json::object();
+        obj["url"] = app.check_url;
         // 1. check whether we have phishing score in our cache
         if (score != -1) {
-            obj[app.check_url] = score;
+            obj["score"] = score;
             fmt::print("{}\n", unescape_copy(obj.dump()));
             return 0;
         }
@@ -65,7 +66,7 @@ int main(int argc, char* argv[]) {
             unsafe = db.check_url_in_phishtank(app.check_url);
             if (unsafe) {
                 score = 100;
-                obj[app.check_url] = score;
+                obj["score"] = score;
                 fmt::print("{}\n", unescape_copy(obj.dump()));
                 return 0;
             }
@@ -81,7 +82,7 @@ int main(int argc, char* argv[]) {
             unsafe = sb_api.check_unsafe_url(app.check_url);
             if (unsafe) {
                 score = 100;
-                obj[app.check_url] = score;
+                obj["score"] = score;
                 fmt::print("{}\n", unescape_copy(obj.dump()));
                 return 0;
             }
@@ -113,7 +114,7 @@ int main(int argc, char* argv[]) {
         unescape_inplace(data_str);
         if (app.verbose) fmt::print("{}\n", data_str);
         score = static_cast<int>(model.predict(data_str) * 100);
-        obj[app.check_url] = score;
+        obj["score"] = score;
         fmt::print("{}\n", unescape_copy(obj.dump()));
         return 0;
     }
