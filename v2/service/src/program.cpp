@@ -1,6 +1,7 @@
 #include "program.h"
 
 #include "features/feature_enum.h"
+#include "env.h"
 
 #include <filesystem>
 #include <cxxopts.hpp>
@@ -277,26 +278,34 @@ void program::check_options()
         }
     }
 
-    if (enable_model_checking) {
-        if (!input_stdin && input_url.empty()) {
+    if (enable_model_checking || !check_url.empty()) {
+        if (enable_model_checking && (!input_stdin && input_url.empty())) {
             fmt::print(stderr, "You have to provide source type for a data (e.g. --mc-input-stdin)\n");
             exit(1);
         }
         if (htmlfeatures_bin.empty()) {
-            fmt::print(stderr, "Please set path to htmlfeatures program (--mc-htmlfeatures-bin <path>)\n");
-            exit(1);
+            htmlfeatures_bin = get_env_var("THESIS_HTML_ANALYSIS_PROG");
+            if (htmlfeatures_bin.empty()) {
+                fmt::print(stderr, "THESIS_HTML_ANALYSIS_PROG not set\n");
+                fmt::print(stderr, "Please set path to htmlfeatures program\n");
+                exit(1);
+            }
         }
         std::error_code ec;
         if (!fs::exists(htmlfeatures_bin, ec)) {
-            fmt::print(stderr, "No such file (--htmlfeatures-bin <path>): {}\n", node_bin);
+            fmt::print(stderr, "No such file: {}\n", htmlfeatures_bin);
             exit(1);
         }
         if (model_checker_path.empty()) {
-            fmt::print(stderr, "Please set path to model checker program (--model-checker <path>)\n");
-            exit(1);
+            model_checker_path = get_env_var("THESIS_MODEL_CHECKER_PROG");
+            if (model_checker_path.empty()) {
+                fmt::print(stderr, "THESIS_MODEL_CHECKER_PROG not set\n");
+                fmt::print(stderr, "Please set path to model checker program\n");
+                exit(1);
+            }
         }
         if (!fs::exists(model_checker_path, ec)) {
-            fmt::print(stderr, "No such file (--model-checker <path>): {}\n", node_bin);
+            fmt::print(stderr, "No such file: {}\n", model_checker_path);
             exit(1);
         }
         // we need the following columns for the model prediction

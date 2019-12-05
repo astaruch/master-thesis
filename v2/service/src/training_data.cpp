@@ -152,6 +152,7 @@ std::vector<std::unordered_map<std::string_view, double>> training_data::get_dat
                 fmap.merge(values);
             }
             data.push_back(fmap);
+            if (verbose_) fmt::print(file_, "<-- Inserted record with {} features\n", fmap.size());
         } catch (const Poco::SyntaxException& ex) {
             if (verbose_) fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
             continue;

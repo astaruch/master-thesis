@@ -19,7 +19,7 @@
 
 using json = nlohmann::json;
 
-auto unescape_inline = [](std::string& str) -> void {
+auto unescape_inplace = [](std::string& str) -> void {
     for (size_t i = 0, end = str.size(); i < end; ++i) {
         if (str[i] == '"') {
             str.replace(i, 1, "\\\"");
@@ -91,8 +91,30 @@ int main(int argc, char* argv[]) {
         }
 
         // 4. check our model prediction
+        spdlog::info("Checking URL through heuristic model");
+        training_data td(app.verbose, app.output_include_url, false);
+        td.set_flags(app.feature_flags(),
+                     app.url_feature_flags(),
+                     app.html_feature_flags(),
+                     app.host_based_feature_flags());
+        td.set_input_data({app.check_url});
+        td.set_label(-1);
+        td.set_html_features_opts("", "", app.htmlfeatures_bin);
+        td.set_output(stdout);
+        const auto data = td.get_data_for_model();
+        model_checker_t model(app.model_checker_path);
 
-
+        if (data.empty()) {
+            spdlog::error("Unknown error");
+            return 1;
+        }
+        json data_json(data.front());
+        std::string data_str = data_json.dump();
+        unescape_inplace(data_str);
+        if (app.verbose) fmt::print("{}\n", data_str);
+        score = static_cast<int>(model.predict(data_str) * 100);
+        obj[app.check_url] = score;
+        fmt::print("{}\n", unescape_copy(obj.dump()));
         return 0;
     }
 
@@ -182,7 +204,7 @@ int main(int argc, char* argv[]) {
         for (const auto& data_row: data) {
             json j(data_row);
             std::string str = j.dump();
-            unescape_inline(str);
+            unescape_inplace(str);
             if (app.verbose) fmt::print("{}\n", str);
             auto phishing_score = model.predict(str);
             if (app.verbose) fmt::print("Phishing score is: ");
