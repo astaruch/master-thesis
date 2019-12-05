@@ -31,6 +31,8 @@ RUN cd /tmp \
 # Install C++ 3rd party libraries
 RUN cd /tmp/vcpkg \
     && ./vcpkg install POCO spdlog libpq gtest yaml-cpp libpqxx cxxopts fmt nlohmann-json
+RUN cd /tmp/vcpkg \
+    && ./vcpkg install curl
 
 # Install Levehnstein for edit distance libraries
 RUN cd /tmp \
