@@ -12,7 +12,7 @@
 //     return val ? std::string(val) : std::string();
 // }
 
-std::string get_env_var(const std::string& key, const std::string& fallback = "")
+inline std::string get_env_var(const std::string& key, const std::string& fallback = "")
 {
     char* val = std::getenv(key.c_str());
     return val ? std::string(val) : fallback;

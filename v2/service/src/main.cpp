@@ -14,6 +14,8 @@
 #include "program.h"
 #include "training_data.h"
 #include "model_checker.h"
+#include "safebrowsing_api.h"
+#include "env.h"
 
 using json = nlohmann::json;
 
@@ -58,19 +60,38 @@ int main(int argc, char* argv[]) {
             return 0;
         }
         // 2a. check our local phishtank instance
-        bool found = false;
+        bool unsafe = false;
         if (db.table_exists("phishtank")) {
-            found = db.check_url_in_phishtank(app.check_url);
-            if (found) {
+            unsafe = db.check_url_in_phishtank(app.check_url);
+            if (unsafe) {
                 score = 100;
                 obj[app.check_url] = score;
-                // TODO: skip other computations and store this in our database
+                fmt::print("{}\n", unescape_copy(obj.dump()));
+                return 0;
             }
         }
 
-        if (found) {
-            fmt::print("{}\n", unescape_copy(obj.dump()));
+        // 2b. check our local openphish instance
+
+        // 3. query google safebrowsing
+        auto sb_api_key = get_env_var("GOOGLE_SAFEBROWSING_API_KEY");
+        if (!sb_api_key.empty()) {
+            spdlog::info("Checking URL in Google Safebrowsing");
+            safebrowsing_api sb_api(sb_api_key);
+            unsafe = sb_api.check_unsafe_url(app.check_url);
+            if (unsafe) {
+                score = 100;
+                obj[app.check_url] = score;
+                fmt::print("{}\n", unescape_copy(obj.dump()));
+                return 0;
+            }
+            spdlog::info("URL {}found", unsafe ? "" : "not ");
+        } else {
+            spdlog::warn("GOOGLE_SAFEBROWSING_API_KEY not set. Skipping querying Safebrowsing API");
         }
+
+        // 4. check our model prediction
+
 
         return 0;
     }

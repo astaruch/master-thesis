@@ -56,6 +56,9 @@ endif()
 ### JSON
 find_package(nlohmann_json CONFIG REQUIRED)
 
+### curl
+find_package(CURL CONFIG REQUIRED)
+
 
 ## ======================================================================================##
 ## Subdirectories and source files
@@ -87,6 +90,7 @@ set(ALL_LIBRARIES
   fmt::fmt-header-only
   ${LIBEDLIB}
   nlohmann_json nlohmann_json::nlohmann_json
+  CURL::libcurl
 )
 
 ## ======================================================================================##
