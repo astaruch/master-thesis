@@ -30,8 +30,10 @@ Visit link <http://172.17.0.3:10000> and in lower part of the site setup with to
 
 
     $ sudo apt install python3-pip virtualenv
-    $ pip3 install virtualenv
-    $ virtualenv --python=python3
+    $ pip3 install --user virtualenv==16.1 # https://github.com/pyinstaller/pyinstaller/issues/4064
+    $ virtualenv --python=python3 venv
     $ source venv/bin/activate
     $ pip install -r requirements.txt
+    $ make pack
+    $ bin/model-checker --help
 
