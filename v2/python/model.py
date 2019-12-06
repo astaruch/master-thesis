@@ -9,12 +9,17 @@ from os.path import dirname
 from os.path import join
 from os.path import abspath
 from os import chdir
+from os import environ
+import signal
+import sys
 
 # hidden imports for pyinstaller
 import sklearn.utils._cython_blas
 import sklearn.neighbors.typedefs
 import sklearn.neighbors.quad_tree
 import sklearn.tree._utils
+
+import socketserver
 
 
 def load_model(filename='extra_trees_model_15features.pkl'):
@@ -31,17 +36,70 @@ def load_model(filename='extra_trees_model_15features.pkl'):
     raise 'Invalid path %s' % filename
 
 
-def main():
+def parse_args():
     parser = argparse.ArgumentParser(description='Get phishing score based ' +
                                                  'on prediction model')
+    parser.add_argument('-s', '--service', action='store_true',
+                        help='run application as a service')
+    parser.add_argument('-p', '--port', type=int, default=0,
+                        help='port to bind the service')
     parser.add_argument('--stdin', default=False, action='store_true',
                         help='accept JSON from stdin')
     parser.add_argument('--data-json', type=str,
                         help='accept escaped JSON from cmdline')
-    args = parser.parse_args()
+    # parser.parse_args()
+    return parser.parse_args()
+
+
+def wrap_handler(model):
+    class MyTCPHandler(socketserver.BaseRequestHandler):
+        """
+        The request handler class for our server.
+
+        It is instantiated once per connection to the server, and must
+        override the handle() method to implement communication to the
+        client.
+        """
+        def handle(self):
+            print('client connected')
+            # self.request is the TCP socket connected to the client
+            self.data = self.request.recv(1024).strip()
+            print("received: {}".format(self.data.decode('utf-8')))
+            fvec = json.loads(self.data)  # feature values
+            # model is expecting array of arrays [(X, 15)]
+            # we will pass only one line
+            to_check = np.array([[(val) for key, val in sorted(fvec.items())]])
+            # since we are checking only one element, we can access it directly
+            phishingness = model.predict(to_check)[0]
+            response = {'score': phishingness}
+            print('sending:', json.dumps(response))
+            self.request.sendall(json.dumps(response).encode('utf-8'))
+            print('client disconnected')
+    return MyTCPHandler
+
+
+def main():
+    args = parse_args()
     model = load_model()
     model.verbose = False
-    if args.stdin:
+    if args.service:
+        if (args.port):
+            port = int(args.port)
+        elif environ.get('THESIS_MODEL_CHECKER_PORT'):
+            port = int(environ.get('THESIS_MODEL_CHECKER_PORT'))
+        else:
+            port = 13000
+        print('Starting service for model checking on port %d' % port)
+        host = "localhost"
+        handler = wrap_handler(model)
+        socketserver.TCPServer.allow_reuse_address = True
+        with socketserver.TCPServer((host, port), handler) as server:
+            server.allow_reuse_address = True
+            # Activate the server; this will keep running until you
+            # interrupt the program with Ctrl-C
+            server.serve_forever()
+
+    elif args.stdin:
         for line in sys.stdin:
             fvec = json.loads(line)  # feature values
             # model is expecting array of arrays [(X, 15)]
