@@ -116,7 +116,12 @@ int main(int argc, char* argv[]) {
         std::string data_str = data_json.dump();
         unescape_inplace(data_str);
         if (app.verbose) fmt::print("{}\n", data_str);
-        score = static_cast<int>(model.predict(data_str) * 100);
+        auto response = model.predict(data_str);
+        if (response.find("error") != response.end()) {
+            spdlog::error("Error occured: {}", response.dump());
+            return 1;
+        }
+        score = static_cast<int>(response["score"].get<double>() * 100);
         obj["score"] = score;
         spdlog::info("Phishing score: {}", score);
         fmt::print("{}\n", unescape_copy(obj.dump()));
@@ -215,9 +220,15 @@ int main(int argc, char* argv[]) {
             std::string str = j.dump();
             unescape_inplace(str);
             if (app.verbose) fmt::print("{}\n", str);
-            auto phishing_score = model.predict(str);
+            auto response = model.predict(str);
+            if (response.find("error") != response.end()) {
+                spdlog::error("Error occured: {}", response.dump());
+                return 1;
+            }
+            // fmt::print("{}\n", unescape_copy(obj.dump()));
+            auto score = response["score"].get<double>();
             if (app.verbose) fmt::print("Phishing score is: ");
-            fmt::print("{}\n", static_cast<int>(phishing_score * 100));
+            fmt::print("{}\n", static_cast<int>(score * 100));
         }
         return 0;
     }

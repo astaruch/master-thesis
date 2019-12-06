@@ -75,6 +75,7 @@ std::vector<double> html_features_t::compute_values()
     auto lines = help_functions::get_output_from_program(cmd_.c_str());
     std::vector<double> f_vec;
     for (const auto& line: lines) {
+        fmt::print("line: {}\n", line);
         auto [column, value] = split_by_space(line);
         f_vec.push_back(std::stod(value));
     }
@@ -90,6 +91,7 @@ std::vector<double> html_features_t::get_values_from_external_script()
     std::stringstream stream(output);
     std::string value_str;
     while(std::getline(stream, value_str, ',')) {
+        fmt::print("val str: {}\n", value_str);
         result.push_back(std::stod(value_str));
     }
     return result;
