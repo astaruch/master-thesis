@@ -18,7 +18,8 @@ public:
     void set_label(int value);
     void set_output(std::FILE* file);
 
-    void set_html_features_opts(std::string_view node, std::string_view html, std::string_view htmlfeatures_exe);
+    void set_html_features_opts(std::string_view node, std::string_view html,
+        std::string_view htmlfeatures_exe, uint16_t port = 0);
 
     /// Method for generating the training data
     bool create_training_data();
@@ -32,6 +33,7 @@ private:
     uint64_t _url_feature_flags{0};
     uint64_t _html_feature_flags{0};
     uint64_t _host_based_feature_flags{0};
+    uint16_t port_{0};
 
     /// Input data that will be transformed to training data
     std::vector<std::string> _urls;

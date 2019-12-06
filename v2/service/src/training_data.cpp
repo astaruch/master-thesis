@@ -42,11 +42,12 @@ void training_data::set_label(int label)
     _label = label;
 }
 void training_data::set_html_features_opts(std::string_view node_bin, std::string_view html_script,
-    std::string_view htmlfeatures_bin)
+    std::string_view htmlfeatures_bin, uint16_t port)
 {
     node_bin_ = node_bin;
     html_script_ = html_script;
     htmlfeatures_bin_ = htmlfeatures_bin;
+    port_ = port;
 }
 
 bool training_data::create_training_data()
@@ -141,7 +142,7 @@ std::vector<std::unordered_map<std::string_view, double>> training_data::get_dat
             }
 
             if (_html_feature_flags) {
-                html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_);
+                html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_, port_);
                 auto values = html_features.compute_values_map();
                 fmap.merge(values);
             }

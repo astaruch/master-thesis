@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
                      app.host_based_feature_flags());
         td.set_input_data({app.check_url});
         td.set_label(-1);
-        td.set_html_features_opts("", "", app.htmlfeatures_bin);
+        td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
         td.set_output(stdout);
         const auto data = td.get_data_for_model();
         model_checker_t model(app.model_checker_path);
@@ -162,7 +162,7 @@ int main(int argc, char* argv[]) {
                      app.host_based_feature_flags());
         td.set_input_data(std::move(urls));
         td.set_label(static_cast<int>(app._training_data_class_value));
-        td.set_html_features_opts(app.node_bin, app.html_script, app.htmlfeatures_bin);
+        td.set_html_features_opts(app.node_bin, app.html_script, app.htmlfeatures_bin, app.html_analysis_port);
 
         td.set_output(output);
 
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
                      app.host_based_feature_flags());
         td.set_input_data(urls);
         td.set_label(-1);
-        td.set_html_features_opts("", "", app.htmlfeatures_bin);
+        td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
         td.set_output(stdout);
 
 

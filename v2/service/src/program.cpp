@@ -140,6 +140,8 @@ program::program(int argc, char** argv)
     _options.add_options("Main application")
         ("check-url", "Compute phishing score for this URL",
             cxxopts::value<std::string>(check_url))
+        ("html-analysis-port", "Port where is listening HTML analysis application",
+            cxxopts::value<uint16_t>(html_analysis_port))
     ;
 
 
@@ -283,7 +285,9 @@ void program::check_options()
             fmt::print(stderr, "You have to provide source type for a data (e.g. --mc-input-stdin)\n");
             exit(1);
         }
-        if (htmlfeatures_bin.empty()) {
+        std::error_code ec;
+        if (html_analysis_port == 0 && htmlfeatures_bin.empty()) {
+            fmt::print(stderr, "--html-analysis-port = 0");
             htmlfeatures_bin = get_env_var("THESIS_HTML_ANALYSIS_PROG");
             if (htmlfeatures_bin.empty()) {
                 fmt::print(stderr, "THESIS_HTML_ANALYSIS_PROG not set\n");
@@ -291,8 +295,7 @@ void program::check_options()
                 exit(1);
             }
         }
-        std::error_code ec;
-        if (!fs::exists(htmlfeatures_bin, ec)) {
+        if (html_analysis_port == 0 && !fs::exists(htmlfeatures_bin, ec)) {
             fmt::print(stderr, "No such file: {}\n", htmlfeatures_bin);
             exit(1);
         }
