@@ -51,6 +51,20 @@ def parse_args():
     return parser.parse_args()
 
 
+def predict_score(data, model):
+    # model is expecting array of arrays [(X, 15)]
+    to_check = np.array([[(val) for key, val in sorted(data.items())]])
+    if to_check.shape[1] != 15:
+        return {
+            'error': 'MODEL_PREDICTION',
+            'message': 'Input data has wrong number of features: %d. Expected: 15' %
+            to_check.shape[1]
+        }
+    # since we are checking only one element, we can access it directly
+    score = model.predict(to_check)[0]
+    return {'score': score}
+
+
 def wrap_handler(model):
     class MyTCPHandler(socketserver.BaseRequestHandler):
         """
@@ -62,18 +76,15 @@ def wrap_handler(model):
         """
         def handle(self):
             print('client connected')
-            # self.request is the TCP socket connected to the client
             self.data = self.request.recv(1024).strip()
+
             print("received: {}".format(self.data.decode('utf-8')))
-            fvec = json.loads(self.data)  # feature values
-            # model is expecting array of arrays [(X, 15)]
-            # we will pass only one line
-            to_check = np.array([[(val) for key, val in sorted(fvec.items())]])
-            # since we are checking only one element, we can access it directly
-            phishingness = model.predict(to_check)[0]
-            response = {'score': phishingness}
+            fvec = json.loads(self.data)
+
+            response = predict_score(fvec, model)
             print('sending:', json.dumps(response))
             self.request.sendall(json.dumps(response).encode('utf-8'))
+
             print('client disconnected')
     return MyTCPHandler
 
@@ -102,18 +113,11 @@ def main():
     elif args.stdin:
         for line in sys.stdin:
             fvec = json.loads(line)  # feature values
-            # model is expecting array of arrays [(X, 15)]
-            # we will pass only one line
-            to_check = np.array([[(val) for key, val in sorted(fvec.items())]])
-            # since we are checking only one element, we can access it directly
-            phishingness = model.predict(to_check)[0]
-            print(phishingness)
+            print(json.dumps(predict_score(fvec, model)))
     elif args.data_json:
         try:
             fvec = json.loads(args.data_json)
-            to_check = np.array([[(val) for key, val in sorted(fvec.items())]])
-            phishingness = model.predict(to_check)[0]
-            print(phishingness)
+            print(json.dumps(predict_score(fvec, model)))
         except json.decoder.JSONDecodeError:
             print("Invalid JSON. Try to encode it properly")
             sys.exit(1)
