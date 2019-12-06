@@ -9,6 +9,8 @@ build:
 clean:
 	rm -rf node_modules bin
 
+service:
+	node src/index.js --service
 run:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-url --verbose --url http://google.cz
 

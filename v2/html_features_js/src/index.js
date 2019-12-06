@@ -159,7 +159,7 @@ const main = async () => {
       connection.on('end', () => {
         verbose && console.log('Client disconnected')
       })
-      connection.pipe(connection)
+      // connection.pipe(connection)
       connection.on('data', async data => {
         verbose && console.log(`received: ${data}`)
         try {
@@ -181,6 +181,7 @@ const main = async () => {
             }
           }
           const features = parseFeatures(argv)
+          console.log(features)
           if (Object.keys(features).length === 0) {
             connection.write(JSON.stringify({
               error: 'BAD_INPUT',
