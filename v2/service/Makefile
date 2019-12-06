@@ -12,14 +12,14 @@ run: build
 
 check-url: build-debug
 	@echo $@
-	Debug/phishsvc --check-url 'http://google.com'
+	Debug/phishsvc --check-url 'http://google.com2'
 
 service: build-debug
 	@echo $@
 	Debug/phishsvc --mc-input-url 'http://google.com' \
 		--html-analysis-port 12000 \
+		--model-checker-port 13000 \
 		--enable-model-checking \
-		--mc-model-checker-path ${MODEL_CHECKER_PATH} \
 		--verbose
 
 test: build-tests

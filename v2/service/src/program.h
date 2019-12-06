@@ -73,6 +73,7 @@ public:
     /// Main application
     std::string check_url;
     uint16_t html_analysis_port{0};
+    uint16_t model_checker_port{0};
 private:
     cxxopts::Options _options;
 

@@ -142,6 +142,8 @@ program::program(int argc, char** argv)
             cxxopts::value<std::string>(check_url))
         ("html-analysis-port", "Port where is listening HTML analysis application",
             cxxopts::value<uint16_t>(html_analysis_port))
+        ("model-checker-port", "Port where is listening model checking application",
+            cxxopts::value<uint16_t>(model_checker_port))
     ;
 
 
@@ -287,7 +289,7 @@ void program::check_options()
         }
         std::error_code ec;
         if (html_analysis_port == 0 && htmlfeatures_bin.empty()) {
-            fmt::print(stderr, "--html-analysis-port = 0");
+            fmt::print("--html-analysis-port = 0\n");
             htmlfeatures_bin = get_env_var("THESIS_HTML_ANALYSIS_PROG");
             if (htmlfeatures_bin.empty()) {
                 fmt::print(stderr, "THESIS_HTML_ANALYSIS_PROG not set\n");
@@ -299,7 +301,8 @@ void program::check_options()
             fmt::print(stderr, "No such file: {}\n", htmlfeatures_bin);
             exit(1);
         }
-        if (model_checker_path.empty()) {
+        if (model_checker_port == 0 && model_checker_path.empty()) {
+            fmt::print("--model-checker-port = 0\n");
             model_checker_path = get_env_var("THESIS_MODEL_CHECKER_PROG");
             if (model_checker_path.empty()) {
                 fmt::print(stderr, "THESIS_MODEL_CHECKER_PROG not set\n");
@@ -307,7 +310,7 @@ void program::check_options()
                 exit(1);
             }
         }
-        if (!fs::exists(model_checker_path, ec)) {
+        if (model_checker_port == 0 && !fs::exists(model_checker_path, ec)) {
             fmt::print(stderr, "No such file: {}\n", model_checker_path);
             exit(1);
         }

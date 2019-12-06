@@ -106,17 +106,15 @@ int main(int argc, char* argv[]) {
         td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
         td.set_output(stdout);
         const auto data = td.get_data_for_model();
-        model_checker_t model(app.model_checker_path);
+        model_checker_t model(app.model_checker_path, app.model_checker_port);
 
         if (data.empty()) {
             spdlog::error("Unknown error");
             return 1;
         }
         json data_json(data.front());
-        std::string data_str = data_json.dump();
-        unescape_inplace(data_str);
-        if (app.verbose) fmt::print("{}\n", data_str);
-        auto response = model.predict(data_str);
+        if (app.verbose) fmt::print("{}\n", data_json.dump());
+        auto response = model.predict(data_json);
         if (response.find("error") != response.end()) {
             spdlog::error("Error occured: {}", response.dump());
             return 1;
@@ -198,29 +196,14 @@ int main(int argc, char* argv[]) {
         td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
         td.set_output(stdout);
 
-
-
-
-        // auto unescape = [](std::string json) -> std::string {
-        //     for (size_t i = 0, end = json.size(); i < end; ++i) {
-        //         if (json[i] == '"') {
-        //             json.replace(i, 1, "\\\"");
-        //             end++;
-        //             i++;
-        //         }
-        //     }
-        //     return json;
-        // };
-
-        model_checker_t model(app.model_checker_path);
+        model_checker_t model(app.model_checker_path, app.model_checker_port);
 
         const auto data = td.get_data_for_model();
-        for (const auto& data_row: data) {
-            json j(data_row);
-            std::string str = j.dump();
-            unescape_inplace(str);
-            if (app.verbose) fmt::print("{}\n", str);
-            auto response = model.predict(str);
+        for (const auto& features_map: data) {
+            json features_json(features_map);
+
+            if (app.verbose) fmt::print("features_json: {}\n", features_json.dump());
+            auto response = model.predict(features_json);
             if (response.find("error") != response.end()) {
                 spdlog::error("Error occured: {}", response.dump());
                 return 1;
