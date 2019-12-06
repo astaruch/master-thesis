@@ -135,13 +135,17 @@ json html_features_t::prepare_request() const
     return payload;
 }
 
-std::string html_features_t::get_response_from_html_analysis(const std::string& request) const
+json html_features_t::get_response_from_html_analysis(const std::string& request) const
 {
+    json response = json::object();
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
-        fmt::print(stderr, "can't create socket");
-          close(sock);
-          return "";
+        auto msg = "can't create socket";
+        fmt::print(stderr, "{}\n", msg);
+        response["error"] = "GET_RESPONSE_FROM_HTML_ANALYSIS";
+        response["message"] = msg;
+        close(sock);
+        return response;
     }
     sockaddr_in html_analysis_server{};
     memset(&html_analysis_server, 0, sizeof(html_analysis_server));
@@ -149,55 +153,72 @@ std::string html_features_t::get_response_from_html_analysis(const std::string& 
     html_analysis_server.sin_port = htons(port_);
 
     if (inet_pton(AF_INET, "127.0.0.1", &html_analysis_server.sin_addr) < 1) {
-        fmt::print(stderr, "invalid server address");
+        auto msg = "invalid server address";
+        fmt::print(stderr, "{}\n", msg);
+        response["error"] = "GET_RESPONSE_FROM_HTML_ANALYSIS";
+        response["message"] = msg;
         close(sock);
-        return "";
+        return response;
     }
 
     if (connect(sock, reinterpret_cast<struct sockaddr*>(&html_analysis_server),
         sizeof(html_analysis_server)) == -1)
     {
-        fmt::print(stderr, "can't connect to a server");
+        auto msg = "can't connect to a server. is server running?";
+        fmt::print(stderr, "{}\n", msg);
+        response["error"] = "GET_RESPONSE_FROM_HTML_ANALYSIS";
+        response["message"] = msg;
         close(sock);
-        return "";
+        return response;
     }
     fmt::print("connected");
 
     if (send(sock, request.c_str(), request.size(), 0) == -1) {
-        fmt::print(stderr, "send has failed");
+        auto msg = "send has failed";
+        fmt::print(stderr, "{}\n", msg);
+        response["error"] = "GET_RESPONSE_FROM_HTML_ANALYSIS";
+        response["message"] = msg;
         close(sock);
-        return "";
+        return response;
     }
 
     // TODO: change to dynamic number
     char buffer[4096] = {0};
     ssize_t rc = read(sock, buffer, 4096);
     if (rc <= 0) {
-        fmt::print("empty response");
+        auto msg = "empty response";
+        response["error"] = "GET_RESPONSE_FROM_HTML_ANALYSIS";
+        response["message"] = msg;
+        close(sock);
+        return response;
     }
 
     close(sock);
-    return std::string(buffer);
+    return json::parse(buffer);
 }
 
 std::unordered_map<std::string_view, double> html_features_t::compute_values_map() const
 {
-    std::string output_json;
     fmt::print("port = {}\n", port_);
+    json response;
     if (port_ != 0) {
         json request = prepare_request();
         fmt::print("request: {}\n", request.dump());
-        output_json = get_response_from_html_analysis(request.dump());
-        fmt::print("response: {}\n", output_json);
+        response = get_response_from_html_analysis(request.dump());
+        fmt::print("response: {}\n", response.dump());
     } else {
-        output_json = help_functions::get_output_from_program_in_string(cmd_.c_str());
+        auto output_json = help_functions::get_output_from_program_in_string(cmd_.c_str());
+        response = json::parse(output_json);
     }
-    json parsed = json::parse(output_json);
+    if (response.find("message") != response.end()) {
+        fmt::print(stderr, "Error: {}\n", response["message"].get<std::string>());
+        return {};
+    }
     std::unordered_map<std::string_view, double> values;
     for (const auto feature: feature_enum::html) {
         if (flags_ & feature) {
             auto col = feature_enum::column_names.at(feature);
-            values[col] = parsed[std::string(col)];
+            values[col] = response[std::string(col)];
         }
     }
     return values;

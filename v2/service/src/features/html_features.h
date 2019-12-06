@@ -46,7 +46,7 @@ private:
     std::string create_args();
     std::tuple<std::string, std::string> split_by_space(const std::string& str);
     nlohmann::json prepare_request() const;
-    std::string get_response_from_html_analysis(const std::string& request) const;
+    nlohmann::json get_response_from_html_analysis(const std::string& request) const;
 
     std::string_view url_;
     uint64_t flags_{0};
