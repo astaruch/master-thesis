@@ -12,7 +12,9 @@ run: build
 
 check-url: build-debug
 	@echo $@
-	Debug/phishsvc --check-url 'http://google.com2'
+	Debug/phishsvc --check-url 'http://google.com23' \
+		--model-checker-port 13000 \
+		--html-analysis-port 12000
 
 service: build-debug
 	@echo $@

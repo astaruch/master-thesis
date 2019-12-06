@@ -209,6 +209,7 @@ std::unordered_map<std::string_view, double> html_features_t::compute_values_map
         response = get_response_from_html_analysis(request.dump());
         fmt::print("response: {}\n", response.dump());
     } else {
+        fmt::print("Executing command: {}\n", cmd_);
         auto output_json = help_functions::get_output_from_program_in_string(cmd_.c_str());
         response = json::parse(output_json);
     }
