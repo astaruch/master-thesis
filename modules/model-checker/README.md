@@ -92,4 +92,3 @@ Start the client:
     {"ahref_link":1.0,"asn":1.0,"dns_created":1.0,"dns_updated":1.0,"dnssec":1.0,"favicon_link":1.0,"gtld":1.0,"host_length":0.037037037037037035,"path_length":0.0,"similar_domain":0.0,"spec_chars_path":0.0,"spec_chars_query":0.0,"spec_keywords":0.0,"src_link":1.0,"url_length":0.027210884353741496}
 
     {"score": 97}
-
