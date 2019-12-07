@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  html-analysis:
+    image: astaruch/html-analysis
+    container_name: html-analysis
+    build:
+      context: ./modules/html-analysis
+      target: server
+      args:
+        - PORT=${HTML_ANALYSIS_PORT}
+    expose:
+        - "${HTML_ANALYSIS_PORT}"
+    ports:
+        - "${HTML_ANALYSIS_PORT}:${HTML_ANALYSIS_PORT}"
+    network_mode: bridge
+
