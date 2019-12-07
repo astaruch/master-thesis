@@ -52,8 +52,6 @@ In case of error, client can receive an error:
         "error": "BAD_INPUT",
         "message": "Unexpected end of JSON input"
     }
-We
-{    "url": "http://google.com",    "features": {        "featSrcLink": true,        "featAhrefLink": true,        "featFaviconLink": true    }}
 
 ## Usage
 

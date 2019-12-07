@@ -155,67 +155,75 @@ const parseFeatures = argv => {
   return features
 }
 
+const runServer = (port, verbose) => {
+  const server = net.createServer(connection => {
+    verbose && console.log('Client connected')
+    connection.on('end', () => {
+      verbose && console.log('Client disconnected')
+    })
+    connection.on('data', async data => {
+      verbose && console.log(`Request: ${data}`)
+      try {
+        const json = JSON.parse(data) // throws an exception that we are handling later
+        const url = json.url
+        if (!url) {
+          const response = {
+            error: 'HTML_ANALYSIS_MODULE',
+            message: 'Missing "url" field'
+          }
+          verbose && console.log(`Response: ${JSON.stringify(response)}`)
+          connection.write(JSON.stringify(response))
+          return
+        }
+
+        // prepare arguments
+        const argv = {
+          argv: {
+            outputJson: true,
+            service: true,
+            ...json.features
+          }
+        }
+        const features = parseFeatures(argv)
+        if (Object.keys(features).length === 0) {
+          const response = {
+            error: 'HTML_ANALYSIS_MODULE',
+            message: 'Missing what features we need to check'
+          }
+          verbose && console.log(`Response: ${JSON.stringify(response)}`)
+          connection.write(JSON.stringify(response))
+          return
+        }
+        verbose && console.log(`Checking following features: ${JSON.stringify(features)}`)
+
+        const response = await checkUrl(url, features, argv, verbose)
+        verbose && console.log(`Response: ${JSON.stringify(response)}`)
+        connection.write(JSON.stringify(response))
+      } catch (err) {
+        const response = {
+          error: 'HTML_ANALYSIS_MODULE',
+          message: err.message
+        }
+        verbose && console.log(`Response: ${JSON.stringify(response)}`)
+        connection.write(JSON.stringify(response))
+      }
+    })
+  })
+  server.on('error', (err) => {
+    throw err
+  })
+  server.listen(port, () => {
+    console.log(`Starting server for HTML features analysis on port ${port}`)
+  })
+}
+
 const main = async () => {
   const argv = parseCmdline()
   const verbose = argv.argv.verbose
 
-  if (argv.argv.service) {
-    console.log('Starting service for HTML features analysis')
-    const port = argv.argv.port || process.env.THESIS_HTML_ANALYSIS_PORT || 12000
-    const server = net.createServer(connection => {
-      // 'connection' listener
-      verbose && console.log('Client connected')
-      connection.on('end', () => {
-        verbose && console.log('Client disconnected')
-      })
-      // connection.pipe(connection)
-      connection.on('data', async data => {
-        verbose && console.log(`received: ${data}`)
-        try {
-          const json = JSON.parse(data)
-          verbose && console.log(json)
-          const url = json.url
-          if (!url) {
-            connection.write(JSON.stringify({
-              error: 'BAD_INPUT',
-              message: 'Missing "url"'
-            }))
-            return
-          }
-          const argv = {
-            argv: {
-              outputJson: true,
-              service: true,
-              ...json.features
-            }
-          }
-          const features = parseFeatures(argv)
-          console.log(features)
-          if (Object.keys(features).length === 0) {
-            connection.write(JSON.stringify({
-              error: 'BAD_INPUT',
-              message: 'Missing what features need to checked (featSrcLink...)'
-            }))
-            return
-          }
-          const values = await checkUrl(url, features, argv, verbose)
-          verbose && console.log('Response ', values)
-          connection.write(JSON.stringify(values))
-        } catch (err) {
-          connection.write(JSON.stringify({
-            error: 'BAD_INPUT',
-            message: err.message
-          }))
-        }
-      })
-    })
-    server.on('error', (err) => {
-      throw err
-    })
-    server.listen(port, () => {
-      console.log(`server is listening on port ${port}`)
-    })
-    return
+  if (argv.argv.server) {
+    const port = argv.argv.server
+    return runServer(port, verbose)
   }
 
   if (!argv.argv.stdin && !argv.argv.url && !argv.argv.printOnlyHeader) {
