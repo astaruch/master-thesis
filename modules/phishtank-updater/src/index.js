@@ -6,6 +6,8 @@ const phishtank = require('./operations/phishtank')
 
 const logger = require('./utils/logger')
 
+require('dotenv').config()
+
 const main = async () => {
   const argv = yargs
     .usage('Phishing URL fetcher\n\nUsage: $0 [options]')

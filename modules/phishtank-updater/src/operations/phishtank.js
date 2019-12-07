@@ -11,7 +11,6 @@ const dbConn = require('../database')
 const path = require('path')
 const fs = require('fs')
 const typeorm = require('typeorm')
-const apiKey = require('../config').phishtankApiKey
 const fetch = require('node-fetch')
 
 /**
@@ -203,6 +202,11 @@ const fetchFromPhishtankSite = async () => {
     process.exit(1)
   }
 
+  const apiKey = process.env.PHISHTANK_API_KEY
+  if (!apiKey) {
+    logger.error('Error. You need to set environmental variable PHISHTANK_API_KEY')
+    process.exit(1)
+  }
   const url = `http://data.phishtank.com/data/${apiKey}/online-valid.json`
   // const url = `http://google.com`
   logger.info(`Querying ${url}`)
