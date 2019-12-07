@@ -3,9 +3,50 @@
 
 const yargs = require('yargs')
 const Page = require('./page')
-const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter')
 const readline = require('readline')
 const net = require('net')
+
+const parseCmdline = () => {
+  // These strings are used in the specific order in option arguments. Move with a caution!
+  const featureStrings = [
+    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
+    'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window', 'feat-favicon-link', 'feat-old-technologies',
+    'feat-missleading-link', 'feat-hostname-title'
+  ]
+  const args = yargs
+    .usage('HTML features analysis\nUsage:\n$0 [OPTION...]')
+    .help('help').alias('help', 'h')
+    .describe('verbose', 'Flag whether enable verbose mode')
+    .option('server', {
+      type: 'number',
+      describe: 'listen on socket for JSONs on a given port'
+    }).group(['url', 'stdin', 'server'], 'Input:')
+    .describe('url', 'Enter one URL as parameter')
+    .describe('stdin', 'Take input URLs from stdin')
+    .group(['output-json', 'output-lines', 'output-values-string', 'print-only-header'], 'Output formats:')
+    .describe('output-json', 'prints result as JSON')
+    .describe('output-lines', 'prints results as lines in format "COLUMN VALUE"')
+    .describe('output-values-string', 'prints results as comma separated string (suited for .csv)')
+    .describe('print-only-header', 'prints CSV header and exits')
+    .group(['include-values', 'include-url', 'include-header'], 'Extra informations in output:')
+    .describe('include-values', 'include also extra intermediate values')
+    .describe('include-url', 'include to the output given URL')
+    .describe('include-header', 'include also header line for the csv format')
+    .group(featureStrings, 'Features:')
+    .describe(featureStrings[0], 'check how many input tags has page')
+    .describe(featureStrings[1], 'check if src=<link> is matching hostname')
+    .describe(featureStrings[2], 'check <form> handlers')
+    .describe(featureStrings[3], 'check invisible <iframe> elements')
+    .describe(featureStrings[4], 'check rewriting a status bar')
+    .describe(featureStrings[5], 'check that page has disabled right-click')
+    .describe(featureStrings[6], 'check <a href="LINK"> pointing to outer world')
+    .describe(featureStrings[7], 'check PopUp windows')
+    .describe(featureStrings[8], 'check if favicon is pointing to another site')
+    .describe(featureStrings[9], 'check if site is not running new technologies')
+    .describe(featureStrings[10], 'check if text value of <a> link is same as actual link')
+    .describe(featureStrings[11], 'check if hostname is matching title')
+  return args
+}
 
 const checkUrl = async (url, features, argv, verbose) => {
   const service = argv.argv.service
@@ -64,48 +105,6 @@ const checkUrl = async (url, features, argv, verbose) => {
     console.error('You need to set output format')
     process.exit(1)
   }
-}
-
-const parseCmdline = () => {
-  // These strings are used in the specific order in option arguments. Move with a caution!
-  const featureStrings = [
-    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
-    'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window', 'feat-favicon-link', 'feat-old-technologies',
-    'feat-missleading-link', 'feat-hostname-title'
-  ]
-  const args = yargs
-    .usage('HTML features analysis\nUsage:\n$0 [OPTION...]')
-    .help('help').alias('help', 'h')
-    .describe('verbose', 'Flag whether enable verbose mode')
-    .option('server', {
-      type: 'number',
-      describe: 'listen on socket for JSONs on a given port'
-    }).group(['url', 'stdin', 'server'], 'Input:')
-    .describe('url', 'Enter one URL as parameter')
-    .describe('stdin', 'Take input URLs from stdin')
-    .group(['output-json', 'output-lines', 'output-values-string', 'print-only-header'], 'Output formats:')
-    .describe('output-json', 'prints result as JSON')
-    .describe('output-lines', 'prints results as lines in format "COLUMN VALUE"')
-    .describe('output-values-string', 'prints results as comma separated string (suited for .csv)')
-    .describe('print-only-header', 'prints CSV header and exits')
-    .group(['include-values', 'include-url', 'include-header'], 'Extra informations in output:')
-    .describe('include-values', 'include also extra intermediate values')
-    .describe('include-url', 'include to the output given URL')
-    .describe('include-header', 'include also header line for the csv format')
-    .group(featureStrings, 'Features:')
-    .describe(featureStrings[0], 'check how many input tags has page')
-    .describe(featureStrings[1], 'check if src=<link> is matching hostname')
-    .describe(featureStrings[2], 'check <form> handlers')
-    .describe(featureStrings[3], 'check invisible <iframe> elements')
-    .describe(featureStrings[4], 'check rewriting a status bar')
-    .describe(featureStrings[5], 'check that page has disabled right-click')
-    .describe(featureStrings[6], 'check <a href="LINK"> pointing to outer world')
-    .describe(featureStrings[7], 'check PopUp windows')
-    .describe(featureStrings[8], 'check if favicon is pointing to another site')
-    .describe(featureStrings[9], 'check if site is not running new technologies')
-    .describe(featureStrings[10], 'check if text value of <a> link is same as actual link')
-    .describe(featureStrings[11], 'check if hostname is matching title')
-  return args
 }
 
 const parseFeatures = argv => {
@@ -209,7 +208,6 @@ const main = async () => {
     console.error('You have to provide URL to check or start as "--stdin"')
     process.exit(1)
   }
-  jsdomDevtoolsFormatter.install()
   const features = parseFeatures(argv)
 
   const urls = []
