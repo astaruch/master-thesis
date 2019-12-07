@@ -2,17 +2,11 @@
 'use strict'
 
 const yargs = require('yargs')
-const Page = require('./page')
 const readline = require('readline')
 const net = require('net')
+const Page = require('./page')
 
 const parseCmdline = () => {
-  // These strings are used in the specific order in option arguments. Move with a caution!
-  const featureStrings = [
-    'feat-input-tag', 'feat-src-link', 'feat-form-handler', 'feat-invisible-iframe', 'feat-rewrite-statusbar',
-    'feat-disable-rightclick', 'feat-ahref-link', 'feat-popup-window', 'feat-favicon-link', 'feat-old-technologies',
-    'feat-missleading-link', 'feat-hostname-title'
-  ]
   const args = yargs
     .usage('HTML features analysis\nUsage:\n$0 [OPTION...]')
     .help('help').alias('help', 'h')
@@ -31,19 +25,19 @@ const parseCmdline = () => {
     .describe('include-values', 'include also extra intermediate values')
     .describe('include-url', 'include to the output given URL')
     .describe('include-header', 'include also header line for the csv format')
-    .group(featureStrings, 'Features:')
-    .describe(featureStrings[0], 'check how many input tags has page')
-    .describe(featureStrings[1], 'check if src=<link> is matching hostname')
-    .describe(featureStrings[2], 'check <form> handlers')
-    .describe(featureStrings[3], 'check invisible <iframe> elements')
-    .describe(featureStrings[4], 'check rewriting a status bar')
-    .describe(featureStrings[5], 'check that page has disabled right-click')
-    .describe(featureStrings[6], 'check <a href="LINK"> pointing to outer world')
-    .describe(featureStrings[7], 'check PopUp windows')
-    .describe(featureStrings[8], 'check if favicon is pointing to another site')
-    .describe(featureStrings[9], 'check if site is not running new technologies')
-    .describe(featureStrings[10], 'check if text value of <a> link is same as actual link')
-    .describe(featureStrings[11], 'check if hostname is matching title')
+    // features
+    .describe('feat-input-tag', 'check how many input tags has page')
+    .describe('feat-src-link', 'check if src=<link> is matching hostname')
+    .describe('feat-form-handler', 'check <form> handlers')
+    .describe('feat-invisible-iframe', 'check invisible <iframe> elements')
+    .describe('feat-rewrite-statusbar', 'check rewriting a status bar')
+    .describe('feat-disable-rightclick', 'check that page has disabled right-click')
+    .describe('feat-ahref-link', 'check <a href="LINK"> pointing to outer world')
+    .describe('feat-popup-window', 'check PopUp windows')
+    .describe('feat-favicon-link', 'check if favicon is pointing to another site')
+    .describe('feat-old-technologies', 'check if site is not running new technologies')
+    .describe('feat-missleading-link', 'check text values of <a href> links')
+    .describe('feat-hostname-title', 'check if hostname is matching title')
   return args
 }
 
