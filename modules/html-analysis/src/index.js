@@ -115,7 +115,9 @@ const parseFeatures = argv => {
     features.inputTag = 'inputTag'
     if (includeValues) features.inputTagValue = 'inputTagValue'
   }
-  if (argv.argv.featSrcLink) features.srcLink = 'srcLink'
+  if (argv.argv.featSrcLink) {
+    features.srcLink = 'srcLink'
+  }
   if (argv.argv.featFormHandler) {
     features.formHandler = 'formHandler'
     if (includeValues) features.formHandlerValue = 'formHandlerValue'
@@ -124,20 +126,32 @@ const parseFeatures = argv => {
     features.invisibleIframe = 'invisibleIframe'
     if (includeValues) features.invisibleIframeValue = 'invisibleIframeValue'
   }
-  if (argv.argv.featRewriteStatusbar) features.rewriteStatusbar = 'rewriteStatusbar'
-  if (argv.argv.featDisableRightclick) features.disableRightclick = 'disableRightclick'
-  if (argv.argv.featAhrefLink) features.ahrefLink = 'ahrefLink'
+  if (argv.argv.featRewriteStatusbar) {
+    features.rewriteStatusbar = 'rewriteStatusbar'
+  }
+  if (argv.argv.featDisableRightclick) {
+    features.disableRightclick = 'disableRightclick'
+  }
+  if (argv.argv.featAhrefLink) {
+    features.ahrefLink = 'ahrefLink'
+  }
   if (argv.argv.featPopupWindow) {
     features.popupWindow = 'popupWindow'
     if (includeValues) features.popupWindowValue = 'popupWindowValue'
   }
-  if (argv.argv.featFaviconLink) features.faviconLink = 'faviconLink'
-  if (argv.argv.featOldTechnologies) features.oldTechnologies = 'oldTechnologies'
+  if (argv.argv.featFaviconLink) {
+    features.faviconLink = 'faviconLink'
+  }
+  if (argv.argv.featOldTechnologies) {
+    features.oldTechnologies = 'oldTechnologies'
+  }
   if (argv.argv.featMissleadingLink) {
     features.missleadingLink = 'missleadingLink'
     if (includeValues) features.missleadingLinkValue = 'missleadingLinkValue'
   }
-  if (argv.argv.featHostnameTitle) features.hostnameTitle = 'hostnameTitle'
+  if (argv.argv.featHostnameTitle) {
+    features.hostnameTitle = 'hostnameTitle'
+  }
   return features
 }
 
