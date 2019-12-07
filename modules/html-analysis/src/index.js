@@ -23,9 +23,8 @@ const parseCmdline = () => {
     }).group(['url', 'stdin', 'server'], 'Input:')
     .describe('url', 'Enter one URL as parameter')
     .describe('stdin', 'Take input URLs from stdin')
-    .group(['output-json', 'output-lines', 'output-values-string', 'print-only-header'], 'Output formats:')
+    .group(['output-json', 'output-values-string', 'print-only-header'], 'Output formats:')
     .describe('output-json', 'prints result as JSON')
-    .describe('output-lines', 'prints results as lines in format "COLUMN VALUE"')
     .describe('output-values-string', 'prints results as comma separated string (suited for .csv)')
     .describe('print-only-header', 'prints CSV header and exits')
     .group(['include-values', 'include-url', 'include-header'], 'Extra informations in output:')
@@ -48,62 +47,49 @@ const parseCmdline = () => {
   return args
 }
 
+const setFeaturesToNegativeValue = (url, features, columnNames, argv) => {
+  if (argv.argv.server || argv.argv.outputJson) {
+    const json = {}
+    if (argv.argv.includeUrl) {
+      json.url = url
+    }
+    Object.keys(features).forEach(feature => { json[columnNames[feature]] = -1 })
+    return json
+  } else {
+    const csvLine = []
+    if (argv.argv.includeUrl) {
+      csvLine.push(`"${url}"`)
+    }
+    const size = Object.keys(features).length
+    csvLine.push(Array(size).fill(-1))
+    return csvLine.join(',')
+  }
+}
+
 const checkUrl = async (url, features, argv, verbose) => {
-  const service = argv.argv.service
-  if (verbose) console.log(`--> Checking ${url}`)
+  if (verbose) console.log(`Checking ${url}`)
   const page = new Page(url, argv.argv.includeValues, verbose)
 
   let badUrl = false
   const results = await page.performTests(features).catch(err => {
-    const n = Object.keys(features).length
-    const print = []
-    if (argv.argv.includeUrl) {
-      print.push(`"${url}"`)
-    }
-    print.push(Array(n).fill(-1))
-    if (argv.argv.outputJson) {
-      const res = {}
-      Object.keys(features).forEach(feature => { res[page.columns[feature]] = -1 })
-      if (service) {
-        return res
-      } else {
-        console.log(JSON.stringify(res))
-      }
-    } else {
-      if (service) {
-        return print.join(',')
-      } else {
-        console.log(print.join(','))
-      }
-    }
     if (verbose) console.error(err.message)
     badUrl = true
+    return setFeaturesToNegativeValue(url, features, page.columns, argv)
   })
 
   if (badUrl) {
-    return
+    return results
   }
 
   if (argv.argv.outputJson) {
-    if (service) {
-      return results
-    } else {
-      console.log(JSON.stringify(results))
-    }
-  } else if (argv.argv.outputLines) {
-    Object.keys(results).forEach(feature => {
-      console.log(`${feature} ${results[feature]}`)
-    })
+    return results
   } else if (argv.argv.outputValuesString) {
-    const values = []
+    const csvLine = []
     if (argv.argv.includeUrl) {
-      values.push(`"${url}"`)
+      csvLine.push(`"${url}"`)
     }
-    Object.keys(results).forEach(key => values.push(results[key]))
-    console.log(values.join(','))
-  } else {
-    console.error('You need to set output format')
-    process.exit(1)
+    Object.keys(results).forEach(key => csvLine.push(results[key]))
+    return csvLine.join(',')
   }
 }
 
@@ -157,12 +143,12 @@ const parseFeatures = argv => {
 
 const runServer = (port, verbose) => {
   const server = net.createServer(connection => {
-    verbose && console.log('Client connected')
+    console.log('Client connected')
     connection.on('end', () => {
-      verbose && console.log('Client disconnected')
+      console.log('Client disconnected')
     })
     connection.on('data', async data => {
-      verbose && console.log(`Request: ${data}`)
+      console.log(`Request: ${data}`)
       try {
         const json = JSON.parse(data) // throws an exception that we are handling later
         const url = json.url
@@ -171,7 +157,7 @@ const runServer = (port, verbose) => {
             error: 'HTML_ANALYSIS_MODULE',
             message: 'Missing "url" field'
           }
-          verbose && console.log(`Response: ${JSON.stringify(response)}`)
+          console.log(`Response: ${JSON.stringify(response)}`)
           connection.write(JSON.stringify(response))
           return
         }
@@ -180,7 +166,6 @@ const runServer = (port, verbose) => {
         const argv = {
           argv: {
             outputJson: true,
-            service: true,
             ...json.features
           }
         }
@@ -190,21 +175,21 @@ const runServer = (port, verbose) => {
             error: 'HTML_ANALYSIS_MODULE',
             message: 'Missing what features we need to check'
           }
-          verbose && console.log(`Response: ${JSON.stringify(response)}`)
+          console.log(`Response: ${JSON.stringify(response)}`)
           connection.write(JSON.stringify(response))
           return
         }
         verbose && console.log(`Checking following features: ${JSON.stringify(features)}`)
 
         const response = await checkUrl(url, features, argv, verbose)
-        verbose && console.log(`Response: ${JSON.stringify(response)}`)
+        console.log(`Response: ${JSON.stringify(response)}`)
         connection.write(JSON.stringify(response))
       } catch (err) {
         const response = {
           error: 'HTML_ANALYSIS_MODULE',
           message: err.message
         }
-        verbose && console.log(`Response: ${JSON.stringify(response)}`)
+        console.log(`Response: ${JSON.stringify(response)}`)
         connection.write(JSON.stringify(response))
       }
     })
@@ -217,6 +202,16 @@ const runServer = (port, verbose) => {
   })
 }
 
+const getCsvHeader = (features, includeUrl) => {
+  const page = new Page('http://example.com')
+  const columns = []
+  if (includeUrl) {
+    columns.push('url')
+  }
+  Object.keys(features).forEach(key => columns.push(page.columns[key]))
+  return columns.join(',')
+}
+
 const main = async () => {
   const argv = parseCmdline()
   const verbose = argv.argv.verbose
@@ -226,11 +221,17 @@ const main = async () => {
     return runServer(port, verbose)
   }
 
-  if (!argv.argv.stdin && !argv.argv.url && !argv.argv.printOnlyHeader) {
+  const features = parseFeatures(argv)
+
+  if (argv.argv.printOnlyHeader) {
+    const header = getCsvHeader(features, argv.argv.includeUrl)
+    return console.log(header)
+  }
+
+  if (!argv.argv.stdin && !argv.argv.url) {
     console.error('You have to provide URL to check or start as "--stdin"')
     process.exit(1)
   }
-  const features = parseFeatures(argv)
 
   const urls = []
   if (argv.argv.url) {
@@ -241,27 +242,23 @@ const main = async () => {
     })
     for await (const line of rl) {
       urls.push(line)
-      if (verbose) console.log(`Line from file: ${line}`)
     }
-  } else if (!argv.argv.printOnlyHeader) {
-    console.error('Missing input type argument (e.g. --stdin)')
-    process.exit(1)
   }
-  if (argv.argv.printOnlyHeader || argv.argv.includeHeader) {
-    const page = new Page('http://example.com')
-    const columns = []
-    if (argv.argv.includeUrl) {
-      columns.push('url')
-    }
-    Object.keys(features).forEach(key => columns.push(page.columns[key]))
-    console.log(columns.join(','))
-  }
-  if (argv.argv.printOnlyHeader) {
-    process.exit(0)
+
+  if (!argv.argv.outputJson && argv.argv.includeHeader) {
+    const header = getCsvHeader(features, argv.argv.includeUrl)
+    console.log(header)
   }
 
   for await (const url of urls) {
-    await checkUrl(url, features, argv, verbose)
+    const results = await checkUrl(url, features, argv, verbose)
+    if (argv.argv.outputJson) {
+      // JSON
+      console.log(JSON.stringify(results))
+    } else {
+      // CSV line
+      console.log(results)
+    }
   }
   process.exit(0)
 }
