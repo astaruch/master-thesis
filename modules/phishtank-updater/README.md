@@ -1,4 +1,4 @@
-# Utility for updating phishing URLs database from Phishtank
+# Module for updating Phishtank URLs
 
 This program has 2 functions:
 

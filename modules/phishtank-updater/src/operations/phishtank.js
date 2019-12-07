@@ -120,7 +120,10 @@ const doUpdate = async (connection, newRecords, currentISODate) => {
   // 1.
   // If phish_id is in db (with online: true) and it's not newRecords
   // it wen offline right now.
-  await setOfflineIds(repositoryPhishtank, dbOnlineIds, newRecordsIds, currentISODate)
+  await setOfflineIds(repositoryPhishtank, dbOnlineIds, newRecordsIds, currentISODate).catch(err => {
+    console.log('ERROR', err)
+    process.exit(1)
+  })
 
   // 2.
   // Insert all new records into database where phish_id isnt't already there

@@ -18,8 +18,8 @@ const main = async () => {
       alias: 'p',
       description: 'Path containing Phishtank csv files'
     })
-    .option('query', {
-      alias: 'q',
+    .option('update', {
+      alias: 'u',
       description: 'Query the phishtank site and update database'
     })
 
@@ -32,7 +32,7 @@ const main = async () => {
     process.exit(0)
   }
 
-  if (argv.argv.query) {
+  if (argv.argv.update) {
     try {
       await phishtank.fetchFromPhishtankSite()
     } catch (err) {
