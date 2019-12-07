@@ -21,6 +21,15 @@ There are also unit tests for testing that we are computing right values for the
 
     $ npm test
 
+We are comforning the `eslint` rules with `standard` installed. Run the linting with a following command:
+
+    $ npm run lint
+
+There is also possibility to pack the application into single executable binary which can be easily distributed and executed:
+
+    $ make pack
+    $ bin/html-analysis --help
+
 ## Usage
 
 The application can be used in two ways:
@@ -52,7 +61,5 @@ In case of error, client can receive an error:
         "error": "BAD_INPUT",
         "message": "Unexpected end of JSON input"
     }
-
-## Usage
 
 All possible options and combinations are provided in the `--help`.
