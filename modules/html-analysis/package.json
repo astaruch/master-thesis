@@ -7,7 +7,8 @@
     "test": "standard --env mocha && mocha test/**/*.test.js --exit",
     "start": "node src/index.js",
     "lint": "eslint --ext js,ts,jsx,tsx ./src ./test",
-    "fix-lint": "eslint --ext js,ts,jsx,tsx ./src ./test --fix"
+    "fix-lint": "eslint --ext js,ts,jsx,tsx ./src ./test --fix",
+    "pack": "pkg src/index.js --targets node12-linux-x64 --output bin/html-analysis"
   },
   "engines": {
     "node": "12"
