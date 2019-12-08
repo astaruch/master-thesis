@@ -208,7 +208,6 @@ const fetchFromPhishtankSite = async () => {
     process.exit(1)
   }
   const url = `http://data.phishtank.com/data/${apiKey}/online-valid.json`
-  // const url = `http://google.com`
   logger.info(`Querying ${url}`)
   try {
     const response = await fetch(url)
