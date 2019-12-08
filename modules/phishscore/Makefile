@@ -127,7 +127,7 @@ all-features: build-debug
 		--enable-features \
 		--td-output-url \
 		--td-output-extra-values \
-		--htmlfeatures-bin ${HTMLFEATURES_BIN} \
+		--htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG} \
 		${URL_FEATURES} \
 		${HTML_FEATURES} \
 		${HOST_BASED_FEATURES}

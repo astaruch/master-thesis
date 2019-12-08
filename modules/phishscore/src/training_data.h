@@ -8,6 +8,8 @@
 #include <vector>
 #include <unordered_map>
 
+namespace phishscore {
+
 class training_data {
 public:
     training_data() = default;
@@ -53,6 +55,8 @@ private:
     /// Method to transform input URLs to training data containing feature vectors
     void transform_urls_to_training_data();
 };
+
+} // namespace phishscore
 
 
 #endif

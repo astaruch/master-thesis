@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
 
         // 4. check our model prediction
         spdlog::info("Checking URL through heuristic model");
-        training_data td(app.verbose, app.output_include_url, false);
+        phishscore::training_data td(app.verbose, app.output_include_url, false);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
                      app.html_feature_flags(),
@@ -158,7 +158,7 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        training_data td(app.verbose, app.output_include_url, app.output_extra_values);
+        phishscore::training_data td(app.verbose, app.output_include_url, app.output_extra_values);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
                      app.html_feature_flags(),
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
             urls.push_back(app.input_url);
         }
 
-        training_data td(app.verbose, app.output_include_url, false);
+        phishscore::training_data td(app.verbose, app.output_include_url, false);
         td.set_flags(app.feature_flags(),
                      app.url_feature_flags(),
                      app.html_feature_flags(),

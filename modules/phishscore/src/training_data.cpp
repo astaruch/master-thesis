@@ -12,6 +12,8 @@
 #include <Poco/URI.h>
 #include <Poco/Exception.h>
 
+namespace phishscore {
+
 training_data::training_data(bool verbose, bool output_include_url = false, bool output_extra_values = false)
     : verbose_(verbose)
     , output_include_url_(output_include_url)
@@ -222,3 +224,5 @@ void training_data::transform_urls_to_training_data()
         }
     }
 }
+
+} // namespace phishscore
