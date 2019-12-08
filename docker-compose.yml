@@ -15,3 +15,12 @@ services:
         - "${HTML_ANALYSIS_PORT}:${HTML_ANALYSIS_PORT}"
     network_mode: bridge
 
+  phishtank-updater:
+    image: astaruch/phishtank-updater
+    container_name: phishtank-updater
+    build:
+      context: ./modules/phishtank-updater
+      target: cronjob
+    env_file:
+    - .env
+    network_mode: bridge
