@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "features/url_features.h"
 
+using phishscore::url_features_t;
+
 TEST(HostIPAddress, NoIPAddress)
 {
     url_features_t f("http://google.com");

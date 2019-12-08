@@ -2,6 +2,8 @@
 #include "features/host_based_features.h"
 #include "network_responses.hpp"
 
+using phishscore::host_based_features_t;
+
 TEST(Redirect, 301)
 {
     host_based_features_t f;
