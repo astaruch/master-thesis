@@ -11,9 +11,10 @@
 using namespace std::string_view_literals;
 namespace fs = std::filesystem;
 
+namespace phishscore {
+
 program::program(int argc, char** argv)
     : _options("phishsvc", "Application for phishing defence")
-    , _feature_flags(0)
 {
     _options
         .positional_help("[positional args]")
@@ -106,21 +107,15 @@ program::program(int argc, char** argv)
         ("enable-training-data", "Flag wether we are creating a training data for ML algorithms",
             cxxopts::value<bool>(_enable_training_data))
         ("td-url", "Enter one escaped URL as parameter",
-            cxxopts::value<std::string>(_training_data_url))
+            cxxopts::value<std::string>(opts_.input.url))
         ("td-stdin", "Flag that we are using standard input as source",
-            cxxopts::value<bool>(training_data_stdin))
-        ("td-input-file", "Path containing escaped URLs delimitaded by a new line",
-            cxxopts::value<std::string>(_training_data_input_file))
-        ("td-output-name", "Desired name of the output data.",
-            cxxopts::value<std::string>(_training_data_output_name))
-        ("td-output-stdout", "Flag that we are printing results to stdout",
-            cxxopts::value<bool>(_training_data_output_stdout))
+            cxxopts::value<bool>(opts_.input.stdin))
         ("td-class-value", "Sets the classification value for the training data",
-            cxxopts::value<double>(_training_data_class_value))
+            cxxopts::value<double>(opts_.fvec.class_label))
         ("td-output-url", "Add to output also column with source URL",
-            cxxopts::value<bool>(output_include_url))
+            cxxopts::value<bool>(opts_.fvec.include_url))
         ("td-output-extra-values", "Add to output also extra values used for feature computation (<feature>_value)",
-            cxxopts::value<bool>(output_extra_values))
+            cxxopts::value<bool>(opts_.fvec.extra_values))
     ;
 
     _options.add_options("Model check")
@@ -148,7 +143,6 @@ program::program(int argc, char** argv)
 
     try {
         auto _result = _options.parse(argc, argv);
-        _missing_training_data_class_value = _result.count("td-class-value") == 0;
     } catch (const cxxopts::option_not_exists_exception& ex) {
         fmt::print(stderr, "{}\n", ex.what());
         exit(1);
@@ -221,31 +215,25 @@ void program::check_options()
         check_host_based_feature_option(_feature_asn, feature_enum::id::asn, "ASN"sv);
         check_host_based_feature_option(_feature_similar_domain, feature_enum::id::similar_domain, "similar domain"sv);
     }
-    if (_training_data_output_name.empty()) _training_data_output_stdout = true;
 
     if (_enable_training_data) {
-        if (_training_data_url.empty() && !training_data_stdin && _training_data_input_file.empty()) {
+        if (opts_.input.url.empty() && !opts_.input.stdin) {
             fmt::print(stderr, "You have to provide one source for a data (e.g. --td-url <URL>)\n");
             exit(1);
         }
 
-        if (_training_data_input_file.size() > 0) {
-            fmt::print(stderr, "Not implemented yet\n");
+        if (!opts_.input.url.empty() && opts_.input.stdin) {
+            fmt::print(stderr, "Please choose only one type of input\n");
             exit(1);
         }
 
-        if (!_training_data_url.empty() && training_data_stdin) {
-            fmt::print(stderr, "Please choose only one type of input!\n");
-            exit(1);
-        }
-
-        if (_missing_training_data_class_value) {
+        if (opts_.fvec.class_label == -1) {
             fmt::print(stderr, "You need to set classification value for the input set (--td-class-value <N>)\n");
             exit(1);
         }
 
         std::error_code ec;
-        if (_html_feature_flags) {
+        if (opts_.flags.html) {
             if (htmlfeatures_bin.empty() && node_bin.empty() && html_script.empty()) {
                 fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-bin <path>)\n");
                 exit(1);
@@ -276,7 +264,7 @@ void program::check_options()
             }
         }
 
-        if (_feature_flags == 0) {
+        if (opts_.flags.all == 0) {
             fmt::print(stderr, "Feature flags are empty. Maybe you forgot to set what features you want?\n");
         }
     }
@@ -364,7 +352,7 @@ void program::check_feature_option(bool feature_on, uint64_t feature_id, std::st
 {
     if (verbose) fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
     if (feature_on) {
-        _feature_flags |= feature_id;
+        opts_.flags.all |= feature_id;
     }
 }
 
@@ -372,7 +360,7 @@ void program::check_url_feature_option(bool feature_on, uint64_t feature_id, std
 {
     check_feature_option(feature_on, feature_id, feature_name);
     if (feature_on) {
-        _url_feature_flags |= feature_id;
+        opts_.flags.url |= feature_id;
     }
 }
 
@@ -380,7 +368,7 @@ void program::check_html_feature_option(bool feature_on, uint64_t feature_id, st
 {
     check_feature_option(feature_on, feature_id, feature_name);
     if (feature_on) {
-        _html_feature_flags |= feature_id;
+        opts_.flags.html |= feature_id;
     }
 }
 
@@ -388,55 +376,57 @@ void program::check_host_based_feature_option(bool feature_on, uint64_t feature_
 {
     check_feature_option(feature_on, feature_id, feature_name);
     if (feature_on) {
-        _host_based_feature_flags |= feature_id;
+        opts_.flags.host_based |= feature_id;
     }
 }
 
-std::string program::get_conn_string()
-{
-    return opts_.database.conn_string;
-}
+// std::string program::get_conn_string()
+// {
+//     return opts_.database.conn_string;
+// }
 
 bool program::table_manipulation()
 {
     return _table_manipulation;
 }
 
-bool program::parse_urls()
-{
-    return !opts_.parse_urls_to_table.empty();
-}
+// bool program::parse_urls()
+// {
+//     return !opts_.parse_urls_to_table.empty();
+// }
 
-std::string program::table_name()
-{
-    return opts_.parse_urls_to_table;
-}
+// std::string program::table_name()
+// {
+//     return opts_.parse_urls_to_table;
+// }
 
 const char* program::on_off(bool feature)
 {
     return feature ? "ON" : "OFF";
 }
 
-uint64_t program::feature_flags() const
-{
-    return _feature_flags;
-}
+// uint64_t program::feature_flags() const
+// {
+//     return _feature_flags;
+// }
 
-uint64_t program::url_feature_flags() const
-{
-    return _url_feature_flags;
-}
-uint64_t program::html_feature_flags() const
-{
-    return _html_feature_flags;
-}
+// uint64_t program::url_feature_flags() const
+// {
+//     return _url_feature_flags;
+// }
+// uint64_t program::html_feature_flags() const
+// {
+//     return _html_feature_flags;
+// }
 
-uint64_t program::host_based_feature_flags() const
-{
-    return _host_based_feature_flags;
-}
+// uint64_t program::host_based_feature_flags() const
+// {
+//     return _host_based_feature_flags;
+// }
 
 bool program::create_training_data()
 {
     return _enable_training_data;
 }
+
+} // namespace phishscore

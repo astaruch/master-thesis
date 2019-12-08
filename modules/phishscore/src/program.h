@@ -8,6 +8,9 @@
 #include <string_view>
 
 #include <cxxopts.hpp>
+
+namespace phishscore {
+
 class program {
 public:
 
@@ -27,28 +30,8 @@ public:
     /// Check whether we are going to work with a features
     bool features_enabled();
 
-    /// Return flags with features
-    uint64_t feature_flags() const;
-    uint64_t url_feature_flags() const;
-    uint64_t html_feature_flags() const;
-    uint64_t host_based_feature_flags() const;
-
     /// Training data options
     bool create_training_data();
-
-    bool parse_urls();
-    std::string table_name();
-
-    /// Training data
-    std::string _training_data_url{};
-    bool training_data_stdin{false};
-    std::string _training_data_input_file{};
-    std::string _training_data_output_name{};
-    bool _training_data_output_stdout{false};
-    double _training_data_class_value{0};
-    bool _missing_training_data_class_value;
-    bool output_include_url{false};
-    bool output_extra_values{false};
 
     // General options
     bool help_{false};
@@ -144,18 +127,13 @@ private:
     bool _feature_asn{false};
     bool _feature_similar_domain{false};
 
-    uint64_t _feature_flags{0};
-    uint64_t _url_feature_flags{0};
-    uint64_t _html_feature_flags{0};
-    uint64_t _host_based_feature_flags{0};
-
-
-
     const char* on_off(bool feature);
     void check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
     void check_url_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
     void check_html_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
     void check_host_based_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name);
 };
+
+} // phishscore
 
 #endif // PHISHSVC_PROGRAM_H

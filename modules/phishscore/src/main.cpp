@@ -41,9 +41,11 @@ auto unescape_copy = [](std::string str) -> std::string {
 };
 
 int main(int argc, char* argv[]) {
-    program app(argc, argv);
+    phishscore::program app(argc, argv);
 
     app.check_options();
+
+    const auto opts = app.get_options();
 
     if (!app.check_url.empty()) {
         spdlog::info("Starting application to check '{}'", app.check_url);
@@ -96,11 +98,11 @@ int main(int argc, char* argv[]) {
 
         // 4. check our model prediction
         spdlog::info("Checking URL through heuristic model");
-        phishscore::training_data td(app.verbose, app.output_include_url, false);
-        td.set_flags(app.feature_flags(),
-                     app.url_feature_flags(),
-                     app.html_feature_flags(),
-                     app.host_based_feature_flags());
+        phishscore::training_data td(app.verbose, opts.fvec.include_url, false);
+        td.set_flags(opts.flags.all,
+                     opts.flags.url,
+                     opts.flags.html,
+                     opts.flags.host_based);
         td.set_input_data({app.check_url});
         td.set_label(-1);
         td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
@@ -130,24 +132,14 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    // Following lines were used during a development
-    std::FILE* output;
-    if (!app._training_data_output_name.empty()) {
-        output = std::fopen(app._training_data_output_name.c_str(), "w");
-    } else {
-        output = stdout;
-    }
-    if(!output) {
-        std::perror("File opening failed");
-        return EXIT_FAILURE;
-    }
+    std::FILE* output = stdout;
 
     if (app.create_training_data()) {
         std::vector<std::string> urls;
 
-        if (!app._training_data_url.empty()) {
-            urls.push_back(app._training_data_url);
-        } else if (app.training_data_stdin) {
+        if (!opts.input.url.empty()) {
+            urls.push_back(opts.input.url);
+        } else if (opts.input.stdin) {
             for (std::string url; std::getline(std::cin, url);) {
                 urls.push_back(std::move(url));
             }
@@ -158,13 +150,13 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        phishscore::training_data td(app.verbose, app.output_include_url, app.output_extra_values);
-        td.set_flags(app.feature_flags(),
-                     app.url_feature_flags(),
-                     app.html_feature_flags(),
-                     app.host_based_feature_flags());
+        phishscore::training_data td(app.verbose, opts.fvec.include_url, opts.fvec.include_url);
+        td.set_flags(opts.flags.all,
+                     opts.flags.url,
+                     opts.flags.html,
+                     opts.flags.host_based);
         td.set_input_data(std::move(urls));
-        td.set_label(static_cast<int>(app._training_data_class_value));
+        td.set_label(static_cast<int>(opts.fvec.class_label));
         td.set_html_features_opts(app.node_bin, app.html_script, app.htmlfeatures_bin, app.html_analysis_port);
 
         td.set_output(output);
@@ -186,11 +178,11 @@ int main(int argc, char* argv[]) {
             urls.push_back(app.input_url);
         }
 
-        phishscore::training_data td(app.verbose, app.output_include_url, false);
-        td.set_flags(app.feature_flags(),
-                     app.url_feature_flags(),
-                     app.html_feature_flags(),
-                     app.host_based_feature_flags());
+        phishscore::training_data td(app.verbose, opts.fvec.include_url, false);
+        td.set_flags(opts.flags.all,
+                     opts.flags.url,
+                     opts.flags.html,
+                     opts.flags.host_based);
         td.set_input_data(urls);
         td.set_label(-1);
         td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
@@ -216,17 +208,15 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-
-
-    auto db_string = app.get_conn_string();
+    const auto& db_string = opts.database.conn_string;
 
     try {
         if (app.table_manipulation()) {
             spdlog::info("Connecting to a database..");
             spdlog::debug("Connection string: {}", db_string);
             database db(db_string);
-            if (app.parse_urls()) {
-                db.process_table_and_parse_urls(app.table_name());
+            if (!opts.parse_urls_to_table.empty()) {
+                db.process_table_and_parse_urls(opts.parse_urls_to_table);
                 return 0;
             }
         }

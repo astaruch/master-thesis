@@ -122,6 +122,7 @@ check-model: build-debug
 all-features: build-debug
 	Debug/phishsvc \
 		--enable-training-data \
+		--verbose \
 		--td-stdin \
 		--td-class-value 0 \
 		--enable-features \
