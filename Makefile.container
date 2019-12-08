@@ -1,0 +1,14 @@
+
+build-travis:
+		docker pull astaruch/phishscore-deps || true
+		docker-compose build
+
+build:
+		docker-compose build
+
+prepare-images:
+		docker-compose build phishscore-deps
+
+push-images:
+		docker push astaruch/phishscore-deps
+		docker push astaruch/phishscore

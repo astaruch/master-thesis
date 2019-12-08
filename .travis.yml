@@ -12,13 +12,10 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 script:
-  - cd v2
-  - mv Makefile.container Makefile
   # Somethis we want to rebuild images. Uncomment this and run a new job on travis-ci
   # - make prepare-images && make push-images
   # Build the application
-  - make build-travis
-  - make test
+  - make -f Makefile.container build-travis
 
 env:
   global:
