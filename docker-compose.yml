@@ -24,3 +24,32 @@ services:
     env_file:
     - .env
     network_mode: bridge
+
+  phishscore-deps:
+    image: astaruch/phishscore-deps
+    container_name: phishscore-deps
+    build:
+      context: ./modules/phishscore
+      target: dependencies
+
+  phishscore-builder:
+    image: astaruch/phishscore-builder
+    container_name: phishscore-builder
+    build:
+      context: ./modules/phishscore
+      target: builder
+      # https://andrewlock.net/caching-docker-layers-on-serverless-build-hosts-with-multi-stage-builds---target,-and---cache-from/#the-cache-from-argument
+      cache_from:
+        - astaruch/phishscore-deps
+
+  phishscore:
+    image: astaruch/phishscore
+    container_name: phishscore
+    build:
+      context: ./modules/phishscore
+      target: runtime
+      cache_from:
+          - astaruch/phishscore-deps
+          - astaruch/phishscore-builder
+    network_mode: bridge
+

@@ -14,8 +14,6 @@ CMD ["node", "/app/src/index.js", "--help"]
 #####################################
 FROM mhart/alpine-node:slim-12.13.1 as cronjob
 
-RUN apk
-
 COPY --from=builder /app /app
 COPY cronjob /etc/cron.d/update-phishtank
 RUN chmod 0644 /etc/cron.d/update-phishtank
