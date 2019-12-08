@@ -3,10 +3,11 @@
 #ifndef PHISHSVC_PROGRAM_H
 #define PHISHSVC_PROGRAM_H
 
+#include "options.h"
+
 #include <string_view>
 
 #include <cxxopts.hpp>
-
 class program {
 public:
 
@@ -19,9 +20,6 @@ public:
      * prepare for the next steps.
      */
     void check_options();
-
-    /// Gets or construct a connection string to a database
-    std::string get_conn_string();
 
     /// Check whether we are going to manipulating with a table
     bool table_manipulation();
@@ -74,8 +72,14 @@ public:
     std::string check_url;
     uint16_t html_analysis_port{0};
     uint16_t model_checker_port{0};
+
+    options_t get_options() const {
+        return opts_;
+    }
+    std::string get_conn_string();
 private:
     cxxopts::Options _options;
+    options_t opts_;
 
     /// Disambiguation options
     bool _enable_features;
@@ -83,17 +87,8 @@ private:
     bool _enable_table_manipulation;
     bool _enable_training_data;
 
-    std::string _host;
-    std::string _port;
-    std::string _dbname;
-    std::string _user;
-    std::string _password;
-    std::string _conn_string;
-
     /// Table manipulation options
     bool _table_manipulation;
-    std::string _table;
-    bool _parse_urls;
 
     /// Features
     // url

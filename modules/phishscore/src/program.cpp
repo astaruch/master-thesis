@@ -27,18 +27,17 @@ program::program(int argc, char** argv)
 
     _options.add_options("Database")
         ("enable-database", "Flag whether database will be used", cxxopts::value<bool>(_enable_database))
-        ("host", "Name of the host where is the database", cxxopts::value<std::string>(_host))
-        ("port", "Port number to connect to at the server host", cxxopts::value<std::string>(_port))
-        ("dbname", "The database name", cxxopts::value<std::string>(_dbname))
-        ("user", "PostgreSQL user name to connect as", cxxopts::value<std::string>(_user))
-        ("password", "Password to be used if the server demands server authentication", cxxopts::value<std::string>(_password))
-        ("connstring", "The whole connection string to use instead of separate parameters", cxxopts::value<std::string>(_conn_string))
+        ("host", "Name of the host where is the database", cxxopts::value<std::string>(opts_.database.host))
+        ("port", "Port number to connect to at the server host", cxxopts::value<std::string>(opts_.database.port))
+        ("dbname", "The database name", cxxopts::value<std::string>(opts_.database.db_name))
+        ("user", "PostgreSQL user name to connect as", cxxopts::value<std::string>(opts_.database.user))
+        ("password", "Password to be used if the server demands server authentication", cxxopts::value<std::string>(opts_.database.password))
+        ("connstring", "The whole connection string to use instead of separate parameters", cxxopts::value<std::string>(opts_.database.conn_string))
     ;
 
     _options.add_options("Table manipulation")
         ("enable-table-manipulation", "Flag wether table manipulation will be used", cxxopts::value<bool>(_enable_table_manipulation))
-        ("table", "Name of the table where our operations will be performed", cxxopts::value<std::string>(_table))
-        ("parse-urls", "Parse URLs from the given table into new columns", cxxopts::value<bool>(_parse_urls))
+        ("table", "Name of the table where our operations will be performed", cxxopts::value<std::string>(opts_.parse_urls_to_table))
     ;
 
     _options.add_options("HTML feature settings")
@@ -337,8 +336,10 @@ void program::check_options()
 
     // check database options
     if (_enable_database) {
-        if (_conn_string.empty() && _host.empty() && _port.empty() && _dbname.empty() &&
-            _user.empty() && _password.empty())
+        if (opts_.database.conn_string.empty() &&
+            opts_.database.host.empty() && opts_.database.port.empty() &&
+            opts_.database.db_name.empty() && opts_.database.user.empty() &&
+            opts_.database.password.empty())
         {
             fmt::print(stderr, "You have to provide either full connection string to a database\n");
             fmt::print(stderr, "or enter parameters for connecting. Check PostgreSQL connection\n");
@@ -347,14 +348,14 @@ void program::check_options()
         }
 
         // construct a connection string from parameters
-        if (_conn_string.empty()) {
-            _conn_string = fmt::format("host = '{}' port = '{}' dbname = '{}' user = '{}' password = '{}'",
-                _host, _port, _dbname, _user, _password);
+        if (opts_.database.conn_string.empty()) {
+            opts_.database.conn_string = fmt::format("host = '{}' port = '{}' dbname = '{}' user = '{}' password = '{}'",
+                opts_.database.host, opts_.database.port, opts_.database.db_name, opts_.database.user, opts_.database.password);
         }
     }
 
     // checking options for a one table manipulation
-    if (!_table.empty() || _parse_urls) {
+    if (!opts_.parse_urls_to_table.empty()) {
         _table_manipulation = true;
     }
 }
@@ -393,7 +394,7 @@ void program::check_host_based_feature_option(bool feature_on, uint64_t feature_
 
 std::string program::get_conn_string()
 {
-    return _conn_string;
+    return opts_.database.conn_string;
 }
 
 bool program::table_manipulation()
@@ -403,12 +404,12 @@ bool program::table_manipulation()
 
 bool program::parse_urls()
 {
-    return _parse_urls;
+    return !opts_.parse_urls_to_table.empty();
 }
 
 std::string program::table_name()
 {
-    return _table;
+    return opts_.parse_urls_to_table;
 }
 
 const char* program::on_off(bool feature)
