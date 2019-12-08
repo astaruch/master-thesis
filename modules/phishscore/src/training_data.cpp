@@ -56,14 +56,17 @@ void training_data::set_html_features_opts(std::string_view htmlfeatures_bin, ui
     port_ = port;
 }
 
-bool training_data::create_training_data()
+bool training_data::print_csv_training_data()
 {
 
-    std::string csv_header = output_include_url_ ? "url," : "";
+    std::string csv_header = opts_.fvec.include_url ? "url," : "";
     csv_header += create_csv_header();
-    fmt::print(file_, "{}\n", csv_header);
+    fmt::print("{}\n", csv_header);
 
-    transform_urls_to_training_data();
+    for (const auto& url: _urls) {
+        feature_vector fvec(opts_, url);
+        fvec.print_in_csv_format();
+    }
 
     return true;
 }
@@ -73,18 +76,13 @@ std::string training_data::create_csv_header()
     std::vector<std::string> columns;
 
     for (const auto id: feature_enum::url) {
-        if (_url_feature_flags & id) {
+        if (opts_.flags.url & id) {
             columns.push_back(std::string(feature_enum::column_names.at(id)));
         }
     }
 
-    // for (const auto id: feature_enum::html) {
-    //     if (_html_feature_flags & id) {
-    //         columns.push_back(std::string(feature_enum::column_names.at(id)));
-    //     }
-    // }
-    if (_html_feature_flags) {
-        html_features_t html("", _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
+    if (opts_.flags.html) {
+        html_features_t html("", opts_.flags.html, opts_.html_analysis.bin_path, opts_.fvec.extra_values);
         auto html_header = html.get_header();
         // fmt::print("HEADER = {}\n", html_header);
         size_t pos = 0;
@@ -100,26 +98,25 @@ std::string training_data::create_csv_header()
     }
 
     for (const auto id: feature_enum::host_based) {
-        if (_host_based_feature_flags & id) {
+        if (opts_.flags.host_based & id) {
             columns.push_back(std::string(feature_enum::column_names.at(id)));
         }
     }
 
-
-    if (output_extra_values_) {
-        if (_host_based_feature_flags & feature_enum::dns_created) {
+    if (opts_.fvec.extra_values) {
+        if (opts_.flags.host_based & feature_enum::dns_created) {
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_created)) + "_value");
         }
-        if (_host_based_feature_flags & feature_enum::dns_updated) {
+        if (opts_.flags.host_based & feature_enum::dns_updated) {
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::dns_updated)) + "_value");
         }
-        if (_host_based_feature_flags & feature_enum::ssl_created) {
+        if (opts_.flags.host_based & feature_enum::ssl_created) {
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::ssl_created)) + "_value");
         }
-        if (_host_based_feature_flags & feature_enum::ssl_expire) {
+        if (opts_.flags.host_based & feature_enum::ssl_expire) {
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::ssl_expire)) + "_value");
         }
-        if (_host_based_feature_flags & feature_enum::asn) {
+        if (opts_.flags.host_based & feature_enum::asn) {
             columns.push_back(std::string(feature_enum::column_names.at(feature_enum::asn)) + "_value");
         }
     }
@@ -166,14 +163,6 @@ std::vector<std::unordered_map<std::string_view, double>> training_data::get_dat
         }
     }
     return data;
-}
-
-void training_data::transform_urls_to_training_data()
-{
-    for (const auto& url: _urls) {
-        feature_vector fvec(opts_, url);
-        fvec.print_in_csv_format();
-    }
 }
 
 } // namespace phishscore

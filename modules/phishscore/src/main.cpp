@@ -152,20 +152,9 @@ int main(int argc, char* argv[]) {
         }
 
         phishscore::training_data td(opts);
-        td.set_flags(opts.flags.all,
-                     opts.flags.url,
-                     opts.flags.html,
-                     opts.flags.host_based);
         td.set_input_data(std::move(urls));
-        td.set_label(static_cast<int>(opts.fvec.class_label));
-        td.set_html_features_opts(opts.html_analysis.bin_path, app.html_analysis_port);
+        td.print_csv_training_data();
 
-        td.set_output(output);
-
-        if (!td.create_training_data()) {
-            fmt::print(stderr, "Not finished correctly.\n");
-            return 1;
-        }
         return 0;
     }
 

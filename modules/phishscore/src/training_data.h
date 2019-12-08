@@ -25,8 +25,7 @@ public:
 
     void set_html_features_opts(std::string_view htmlfeatures_exe, uint16_t port = 0);
 
-    /// Method for generating the training data
-    bool create_training_data();
+    bool print_csv_training_data();
     std::vector<std::unordered_map<std::string_view, double>> get_data_for_model();
 private:
     const options opts_;
@@ -53,8 +52,6 @@ private:
     /// Method to create csv header delimated by comma
     std::string create_csv_header();
 
-    /// Method to transform input URLs to training data containing feature vectors
-    void transform_urls_to_training_data();
 };
 
 } // namespace phishscore
