@@ -38,11 +38,6 @@ public:
     bool version_{false};
     bool verbose{false};
 
-    /// HTML features settings
-    std::string node_bin{};
-    std::string html_script{};
-    std::string htmlfeatures_bin{};
-
     /// Model checker
     std::string model_checker_path{};
     bool input_stdin{false};
@@ -56,13 +51,13 @@ public:
     uint16_t html_analysis_port{0};
     uint16_t model_checker_port{0};
 
-    options_t get_options() const {
+    options get_options() const {
         return opts_;
     }
     std::string get_conn_string();
 private:
     cxxopts::Options _options;
-    options_t opts_;
+    options opts_;
 
     /// Disambiguation options
     bool _enable_features;

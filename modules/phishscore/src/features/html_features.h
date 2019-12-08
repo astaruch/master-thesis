@@ -14,8 +14,6 @@
 
 class html_features_t {
 public:
-    html_features_t(std::string_view url, uint64_t flags, std::string_view node_bin,
-        std::string_view html_script);
     html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path,
         bool extra_values);
     html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path,
@@ -50,8 +48,6 @@ private:
 
     std::string_view url_;
     uint64_t flags_{0};
-    std::string_view node_bin_;
-    std::string_view html_script_;
     std::string_view exe_path_;
     uint16_t port_;
     std::string cmd_;

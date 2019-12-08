@@ -12,6 +12,7 @@
 
 #include "database.h"
 #include "program.h"
+#include "feature_vector.h"
 #include "training_data.h"
 #include "model_checker.h"
 #include "safebrowsing_api.h"
@@ -105,7 +106,7 @@ int main(int argc, char* argv[]) {
                      opts.flags.host_based);
         td.set_input_data({app.check_url});
         td.set_label(-1);
-        td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
+        td.set_html_features_opts(opts.html_analysis.bin_path, app.html_analysis_port);
         td.set_output(stdout);
         const auto data = td.get_data_for_model();
         model_checker_t model(app.model_checker_path, app.model_checker_port);
@@ -150,14 +151,14 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        phishscore::training_data td(app.verbose, opts.fvec.include_url, opts.fvec.include_url);
+        phishscore::training_data td(opts);
         td.set_flags(opts.flags.all,
                      opts.flags.url,
                      opts.flags.html,
                      opts.flags.host_based);
         td.set_input_data(std::move(urls));
         td.set_label(static_cast<int>(opts.fvec.class_label));
-        td.set_html_features_opts(app.node_bin, app.html_script, app.htmlfeatures_bin, app.html_analysis_port);
+        td.set_html_features_opts(opts.html_analysis.bin_path, app.html_analysis_port);
 
         td.set_output(output);
 
@@ -185,7 +186,7 @@ int main(int argc, char* argv[]) {
                      opts.flags.host_based);
         td.set_input_data(urls);
         td.set_label(-1);
-        td.set_html_features_opts("", "", app.htmlfeatures_bin, app.html_analysis_port);
+        td.set_html_features_opts(opts.html_analysis.bin_path, app.html_analysis_port);
         td.set_output(stdout);
 
         model_checker_t model(app.model_checker_path, app.model_checker_port);

@@ -5,6 +5,8 @@
 #include "features/html_features.h"
 #include "features/host_based_features.h"
 
+#include "feature_vector.h"
+
 #include <algorithm>
 #include <numeric>
 
@@ -13,6 +15,11 @@
 #include <Poco/Exception.h>
 
 namespace phishscore {
+
+training_data::training_data(const options& opts)
+    : opts_(opts)
+{
+}
 
 training_data::training_data(bool verbose, bool output_include_url = false, bool output_extra_values = false)
     : verbose_(verbose)
@@ -43,11 +50,8 @@ void training_data::set_label(int label)
 {
     _label = label;
 }
-void training_data::set_html_features_opts(std::string_view node_bin, std::string_view html_script,
-    std::string_view htmlfeatures_bin, uint16_t port)
+void training_data::set_html_features_opts(std::string_view htmlfeatures_bin, uint16_t port)
 {
-    node_bin_ = node_bin;
-    html_script_ = html_script;
     htmlfeatures_bin_ = htmlfeatures_bin;
     port_ = port;
 }
@@ -166,62 +170,9 @@ std::vector<std::unordered_map<std::string_view, double>> training_data::get_dat
 
 void training_data::transform_urls_to_training_data()
 {
-    // takes vector of doubles and transform it to the string separated by comma
-    // input: [0., 1., 0.5]
-    // output: "0.,1.,0.5"
-    auto combine_doubles = [](std::string a, double b) -> std::string {
-        return std::move(a) + "," + fmt::format("{}", b);
-    };
-
     for (const auto& url: _urls) {
-        if (verbose_) fmt::print(file_, "--> Checking {}\n", url);
-        try {
-            const Poco::URI parsed = Poco::URI(url); // throws SyntaxException on bad URL
-            std::vector<double> fvec; // feature vector for an URL
-
-            if (_url_feature_flags) {
-                url_features_t url_features(url, parsed, _url_feature_flags, true);
-                auto values = url_features.compute_values_vec();
-                fvec.insert(fvec.end(), values.begin(), values.end());
-            }
-
-            if (_html_feature_flags) {
-                std::vector<double> values;
-                if (!htmlfeatures_bin_.empty()) {
-                    html_features_t html_features(url, _html_feature_flags, htmlfeatures_bin_, output_extra_values_);
-                    values = html_features.get_values_from_external_script();
-                } else {
-                    html_features_t html_features(url, _html_feature_flags, node_bin_, html_script_);
-                    values = html_features.compute_values();
-                }
-                fvec.insert(fvec.end(), values.begin(), values.end());
-            }
-
-            std::string host_extra_values = "";
-            if (_host_based_feature_flags) {
-                host_based_features_t host_based_features(url, parsed, _host_based_feature_flags);
-                auto values = host_based_features.compute_values_vec();
-                fvec.insert(fvec.end(), values.begin(), values.end());
-
-                if (output_extra_values_) {
-                    host_extra_values = ',' + host_based_features.extra_values();
-                }
-            }
-            std::string line;
-
-            line += std::accumulate(std::next(fvec.begin()), fvec.end(),
-                                            fmt::format("{}", fvec[0]),
-                                            combine_doubles);
-            fmt::print(file_, "{}{}{},{}\n",
-                (output_include_url_ ? fmt::format("\"{}\",", url) : ""),
-                line,
-                host_extra_values,
-                _label);
-
-        } catch (const Poco::SyntaxException& ex) {
-            if (verbose_) fmt::print(stderr, "{}: {}\n", ex.what(), ex.message());
-            continue;
-        }
+        feature_vector fvec(opts_, url);
+        fvec.print_in_csv_format();
     }
 }
 

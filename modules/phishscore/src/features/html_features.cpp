@@ -14,19 +14,6 @@ using json = nlohmann::json;
 
 html_features_t::html_features_t(std::string_view url,
                                  uint64_t flags,
-                                 std::string_view node_bin,
-                                 std::string_view html_script)
-    : url_(url)
-    , flags_(flags)
-    , node_bin_(node_bin)
-    , html_script_(html_script)
-{
-    auto args = create_args();
-    cmd_ = fmt::format("{} {} --output-lines --url '{}' {}", node_bin_, html_script_, url, args);
-}
-
-html_features_t::html_features_t(std::string_view url,
-                                 uint64_t flags,
                                  std::string_view exe_path,
                                  bool extra_values = false)
     : url_(url)

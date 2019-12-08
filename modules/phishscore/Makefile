@@ -88,7 +88,7 @@ html-features: build-debug
 		--td-output-url \
 		--td-output-extra-values \
 		${HTML_FEATURES} \
-		--htmlfeatures-bin ${HTMLFEATURES_BIN}
+		--htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG}
 
 host-based-features: build-debug
 	Debug/phishsvc \
@@ -115,7 +115,7 @@ check-model: build-debug
 	Debug/phishsvc \
 		--enable-model-checking \
 		--mc-input-stdin \
-		--mc-htmlfeatures-bin ${HTMLFEATURES_BIN} \
+		--mc-htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG} \
 		--mc-model-checker-path ${MODEL_CHECKER_PATH} \
 		--verbose
 

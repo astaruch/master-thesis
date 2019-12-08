@@ -7,7 +7,7 @@
 
 namespace phishscore {
 
-struct options_t {
+struct options {
     struct {
         std::string host{};
         std::string port{};
@@ -35,7 +35,13 @@ struct options_t {
         double class_label{-1};
     } fvec;
 
+    struct {
+        std::string bin_path{};
+        uint16_t port{0};
+    } html_analysis;
+
     std::string parse_urls_to_table{};
+    bool verbose{false};
 };
 
 } // phishscore

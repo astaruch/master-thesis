@@ -42,9 +42,7 @@ program::program(int argc, char** argv)
     ;
 
     _options.add_options("HTML feature settings")
-        ("node-bin", "Path to the node.js executable", cxxopts::value<std::string>(node_bin))
-        ("html-script", "Path to the script containing HTML feature checks", cxxopts::value<std::string>(html_script))
-        ("htmlfeatures-bin", "Path to the binary with HTML features", cxxopts::value<std::string>(htmlfeatures_bin))
+        ("htmlfeatures-bin", "Path to the binary with HTML features", cxxopts::value<std::string>(opts_.html_analysis.bin_path))
     ;
 
     _options.add_options("Features")
@@ -124,7 +122,7 @@ program::program(int argc, char** argv)
         ("mc-model-checker-path", "Path to the model checker",
             cxxopts::value<std::string>(model_checker_path))
         ("mc-htmlfeatures-bin", "Path to the binary with HTML features",
-            cxxopts::value<std::string>(htmlfeatures_bin))
+            cxxopts::value<std::string>(opts_.html_analysis.bin_path))
         ("mc-input-stdin", "Flag that we are using standard input as source",
             cxxopts::value<bool>(input_stdin))
         ("mc-input-url", "One URL to be checked",
@@ -234,31 +232,13 @@ void program::check_options()
 
         std::error_code ec;
         if (opts_.flags.html) {
-            if (htmlfeatures_bin.empty() && node_bin.empty() && html_script.empty()) {
+            if (opts_.html_analysis.bin_path.empty()) {
                 fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-bin <path>)\n");
                 exit(1);
             }
-            if (!htmlfeatures_bin.empty()) {
-                if (!fs::exists(htmlfeatures_bin, ec)) {
-                    fmt::print(stderr, "No such file (--htmlfeatures-bin <path>): {}\n", node_bin);
-                    exit(1);
-                }
-            } else if (node_bin.empty() || html_script.empty()) {
-                if (node_bin.empty()) {
-                    fmt::print(stderr, "Please set path to node.js (--node-bin <path>)\n");
-                    exit(1);
-                }
-                if (html_script.empty()) {
-                    fmt::print(stderr, "Please set path to the script containing HTML features (--html-script <path>)\n");
-                    exit(1);
-                }
-            } else {
-                if (!fs::exists(html_script, ec)) {
-                    fmt::print(stderr, "No such file (--html-script): {}\n", html_script);
-                    exit(1);
-                }
-                if (!fs::exists(node_bin, ec)) {
-                    fmt::print(stderr, "No such file (--node-bin <path>): {}\n", node_bin);
+            if (!opts_.html_analysis.bin_path.empty()) {
+                if (!fs::exists(opts_.html_analysis.bin_path, ec)) {
+                    fmt::print(stderr, "No such file (--htmlfeatures-bin <path>): {}\n", opts_.html_analysis.bin_path);
                     exit(1);
                 }
             }
@@ -275,17 +255,17 @@ void program::check_options()
             exit(1);
         }
         std::error_code ec;
-        if (html_analysis_port == 0 && htmlfeatures_bin.empty()) {
+        if (html_analysis_port == 0 && opts_.html_analysis.bin_path.empty()) {
             fmt::print("--html-analysis-port = 0\n");
-            htmlfeatures_bin = get_env_var("THESIS_HTML_ANALYSIS_PROG");
-            if (htmlfeatures_bin.empty()) {
+            opts_.html_analysis.bin_path = get_env_var("THESIS_HTML_ANALYSIS_PROG");
+            if (opts_.html_analysis.bin_path.empty()) {
                 fmt::print(stderr, "THESIS_HTML_ANALYSIS_PROG not set\n");
                 fmt::print(stderr, "Please set path to htmlfeatures program\n");
                 exit(1);
             }
         }
-        if (html_analysis_port == 0 && !fs::exists(htmlfeatures_bin, ec)) {
-            fmt::print(stderr, "No such file: {}\n", htmlfeatures_bin);
+        if (html_analysis_port == 0 && !fs::exists(opts_.html_analysis.bin_path, ec)) {
+            fmt::print(stderr, "No such file: {}\n", opts_.html_analysis.bin_path);
             exit(1);
         }
         if (model_checker_port == 0 && model_checker_path.empty()) {
