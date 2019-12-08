@@ -99,15 +99,8 @@ int main(int argc, char* argv[]) {
 
         // 4. check our model prediction
         spdlog::info("Checking URL through heuristic model");
-        phishscore::training_data td(app.verbose, opts.fvec.include_url, false);
-        td.set_flags(opts.flags.all,
-                     opts.flags.url,
-                     opts.flags.html,
-                     opts.flags.host_based);
+        phishscore::training_data td(opts);
         td.set_input_data({app.check_url});
-        td.set_label(-1);
-        td.set_html_features_opts(opts.html_analysis.bin_path, app.html_analysis_port);
-        td.set_output(stdout);
         const auto data = td.get_data_for_model();
         model_checker_t model(app.model_checker_path, app.model_checker_port);
 
@@ -116,13 +109,13 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         json data_json(data.front());
-        if (app.verbose) fmt::print("{}\n", data_json.dump());
+        if (opts_.verbose) fmt::print("{}\n", data_json.dump());
         auto response = model.predict(data_json);
         if (response.find("error") != response.end()) {
             spdlog::error("Error occured: {}", response.dump());
             return 1;
         }
-        score = static_cast<int>(response["score"].get<double>() * 100);
+        score = static_cast<int>(response["score"].get<int>());
         obj["score"] = score;
         spdlog::info("Phishing score: {}", score);
         fmt::print("{}\n", unescape_copy(obj.dump()));
@@ -168,32 +161,27 @@ int main(int argc, char* argv[]) {
             urls.push_back(app.input_url);
         }
 
-        phishscore::training_data td(app.verbose, opts.fvec.include_url, false);
-        td.set_flags(opts.flags.all,
-                     opts.flags.url,
-                     opts.flags.html,
-                     opts.flags.host_based);
+
+
+        phishscore::training_data td(opts);
         td.set_input_data(urls);
-        td.set_label(-1);
-        td.set_html_features_opts(opts.html_analysis.bin_path, app.html_analysis_port);
-        td.set_output(stdout);
+        auto data = td.get_data_for_model();
 
         model_checker_t model(app.model_checker_path, app.model_checker_port);
 
-        const auto data = td.get_data_for_model();
         for (const auto& features_map: data) {
             json features_json(features_map);
 
-            if (app.verbose) fmt::print("features_json: {}\n", features_json.dump());
+            if (opts.verbose) fmt::print("features_json: {}\n", features_json.dump());
             auto response = model.predict(features_json);
             if (response.find("error") != response.end()) {
                 spdlog::error("Error occured: {}", response.dump());
                 return 1;
             }
             // fmt::print("{}\n", unescape_copy(obj.dump()));
-            auto score = response["score"].get<double>();
-            if (app.verbose) fmt::print("Phishing score is: ");
-            fmt::print("{}\n", static_cast<int>(score * 100));
+            auto score = response["score"].get<int>();
+            if (opts.verbose) fmt::print("Phishing score is: ");
+            fmt::print("{}\n", score);
         }
         return 0;
     }

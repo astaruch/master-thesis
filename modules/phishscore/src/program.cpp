@@ -23,7 +23,7 @@ program::program(int argc, char** argv)
     _options.add_options("General")
         ("h,help", "Prints help and exit", cxxopts::value<bool>(help_))
         ("v,version", "Prints version information and exit", cxxopts::value<bool>(version_))
-        ("verbose", "Enable verbose mode", cxxopts::value<bool>(verbose))
+        ("verbose", "Enable verbose mode", cxxopts::value<bool>(opts_.verbose))
     ;
 
     _options.add_options("Database")
@@ -160,7 +160,7 @@ void program::check_options()
     }
 
     if (_enable_features) {
-        if (verbose) fmt::print("Features:\n");
+        if (opts_.verbose) fmt::print("Features:\n");
         check_url_feature_option(_feature_ip_address, feature_enum::id::ip_address, "IP address"sv);
         check_url_feature_option(_feature_url_length, feature_enum::id::url_length, "URL length"sv);
         check_url_feature_option(_feature_host_length, feature_enum::id::host_length, "host length"sv);
@@ -330,7 +330,7 @@ void program::check_options()
 
 void program::check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
 {
-    if (verbose) fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
+    if (opts_.verbose) fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
     if (feature_on) {
         opts_.flags.all |= feature_id;
     }
@@ -360,49 +360,15 @@ void program::check_host_based_feature_option(bool feature_on, uint64_t feature_
     }
 }
 
-// std::string program::get_conn_string()
-// {
-//     return opts_.database.conn_string;
-// }
-
 bool program::table_manipulation()
 {
     return _table_manipulation;
 }
 
-// bool program::parse_urls()
-// {
-//     return !opts_.parse_urls_to_table.empty();
-// }
-
-// std::string program::table_name()
-// {
-//     return opts_.parse_urls_to_table;
-// }
-
 const char* program::on_off(bool feature)
 {
     return feature ? "ON" : "OFF";
 }
-
-// uint64_t program::feature_flags() const
-// {
-//     return _feature_flags;
-// }
-
-// uint64_t program::url_feature_flags() const
-// {
-//     return _url_feature_flags;
-// }
-// uint64_t program::html_feature_flags() const
-// {
-//     return _html_feature_flags;
-// }
-
-// uint64_t program::host_based_feature_flags() const
-// {
-//     return _host_based_feature_flags;
-// }
 
 bool program::create_training_data()
 {

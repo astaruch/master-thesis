@@ -116,7 +116,7 @@ check-model: build-debug
 		--enable-model-checking \
 		--mc-input-stdin \
 		--mc-htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG} \
-		--mc-model-checker-path ${MODEL_CHECKER_PATH} \
+		--mc-model-checker-path ${THESIS_MODEL_CHECKER_PROG} \
 		--verbose
 
 all-features: build-debug

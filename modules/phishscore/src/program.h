@@ -36,7 +36,6 @@ public:
     // General options
     bool help_{false};
     bool version_{false};
-    bool verbose{false};
 
     /// Model checker
     std::string model_checker_path{};

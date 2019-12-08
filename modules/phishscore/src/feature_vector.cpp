@@ -66,5 +66,37 @@ void feature_vector::print_in_csv_format()
     }
 }
 
+std::unordered_map<std::string_view, double> feature_vector::compute_values()
+{
+    try {
+        if (opts_.verbose) fmt::print("--> Checking {}\n", url_);
+        const Poco::URI parsed = Poco::URI(url_); // throws SyntaxException on bad URL
+        std::unordered_map<std::string_view, double> fmap;
+
+        if (opts_.flags.url) {
+            url_features_t url_features(url_, parsed, opts_.flags.url, true);
+            auto values = url_features.compute_values_map();
+            fmap.merge(values);
+        }
+
+        if (opts_.flags.html) {
+            html_features_t html_features(url_, opts_.flags.html, opts_.html_analysis.bin_path, opts_.html_analysis.port);
+            auto values = html_features.compute_values_map();
+            fmap.merge(values);
+        }
+
+        if (opts_.flags.host_based) {
+            host_based_features_t host_based_features(url_, parsed, opts_.flags.host_based);
+            auto values = host_based_features.compute_values_map();
+            fmap.merge(values);
+        }
+        if (opts_.verbose) fmt::print("--> Computed {} features\n", fmap.size());
+        return fmap;
+    } catch (const Poco::SyntaxException& ex) {
+        if (opts_.verbose) fmt::print(stderr, "--> {}: {}\n", ex.what(), ex.message());
+        return {};
+    }
+}
+
 
 } // namespace phishscore
