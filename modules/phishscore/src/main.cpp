@@ -109,13 +109,13 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         json data_json(data.front());
-        if (opts_.verbose) fmt::print("{}\n", data_json.dump());
+        if (opts.verbose) fmt::print("{}\n", data_json.dump());
         auto response = model.predict(data_json);
         if (response.find("error") != response.end()) {
             spdlog::error("Error occured: {}", response.dump());
             return 1;
         }
-        score = static_cast<int>(response["score"].get<int>());
+        score = response["score"].get<int>();
         obj["score"] = score;
         spdlog::info("Phishing score: {}", score);
         fmt::print("{}\n", unescape_copy(obj.dump()));
