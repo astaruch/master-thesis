@@ -8,6 +8,8 @@
 #include <fmt/format.h>
 #include <Poco/Exception.h>
 
+namespace phishscore {
+
 url_features_t::url_features_t(const std::string_view url)
 try
    : _url(url)
@@ -372,3 +374,5 @@ double url_features_t::compute_value(feature_enum::id feature) const
     }
     return 0;
 }
+
+} // namespace phishscore

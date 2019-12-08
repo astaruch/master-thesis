@@ -12,6 +12,8 @@
 
 using json = nlohmann::json;
 
+namespace phishscore {
+
 html_features_t::html_features_t(std::string_view url,
                                  uint64_t flags,
                                  std::string_view exe_path,
@@ -224,3 +226,6 @@ std::string html_features_t::create_args()
     }
     return args;
 }
+
+} // namespace phishscore
+

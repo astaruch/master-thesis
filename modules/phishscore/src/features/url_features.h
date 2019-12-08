@@ -10,6 +10,8 @@
 
 #include <Poco/URI.h>
 
+namespace phishscore {
+
 class url_features_t {
 public:
     explicit url_features_t(const std::string_view url);
@@ -57,5 +59,7 @@ private:
     const Poco::URI _parsed{};
     const bool _url_is_ok{false};
 };
+
+} // namespace phishscore
 
 #endif // PHISHSVC_FEATURE_URL_FEATURES_H

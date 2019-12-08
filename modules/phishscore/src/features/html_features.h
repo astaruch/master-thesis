@@ -5,12 +5,16 @@
 
 #include "feature_enum.h"
 
+#include "../options.h"
+
 #include <tuple>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include <nlohmann/json.hpp>
+
+namespace phishscore {
 
 class html_features_t {
 public:
@@ -54,4 +58,5 @@ private:
 
 };
 
+} // namespace phishscore
 #endif // PHISHSVC_FEATURE_HTML_FEATURES_H

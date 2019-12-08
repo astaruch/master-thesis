@@ -11,6 +11,8 @@
 
 #include <Poco/URI.h>
 
+namespace phishscore {
+
 class host_based_features_t {
 public:
     host_based_features_t() = default;
@@ -119,5 +121,7 @@ private:
 
     const int timeout_{2};
 };
+
+} // namespace phishscore
 
 #endif // PHISHSVC_FEATURE_HOST_BASED_FEATURES_H
