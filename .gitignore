@@ -6,3 +6,4 @@ old_project_structure/data-sets
 src/.vscode
 *.csv
 *.txt
+**/Debug
