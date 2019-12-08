@@ -93,5 +93,4 @@ RUN echo '/usr/local/lib' | tee -a /etc/ld.so.conf.d/faup.conf \
 
 COPY --from=builder  /app/out/phishsvc /app/phishsvc
 
-
-CMD ["/app/phishsvc", "--help"]
+CMD ["bash"]

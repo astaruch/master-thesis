@@ -21,6 +21,9 @@ services:
     build:
       context: ./modules/phishtank-updater
       target: cronjob
+    environment:
+        TYPEORM_HOST: "phishscore-db"
+        TYPEORM_PORT: 5432
     env_file:
     - .env
     network_mode: bridge
@@ -51,5 +54,30 @@ services:
       cache_from:
           - astaruch/phishscore-deps
           - astaruch/phishscore-builder
+    environment:
+        THESIS_DB_HOST: phishscore-db
     network_mode: bridge
 
+  phishscore-db:
+    image: postgres:11.2
+    restart: always
+    container_name: phishscore-db
+    environment:
+      POSTGRES_DB: ${THESIS_DB_DBNAME}
+      POSTGRES_PASSWORD: ${THESIS_DB_PASSWORD}
+      POSTGRES_USER: ${THESIS_DB_USER}
+    expose:
+      - "${THESIS_DB_PORT}"
+    ports:
+      - "${THESIS_DB_PORT}:5432"
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    network_mode: bridge
+
+volumes:
+  db-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${THESIS_DB_DOCKER_VOLUME}
