@@ -1,5 +1,6 @@
 #include "program.h"
 
+#include "help_functions.h"
 #include "features/feature_enum.h"
 #include "env.h"
 
@@ -68,11 +69,11 @@ program::program(int argc, char** argv)
     ;
 
     _options.add_options("Main application")
-        ("html-analysis-host", "Host where is hosted HTML analysis application",
+        ("html-analysis-host", "Hostname where is HTML analysis application",
             cxxopts::value<std::string>(opts_.html_analysis.host))
         ("html-analysis-port", "Port where is listening HTML analysis application",
             cxxopts::value<uint16_t>(opts_.html_analysis.port))
-        ("model-checker-host", "Host where is model checking application",
+        ("model-checker-host", "Hostname where is model checking application",
             cxxopts::value<std::string>(opts_.model_checker.host))
         ("model-checker-port", "Port where is listening model checking application",
             cxxopts::value<uint16_t>(opts_.model_checker.port))
@@ -279,6 +280,30 @@ void program::check_options()
         if (opts_.model_checker.port == 0 && !fs::exists(opts_.model_checker.path, ec)) {
             fmt::print(stderr, "ERROR (Model checker module): No such file: {}\n", opts_.model_checker.path);
             exit(1);
+        }
+
+        if (opts_.html_analysis.port != 0) {
+            fmt::print("Resolving HTML analysis host: {}\n", opts_.html_analysis.host);
+            auto cmd = fmt::format("getent ahostsv4 {} | awk '{{ print $1 }}'", opts_.html_analysis.host);
+            auto host = help_functions::get_output_from_program(cmd);
+            if (!host.empty()) {
+                fmt::print("Resolved: {}\n", host.front());
+                opts_.html_analysis.host = host.front();
+            } else {
+                fmt::print(stderr, "Error");
+            }
+        }
+
+        if (opts_.model_checker.port != 0) {
+            fmt::print("Resolving model checker host: {}\n", opts_.model_checker.host);
+            auto cmd = fmt::format("getent ahostsv4 {} | awk '{{ print $1 }}'", opts_.model_checker.host);
+            auto host = help_functions::get_output_from_program(cmd);
+            if (!host.empty()) {
+                fmt::print("Resolved: {}\n", host.front());
+                opts_.model_checker.host = host.front();
+            } else {
+                fmt::print(stderr, "Error");
+            }
         }
         // we need the following columns for the model prediction
         // --feat-asn --feat-similar-domain --feat-dnssec --feat-gtld --feat-src-link --feat-dns-updated

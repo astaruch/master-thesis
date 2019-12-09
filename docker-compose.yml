@@ -56,7 +56,7 @@ services:
           - astaruch/phishscore
     environment:
         THESIS_DB_HOST: phishscore-db
-        THESIS_HTML_ANALYSIS_HOST: html-analysis
+        THESIS_HTML_ANALYSIS_HOST_: html-analysis
         THESIS_HTML_ANALYSIS_PORT: ${THESIS_HTML_ANALYSIS_PORT}
         # THESIS_MODEL_CHECKER_HOST: model-checker
         THESIS_MODEL_CHECKER_PORT: ${THESIS_MODEL_CHECKER_PORT}
