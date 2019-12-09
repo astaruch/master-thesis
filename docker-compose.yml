@@ -8,12 +8,11 @@ services:
       context: ./modules/html-analysis
       target: server
       args:
-        - PORT=${HTML_ANALYSIS_PORT}
+        - PORT=${THESIS_HTML_ANALYSIS_PORT}
     expose:
-        - "${HTML_ANALYSIS_PORT}"
+        - "${THESIS_HTML_ANALYSIS_PORT}"
     ports:
-        - "${HTML_ANALYSIS_PORT}:${HTML_ANALYSIS_PORT}"
-    network_mode: bridge
+        - "${THESIS_HTML_ANALYSIS_PORT}:${THESIS_HTML_ANALYSIS_PORT}"
 
   phishtank-updater:
     image: astaruch/phishtank-updater
@@ -22,11 +21,11 @@ services:
       context: ./modules/phishtank-updater
       target: cronjob
     environment:
-        TYPEORM_HOST: "phishscore-db"
+        TYPEORM_HOST: phishscore-db
         TYPEORM_PORT: 5432
+        PHISHTANK_API_KEY: ${PHISHTANK_API_KEY}
     env_file:
     - .env
-    network_mode: bridge
 
   phishscore-deps:
     image: astaruch/phishscore-deps
@@ -54,9 +53,15 @@ services:
       cache_from:
           - astaruch/phishscore-deps
           - astaruch/phishscore-builder
+          - astaruch/phishscore
     environment:
         THESIS_DB_HOST: phishscore-db
-    network_mode: bridge
+        THESIS_HTML_ANALYSIS_HOST: html-analysis
+        THESIS_HTML_ANALYSIS_PORT: ${THESIS_HTML_ANALYSIS_PORT}
+        # THESIS_MODEL_CHECKER_HOST: model-checker
+        THESIS_MODEL_CHECKER_PORT: ${THESIS_MODEL_CHECKER_PORT}
+    env_file:
+        - .env
 
   phishscore-db:
     image: postgres:11.2
@@ -72,7 +77,6 @@ services:
       - "${THESIS_DB_PORT}:5432"
     volumes:
       - db-volume:/var/lib/postgresql/data
-    network_mode: bridge
 
 volumes:
   db-volume:
