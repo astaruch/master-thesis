@@ -19,4 +19,6 @@ COPY cronjob /etc/cron.d/update-phishtank
 RUN chmod 0644 /etc/cron.d/update-phishtank
 RUN touch /var/log/cron.log
 
-CMD cron && tail -f /var/log/cron.log
+# Sets the CWD for the TYPEORM env variables has correct paths
+WORKDIR /app
+CMD node /app/src/index.js --update | ./node_modules/.bin/pino-pretty && crond && tail -f /var/log/cron.log

@@ -38,7 +38,7 @@ const main = async () => {
     try {
       await phishtank.fetchFromPhishtankSite()
     } catch (err) {
-      console.err(err)
+      console.error(err)
       process.exit(1)
     }
     process.exit(0)
