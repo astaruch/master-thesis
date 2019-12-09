@@ -102,7 +102,7 @@ def main():
     if args.server:
         port = int(args.server)
         print('Starting server for prediction model on port %d' % port)
-        host = 'localhost'
+        host = '0.0.0.0'
         handler = wrap_handler(model)
         socketserver.TCPServer.allow_reuse_address = True
         with socketserver.TCPServer((host, port), handler) as server:
