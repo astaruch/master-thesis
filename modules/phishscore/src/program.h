@@ -24,31 +24,18 @@ public:
      */
     void check_options();
 
-    /// Check whether we are going to manipulating with a table
     bool table_manipulation();
 
-    /// Check whether we are going to work with a features
     bool features_enabled();
 
-    /// Training data options
     bool create_training_data();
 
     // General options
     bool help_{false};
     bool version_{false};
 
-    /// Model checker
-    std::string model_checker_path{};
-    bool input_stdin{false};
-    std::string input_url{};
-
     /// Disambiguation options
     bool enable_model_checking;
-
-    /// Main application
-    std::string check_url;
-    uint16_t html_analysis_port{0};
-    uint16_t model_checker_port{0};
 
     options get_options() const {
         return opts_;

@@ -11,6 +11,8 @@
 
 using json = nlohmann::json;
 
+namespace phishscore {
+
 auto escape_json = [](std::string str) -> std::string {
     for (size_t i = 0, end = str.size(); i < end; ++i) {
         if (str[i] == '"') {
@@ -22,25 +24,26 @@ auto escape_json = [](std::string str) -> std::string {
     return str;
 };
 
-model_checker_t::model_checker_t(std::string_view path, uint16_t port)
-    : path_(path)
-    , port_(port)
+model_checker_t::model_checker_t(const options& opts)
+    : opts_(opts)
 {
 }
 
 json model_checker_t::use_program(const std::string& escaped_json)
 {
-    auto cmd = fmt::format("{} --data-json \"{}\"", path_, escaped_json);
-    fmt::print("Executing command: {}\n", cmd);
+    auto cmd = fmt::format("{} --data-json \"{}\"", opts_.model_checker.path, escaped_json);
+    if (opts_.verbose) fmt::print("--> executing command: {}\n", cmd);
     auto str = help_functions::get_output_from_program_in_string(cmd.c_str());
     return json::parse(str);
 }
 
 json model_checker_t::use_service(const std::string& request)
 {
-    fmt::print("Connecting to model predication service on port {}\n", port_);
-    fmt::print("json: {}\n", request);
+    if (opts_.verbose) fmt::print("--> connecting to model checking {}:{}\n",
+        opts_.model_checker.host, opts_.model_checker.port);
     json response = json::object();
+
+
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
         auto msg = "can't create socket";
@@ -53,9 +56,11 @@ json model_checker_t::use_service(const std::string& request)
     sockaddr_in model_checker_server{};
     memset(&model_checker_server, 0, sizeof(model_checker_server));
     model_checker_server.sin_family = AF_INET;
-    model_checker_server.sin_port = htons(port_);
+    model_checker_server.sin_port = htons(opts_.model_checker.port);
 
-    if (inet_pton(AF_INET, "127.0.0.1", &model_checker_server.sin_addr) < 1) {
+    const char* host = opts_.model_checker.host.c_str();
+
+    if (inet_pton(AF_INET, host, &model_checker_server.sin_addr) < 1) {
         auto msg = "invalid server address";
         fmt::print(stderr, "{}\n", msg);
         response["error"] = "RESPONSE_MODEL_CHECKER";
@@ -74,7 +79,8 @@ json model_checker_t::use_service(const std::string& request)
         close(sock);
         return response;
     }
-    fmt::print("connected");
+    if (opts_.verbose) fmt::print("--> connected");
+    if (opts_.verbose) fmt::print("--> sending request: {}\n", request);
 
     if (send(sock, request.c_str(), request.size(), 0) == -1) {
         auto msg = "send has failed";
@@ -102,10 +108,11 @@ json model_checker_t::use_service(const std::string& request)
 
 json model_checker_t::predict(const json& features_json)
 {
-    fmt::print("model checking port = {}\n", port_);
-    if (port_ == 0) {
+    if (opts_.model_checker.port == 0) {
         return use_program(escape_json(features_json.dump()));
     } else {
         return use_service(features_json.dump());
     }
 }
+
+} // namespace phishscore

@@ -1,18 +1,12 @@
 #include "training_data.h"
-
 #include "features/feature_enum.h"
-#include "features/url_features.h"
-#include "features/html_features.h"
-#include "features/host_based_features.h"
-
 #include "feature_vector.h"
+#include "features/html_features.h"
 
 #include <algorithm>
 #include <numeric>
 
-#include <spdlog/spdlog.h>
-#include <Poco/URI.h>
-#include <Poco/Exception.h>
+#include <fmt/format.h>
 
 namespace phishscore {
 

@@ -14,11 +14,26 @@ using json = nlohmann::json;
 
 namespace phishscore {
 
+html_features_t::html_features_t(std::string_view url, const options& opts)
+    : url_(url)
+    , opts_(opts)
+{
+    flags_ = opts_.flags.html;
+    exe_path_ = opts_.html_analysis.bin_path;
+    port_ = opts_.html_analysis.port;
+    auto args = create_args();
+    cmd_ = fmt::format("{} {} --output-json --url '{}'",
+        opts_.html_analysis.bin_path,
+        args,
+        url);
+}
+
 html_features_t::html_features_t(std::string_view url,
                                  uint64_t flags,
                                  std::string_view exe_path,
                                  bool extra_values = false)
     : url_(url)
+    , opts_()
     , flags_(flags)
     , exe_path_(exe_path)
 {
@@ -29,22 +44,6 @@ html_features_t::html_features_t(std::string_view url,
         url,
         extra_values ? "--include-values" : "");
     // fmt::print("{}\n", cmd_);
-}
-
-html_features_t::html_features_t(std::string_view url,
-                                 uint64_t flags,
-                                 std::string_view exe_path,
-                                 uint16_t port)
-    : url_(url)
-    , flags_(flags)
-    , exe_path_(exe_path)
-    , port_(port)
-{
-    auto args = create_args();
-    cmd_ = fmt::format("{} {} --output-json --url '{}'",
-        exe_path_,
-        args,
-        url);
 }
 
 std::string html_features_t::get_header()
@@ -128,6 +127,8 @@ json html_features_t::prepare_request() const
 
 json html_features_t::get_response_from_html_analysis(const std::string& request) const
 {
+    if (opts_.verbose) fmt::print("--> connecting to html analysis {}:{}\n",
+        opts_.html_analysis.host, opts_.html_analysis.port);
     json response = json::object();
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -141,9 +142,11 @@ json html_features_t::get_response_from_html_analysis(const std::string& request
     sockaddr_in html_analysis_server{};
     memset(&html_analysis_server, 0, sizeof(html_analysis_server));
     html_analysis_server.sin_family = AF_INET;
-    html_analysis_server.sin_port = htons(port_);
+    html_analysis_server.sin_port = htons(opts_.html_analysis.port);
 
-    if (inet_pton(AF_INET, "127.0.0.1", &html_analysis_server.sin_addr) < 1) {
+    const char* host = opts_.html_analysis.host.c_str();
+
+    if (inet_pton(AF_INET, host, &html_analysis_server.sin_addr) < 1) {
         auto msg = "invalid server address";
         fmt::print(stderr, "{}\n", msg);
         response["error"] = "GET_RESPONSE_FROM_HTML_ANALYSIS";
@@ -162,7 +165,8 @@ json html_features_t::get_response_from_html_analysis(const std::string& request
         close(sock);
         return response;
     }
-    fmt::print("connected");
+    if (opts_.verbose) fmt::print("--> connected");
+    if (opts_.verbose) fmt::print("--> sending request: {}\n", request);
 
     if (send(sock, request.c_str(), request.size(), 0) == -1) {
         auto msg = "send has failed";
@@ -190,15 +194,12 @@ json html_features_t::get_response_from_html_analysis(const std::string& request
 
 std::unordered_map<std::string_view, double> html_features_t::compute_values_map() const
 {
-    fmt::print("port = {}\n", port_);
     json response;
     if (port_ != 0) {
         json request = prepare_request();
-        fmt::print("request: {}\n", request.dump());
         response = get_response_from_html_analysis(request.dump());
-        fmt::print("response: {}\n", response.dump());
     } else {
-        fmt::print("Executing command: {}\n", cmd_);
+        if (opts_.verbose) fmt::print("--> executing command: {}\n", cmd_);
         auto output_json = help_functions::get_output_from_program_in_string(cmd_.c_str());
         response = json::parse(output_json);
     }

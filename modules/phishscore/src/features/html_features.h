@@ -18,10 +18,9 @@ namespace phishscore {
 
 class html_features_t {
 public:
+    html_features_t(std::string_view url, const options& opts);
     html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path,
         bool extra_values);
-    html_features_t(std::string_view url, uint64_t flags, std::string_view exe_path,
-        uint16_t port);
 
     std::vector<double> compute_values();
     std::vector<double> get_values_from_external_script();
@@ -51,6 +50,7 @@ private:
     nlohmann::json get_response_from_html_analysis(const std::string& request) const;
 
     std::string_view url_;
+    const options opts_;
     uint64_t flags_{0};
     std::string_view exe_path_;
     uint16_t port_;

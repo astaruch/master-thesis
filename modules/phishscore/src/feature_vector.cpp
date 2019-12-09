@@ -80,7 +80,7 @@ std::unordered_map<std::string_view, double> feature_vector::compute_values()
         }
 
         if (opts_.flags.html) {
-            html_features_t html_features(url_, opts_.flags.html, opts_.html_analysis.bin_path, opts_.html_analysis.port);
+            html_features_t html_features(url_, opts_);
             auto values = html_features.compute_values_map();
             fmap.merge(values);
         }

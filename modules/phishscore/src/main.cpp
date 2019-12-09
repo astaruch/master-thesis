@@ -48,15 +48,15 @@ int main(int argc, char* argv[]) {
 
     const auto opts = app.get_options();
 
-    if (!app.check_url.empty()) {
-        spdlog::info("Starting application to check '{}'", app.check_url);
+    if (!opts.input.url.empty()) {
+        spdlog::info("Starting application to check '{}'", opts.input.url);
         database db;
         if (!db.table_exists("phish_score")) {
             db.create_table_phish_score();
         }
-        auto score = db.check_phishing_score(app.check_url);
+        auto score = db.check_phishing_score(opts.input.url);
         json obj = json::object();
-        obj["url"] = app.check_url;
+        obj["url"] = opts.input.url;
         // 1. check whether we have phishing score in our cache
         if (score != -1) {
             obj["score"] = score;
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
         // 2a. check our local phishtank instance
         bool unsafe = false;
         if (db.table_exists("phishtank")) {
-            unsafe = db.check_url_in_phishtank(app.check_url);
+            unsafe = db.check_url_in_phishtank(opts.input.url);
             if (unsafe) {
                 score = 100;
                 obj["score"] = score;
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         if (!sb_api_key.empty()) {
             spdlog::info("Checking URL in Google Safebrowsing");
             safebrowsing_api sb_api(sb_api_key);
-            unsafe = sb_api.check_unsafe_url(app.check_url);
+            unsafe = sb_api.check_unsafe_url(opts.input.url);
             if (unsafe) {
                 score = 100;
                 obj["score"] = score;
@@ -100,9 +100,9 @@ int main(int argc, char* argv[]) {
         // 4. check our model prediction
         spdlog::info("Checking URL through heuristic model");
         phishscore::training_data td(opts);
-        td.set_input_data({app.check_url});
+        td.set_input_data({opts.input.url});
         const auto data = td.get_data_for_model();
-        model_checker_t model(app.model_checker_path, app.model_checker_port);
+        phishscore::model_checker_t model(opts);
 
         if (data.empty()) {
             spdlog::error("Unknown error");
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
         fmt::print("{}\n", unescape_copy(obj.dump()));
 
         // 5. store our results to a cache (db)
-        db.store_phishing_score(app.check_url, score);
+        db.store_phishing_score(opts.input.url, score);
 
         return 0;
     }
@@ -131,9 +131,9 @@ int main(int argc, char* argv[]) {
     if (app.create_training_data()) {
         std::vector<std::string> urls;
 
-        if (!opts.input.url.empty()) {
-            urls.push_back(opts.input.url);
-        } else if (opts.input.stdin) {
+        if (!opts.td.url.empty()) {
+            urls.push_back(opts.td.url);
+        } else if (opts.td.stdin) {
             for (std::string url; std::getline(std::cin, url);) {
                 urls.push_back(std::move(url));
             }
@@ -153,21 +153,19 @@ int main(int argc, char* argv[]) {
 
     if (app.enable_model_checking) {
         std::vector<std::string> urls;
-        if (app.input_stdin) {
+        if (opts.input.stdin) {
             for (std::string url; std::getline(std::cin, url);) {
                 urls.push_back(url);
             }
         } else {
-            urls.push_back(app.input_url);
+            urls.push_back(opts.input.url);
         }
-
-
 
         phishscore::training_data td(opts);
         td.set_input_data(urls);
         auto data = td.get_data_for_model();
 
-        model_checker_t model(app.model_checker_path, app.model_checker_port);
+        phishscore::model_checker_t model(opts);
 
         for (const auto& features_map: data) {
             json features_json(features_map);

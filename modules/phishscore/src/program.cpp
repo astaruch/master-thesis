@@ -41,9 +41,46 @@ program::program(int argc, char** argv)
         ("table", "Name of the table where our operations will be performed", cxxopts::value<std::string>(opts_.parse_urls_to_table))
     ;
 
-    _options.add_options("HTML feature settings")
-        ("htmlfeatures-bin", "Path to the binary with HTML features", cxxopts::value<std::string>(opts_.html_analysis.bin_path))
+    _options.add_options("Training data")
+        ("enable-training-data", "Flag wether we are creating a training data for ML algorithms",
+            cxxopts::value<bool>(_enable_training_data))
+        ("td-stdin", "Flag whether we are taking input from the commandline",
+            cxxopts::value<bool>(opts_.td.stdin))
+        ("td-url", "One URL to be checked",
+            cxxopts::value<std::string>(opts_.td.url))
+        ("td-class-value", "Sets the class label for the training data",
+            cxxopts::value<double>(opts_.fvec.class_label))
+        ("td-output-url", "Add to output also column with source URL",
+            cxxopts::value<bool>(opts_.fvec.include_url))
+        ("td-output-extra-values", "Add to output also extra values used for feature computation (<feature>_value)",
+            cxxopts::value<bool>(opts_.fvec.extra_values))
+        ("td-html-analysis-path", "Path to the binary with HTML analysis module",
+            cxxopts::value<std::string>(opts_.html_analysis.bin_path))
     ;
+
+    _options.add_options("Model check")
+        ("enable-model-checking", "Flag whether we are checking our model",
+            cxxopts::value<bool>(enable_model_checking))
+        ("mc-model-checker-path", "Path to the model checker",
+            cxxopts::value<std::string>(opts_.model_checker.path))
+        ("mc-html-analysis-path", "Path to the binary with HTML analysis module",
+            cxxopts::value<std::string>(opts_.html_analysis.bin_path))
+    ;
+
+    _options.add_options("Main application")
+        ("html-analysis-host", "Host where is hosted HTML analysis application",
+            cxxopts::value<std::string>(opts_.html_analysis.host))
+        ("html-analysis-port", "Port where is listening HTML analysis application",
+            cxxopts::value<uint16_t>(opts_.html_analysis.port))
+        ("model-checker-host", "Host where is model checking application",
+            cxxopts::value<std::string>(opts_.model_checker.host))
+        ("model-checker-port", "Port where is listening model checking application",
+            cxxopts::value<uint16_t>(opts_.model_checker.port))
+        ("stdin", "Flag whether we are taking input from the standard input",
+            cxxopts::value<bool>(opts_.input.stdin))
+        ("check-url", "One URL to be checked",
+            cxxopts::value<std::string>(opts_.input.url))
+   ;
 
     _options.add_options("Features")
         ("enable-features", "Enter mode with features", cxxopts::value<bool>(_enable_features))
@@ -100,44 +137,6 @@ program::program(int argc, char** argv)
         ("feat-asn", "Check wether site is in problematic ASN", cxxopts::value<bool>(_feature_asn))
         ("feat-similar-domain", "Check wether site has similar domain name as another famous site", cxxopts::value<bool>(_feature_similar_domain))
     ;
-
-    _options.add_options("Training data")
-        ("enable-training-data", "Flag wether we are creating a training data for ML algorithms",
-            cxxopts::value<bool>(_enable_training_data))
-        ("td-url", "Enter one escaped URL as parameter",
-            cxxopts::value<std::string>(opts_.input.url))
-        ("td-stdin", "Flag that we are using standard input as source",
-            cxxopts::value<bool>(opts_.input.stdin))
-        ("td-class-value", "Sets the classification value for the training data",
-            cxxopts::value<double>(opts_.fvec.class_label))
-        ("td-output-url", "Add to output also column with source URL",
-            cxxopts::value<bool>(opts_.fvec.include_url))
-        ("td-output-extra-values", "Add to output also extra values used for feature computation (<feature>_value)",
-            cxxopts::value<bool>(opts_.fvec.extra_values))
-    ;
-
-    _options.add_options("Model check")
-        ("enable-model-checking", "Flag whether we are checking our model",
-            cxxopts::value<bool>(enable_model_checking))
-        ("mc-model-checker-path", "Path to the model checker",
-            cxxopts::value<std::string>(model_checker_path))
-        ("mc-htmlfeatures-bin", "Path to the binary with HTML features",
-            cxxopts::value<std::string>(opts_.html_analysis.bin_path))
-        ("mc-input-stdin", "Flag that we are using standard input as source",
-            cxxopts::value<bool>(input_stdin))
-        ("mc-input-url", "One URL to be checked",
-            cxxopts::value<std::string>(input_url))
-    ;
-
-    _options.add_options("Main application")
-        ("check-url", "Compute phishing score for this URL",
-            cxxopts::value<std::string>(check_url))
-        ("html-analysis-port", "Port where is listening HTML analysis application",
-            cxxopts::value<uint16_t>(html_analysis_port))
-        ("model-checker-port", "Port where is listening model checking application",
-            cxxopts::value<uint16_t>(model_checker_port))
-    ;
-
 
     try {
         auto _result = _options.parse(argc, argv);
@@ -215,12 +214,12 @@ void program::check_options()
     }
 
     if (_enable_training_data) {
-        if (opts_.input.url.empty() && !opts_.input.stdin) {
+        if (opts_.td.url.empty() && !opts_.td.stdin) {
             fmt::print(stderr, "You have to provide one source for a data (e.g. --td-url <URL>)\n");
             exit(1);
         }
 
-        if (!opts_.input.url.empty() && opts_.input.stdin) {
+        if (!opts_.td.url.empty() && opts_.td.stdin) {
             fmt::print(stderr, "Please choose only one type of input\n");
             exit(1);
         }
@@ -233,12 +232,12 @@ void program::check_options()
         std::error_code ec;
         if (opts_.flags.html) {
             if (opts_.html_analysis.bin_path.empty()) {
-                fmt::print(stderr, "You have have requested HTML features. Please set path to program (--htmlfeatures-bin <path>)\n");
+                fmt::print(stderr, "You have have requested HTML features. Please set path to program (--td-html-analysis-path <path>)\n");
                 exit(1);
             }
             if (!opts_.html_analysis.bin_path.empty()) {
                 if (!fs::exists(opts_.html_analysis.bin_path, ec)) {
-                    fmt::print(stderr, "No such file (--htmlfeatures-bin <path>): {}\n", opts_.html_analysis.bin_path);
+                    fmt::print(stderr, "No such file (--td-html-analysis-path <path>): {}\n", opts_.html_analysis.bin_path);
                     exit(1);
                 }
             }
@@ -249,36 +248,36 @@ void program::check_options()
         }
     }
 
-    if (enable_model_checking || !check_url.empty()) {
-        if (enable_model_checking && (!input_stdin && input_url.empty())) {
-            fmt::print(stderr, "You have to provide source type for a data (e.g. --mc-input-stdin)\n");
+    if (enable_model_checking || !opts_.input.url.empty()) {
+        if (enable_model_checking && (!opts_.input.stdin && opts_.input.url.empty())) {
+            fmt::print(stderr, "You have to provide source type for a data (e.g. --check-url <URL>)\n");
             exit(1);
         }
         std::error_code ec;
-        if (html_analysis_port == 0 && opts_.html_analysis.bin_path.empty()) {
+        if (opts_.html_analysis.port == 0 && opts_.html_analysis.bin_path.empty()) {
             fmt::print("--html-analysis-port = 0\n");
             opts_.html_analysis.bin_path = get_env_var("THESIS_HTML_ANALYSIS_PROG");
             if (opts_.html_analysis.bin_path.empty()) {
                 fmt::print(stderr, "THESIS_HTML_ANALYSIS_PROG not set\n");
-                fmt::print(stderr, "Please set path to htmlfeatures program\n");
+                fmt::print(stderr, "Please set path to HTML analysis program or set <HOST:PORT>\n");
                 exit(1);
             }
         }
-        if (html_analysis_port == 0 && !fs::exists(opts_.html_analysis.bin_path, ec)) {
-            fmt::print(stderr, "No such file: {}\n", opts_.html_analysis.bin_path);
+        if (opts_.html_analysis.port == 0 && !fs::exists(opts_.html_analysis.bin_path, ec)) {
+            fmt::print(stderr, "ERROR (HTML analysis module). No such file: {}\n", opts_.html_analysis.bin_path);
             exit(1);
         }
-        if (model_checker_port == 0 && model_checker_path.empty()) {
+        if (opts_.model_checker.port == 0 && opts_.model_checker.path.empty()) {
             fmt::print("--model-checker-port = 0\n");
-            model_checker_path = get_env_var("THESIS_MODEL_CHECKER_PROG");
-            if (model_checker_path.empty()) {
+            opts_.model_checker.path = get_env_var("THESIS_MODEL_CHECKER_PROG");
+            if (opts_.model_checker.path.empty()) {
                 fmt::print(stderr, "THESIS_MODEL_CHECKER_PROG not set\n");
-                fmt::print(stderr, "Please set path to model checker program\n");
+                fmt::print(stderr, "Please set path to model checker program or set <HOST:PORT>\n");
                 exit(1);
             }
         }
-        if (model_checker_port == 0 && !fs::exists(model_checker_path, ec)) {
-            fmt::print(stderr, "No such file: {}\n", model_checker_path);
+        if (opts_.model_checker.port == 0 && !fs::exists(opts_.model_checker.path, ec)) {
+            fmt::print(stderr, "ERROR (Model checker module): No such file: {}\n", opts_.model_checker.path);
             exit(1);
         }
         // we need the following columns for the model prediction
@@ -330,7 +329,7 @@ void program::check_options()
 
 void program::check_feature_option(bool feature_on, uint64_t feature_id, std::string_view feature_name)
 {
-    if (opts_.verbose) fmt::print("-- {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
+    if (opts_.verbose) fmt::print("--> {} - {}\n", feature_name, feature_on ? "ON" : "OFF");
     if (feature_on) {
         opts_.flags.all |= feature_id;
     }

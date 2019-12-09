@@ -63,7 +63,8 @@ host_based_features_t::host_based_features_t(const std::string_view url,
         dig_thread.join();
     }
     if (_flags & (feature_enum::asn)) {
-        // we need to have dig response before we can operate with SLD due to IP address
+        // we need to have dig response before we can operate with SLD
+        // because we need to know the IP address
         // fmt::print("Spawning ASN response thread\n");
         threads.push_back(std::thread(&host_based_features_t::fill_asn, this));
     }

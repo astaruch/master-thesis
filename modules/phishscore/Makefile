@@ -13,12 +13,13 @@ run: build
 check-url: build-debug
 	@echo $@
 	Debug/phishsvc --check-url 'http://google.com23' \
-		--model-checker-port 13000 \
-		--html-analysis-port 12000
+		--model-checker-port ${THESIS_MODEL_CHECKER_PORT} \
+		--html-analysis-port ${THESIS_HTML_ANALYSIS_PORT} \
+		--verbose
 
 service: build-debug
 	@echo $@
-	Debug/phishsvc --mc-input-url 'http://google.com' \
+	Debug/phishsvc --input-url 'http://google.com' \
 		--html-analysis-port 12000 \
 		--model-checker-port 13000 \
 		--enable-model-checking \
@@ -88,7 +89,7 @@ html-features: build-debug
 		--td-output-url \
 		--td-output-extra-values \
 		${HTML_FEATURES} \
-		--htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG}
+		--td-html-analysis-path ${THESIS_HTML_ANALYSIS_PROG}
 
 host-based-features: build-debug
 	Debug/phishsvc \
@@ -114,10 +115,9 @@ url-host: build-debug
 check-model: build-debug
 	Debug/phishsvc \
 		--enable-model-checking \
-		--mc-input-stdin \
-		--mc-htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG} \
+		--stdin \
+		--mc-html-analysis-path ${THESIS_HTML_ANALYSIS_PROG} \
 		--mc-model-checker-path ${THESIS_MODEL_CHECKER_PROG} \
-		--verbose
 
 all-features: build-debug
 	Debug/phishsvc \
@@ -127,7 +127,7 @@ all-features: build-debug
 		--td-class-value 0 \
 		--enable-features \
 		--td-output-url \
-		--htmlfeatures-bin ${THESIS_HTML_ANALYSIS_PROG} \
+		--td-html-analysis-path ${THESIS_HTML_ANALYSIS_PROG} \
 		${URL_FEATURES} \
 		${HTML_FEATURES} \
 		${HOST_BASED_FEATURES}

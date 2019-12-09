@@ -22,6 +22,11 @@ struct options {
         std::string url{};
     } input;
 
+    struct training_data_input {
+        bool stdin{false};
+        std::string url{};
+    } td;
+
     struct {
         uint64_t all{0};
         uint64_t url{0};
@@ -37,8 +42,15 @@ struct options {
 
     struct {
         std::string bin_path{};
+        std::string host{"localhost"};
         uint16_t port{0};
     } html_analysis;
+
+    struct {
+        std::string path{};
+        std::string host{"localhost"};
+        uint16_t port{0};
+    } model_checker;
 
     std::string parse_urls_to_table{};
     bool verbose{false};
