@@ -10,7 +10,7 @@ clean:
 	rm -rf node_modules bin
 
 service:
-	node src/index.js --service
+	node src/index.js --server ${THESIS_HTML_ANALYSIS_PORT}
 run:
 	node src/index.js ${HTML_FEATURES} --output-values-string --include-url --verbose --url http://google.cz
 
