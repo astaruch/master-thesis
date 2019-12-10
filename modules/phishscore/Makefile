@@ -19,9 +19,9 @@ check-url: build-debug
 
 service: build-debug
 	@echo $@
-	Debug/phishsvc --input-url 'http://google.com' \
-		--html-analysis-port 12000 \
-		--model-checker-port 13000 \
+	Debug/phishsvc --server ${THESIS_PHISHSCORE_PORT} \
+		--html-analysis-port ${THESIS_HTML_ANALYSIS_PORT} \
+		--model-checker-port ${THESIS_MODEL_CHECKER_PORT} \
 		--enable-model-checking \
 		--verbose
 

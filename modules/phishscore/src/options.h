@@ -54,6 +54,7 @@ struct options {
 
     std::string parse_urls_to_table{};
     bool verbose{false};
+    uint16_t server{0};
 };
 
 } // phishscore

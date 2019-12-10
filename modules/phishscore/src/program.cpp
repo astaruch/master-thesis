@@ -81,6 +81,8 @@ program::program(int argc, char** argv)
             cxxopts::value<bool>(opts_.input.stdin))
         ("check-url", "One URL to be checked",
             cxxopts::value<std::string>(opts_.input.url))
+        ("server", "Whether run as server application and listens on a port",
+            cxxopts::value<uint16_t>(opts_.server))
    ;
 
     _options.add_options("Features")
@@ -250,7 +252,7 @@ void program::check_options()
     }
 
     if (enable_model_checking || !opts_.input.url.empty()) {
-        if (enable_model_checking && (!opts_.input.stdin && opts_.input.url.empty())) {
+        if (enable_model_checking && (!opts_.input.stdin && opts_.input.url.empty()) && opts_.server == 0) {
             fmt::print(stderr, "You have to provide source type for a data (e.g. --check-url <URL>)\n");
             exit(1);
         }
