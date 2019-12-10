@@ -57,27 +57,6 @@ services:
       cache_from:
         - astaruch/phishscore-deps
 
-  phishscore:
-    image: astaruch/phishscore
-    container_name: phishscore
-    build:
-      context: ./modules/phishscore
-      target: runtime
-      cache_from:
-          - astaruch/phishscore-deps
-          - astaruch/phishscore-builder
-          - astaruch/phishscore
-    environment:
-        THESIS_DB_HOST: phishscore-db
-        THESIS_DB_PORT: 5432
-        THESIS_HTML_ANALYSIS_HOST: html-analysis
-        THESIS_HTML_ANALYSIS_PORT: ${THESIS_HTML_ANALYSIS_PORT}
-        THESIS_MODEL_CHECKER_HOST: model-checker
-        THESIS_MODEL_CHECKER_PORT: ${THESIS_MODEL_CHECKER_PORT}
-        GOOGLE_SAFEBROWSING_API_KEY: ${GOOGLE_SAFEBROWSING_API_KEY}
-    env_file:
-        - .env
-
   phishscore-db:
     image: postgres:11.2
     restart: always
@@ -92,6 +71,41 @@ services:
       - "${THESIS_DB_PORT}:5432"
     volumes:
       - db-volume:/var/lib/postgresql/data
+
+  phishscore:
+    image: astaruch/phishscore
+    container_name: phishscore
+    build:
+      context: ./modules/phishscore
+      target: runtime
+      cache_from:
+          - astaruch/phishscore-deps
+          - astaruch/phishscore-builder
+          - astaruch/phishscore
+      args:
+        - THESIS_PHISHSCORE_PORT=${THESIS_PHISHSCORE_PORT}
+        - THESIS_HTML_ANALYSIS_HOST=html-analysis
+        - THESIS_HTML_ANALYSIS_PORT=${THESIS_HTML_ANALYSIS_PORT}
+        - THESIS_MODEL_CHECKER_HOST=model-checker
+        - THESIS_MODEL_CHECKER_PORT=${THESIS_MODEL_CHECKER_PORT}
+    environment:
+        THESIS_DB_HOST: phishscore-db
+        THESIS_DB_PORT: 5432
+        THESIS_PHISHSCORE_PORT: ${THESIS_PHISHSCORE_PORT}
+        THESIS_HTML_ANALYSIS_HOST: html-analysis
+        THESIS_HTML_ANALYSIS_PORT: ${THESIS_HTML_ANALYSIS_PORT}
+        THESIS_MODEL_CHECKER_HOST: model-checker
+        THESIS_MODEL_CHECKER_PORT: ${THESIS_MODEL_CHECKER_PORT}
+        GOOGLE_SAFEBROWSING_API_KEY: ${GOOGLE_SAFEBROWSING_API_KEY}
+    env_file:
+        - .env
+    expose:
+      - "${THESIS_PHISHSCORE_PORT}"
+    ports:
+      - "${THESIS_PHISHSCORE_PORT}:${THESIS_PHISHSCORE_PORT}"
+    depends_on:
+        - phishscore-db
+
 
 volumes:
   db-volume:

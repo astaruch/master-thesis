@@ -31,7 +31,13 @@ void server::init()
     if (!db_.table_exists("phish_score")) {
         db_.create_table_phish_score();
     }
-
+    spdlog::info("Starting listening for connection on port {}",  opts_.server);
+    if (opts_.verbose) {
+        spdlog::info("Using HTML analysis host: {}\n", opts_.html_analysis.host);
+        spdlog::info("Using HTML analysis port: {}\n", opts_.html_analysis.port);
+        spdlog::info("Using Model checker host: {}\n", opts_.model_checker.host);
+        spdlog::info("Using Model checker port: {}\n", opts_.model_checker.port);
+    }
 	struct sockaddr_in server_address;
 	server_sock_ = socket(AF_INET, SOCK_STREAM, 0);
     int flags = 1;
@@ -67,8 +73,8 @@ void server::run()
             request = json::parse(buffer);
         } catch (...) {
             spdlog::error("Invalid JSON input");
-            close(server_sock_);
-            exit(1);
+            close(client_sock);
+            continue;
         }
         std::string url = request["url"].get<std::string>();
         json response = phishscore::check_url(opts_, url, db_);

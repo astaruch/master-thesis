@@ -251,7 +251,7 @@ void program::check_options()
         }
     }
 
-    if (enable_model_checking || !opts_.input.url.empty()) {
+    if (enable_model_checking || !opts_.server != 0 || !opts_.input.url.empty()) {
         if (enable_model_checking && (!opts_.input.stdin && opts_.input.url.empty()) && opts_.server == 0) {
             fmt::print(stderr, "You have to provide source type for a data (e.g. --check-url <URL>)\n");
             exit(1);
@@ -292,7 +292,7 @@ void program::check_options()
                 fmt::print("Resolved: {}\n", host.front());
                 opts_.html_analysis.host = host.front();
             } else {
-                fmt::print(stderr, "Error");
+                fmt::print(stderr, "Error. Can't resolve host.\n");
             }
         }
 
@@ -304,8 +304,14 @@ void program::check_options()
                 fmt::print("Resolved: {}\n", host.front());
                 opts_.model_checker.host = host.front();
             } else {
-                fmt::print(stderr, "Error");
+                fmt::print(stderr, "Error. Can't resolve host.\n");
             }
+        }
+        if (opts_.verbose) {
+            fmt::print("HTML analysis host: {}\n", opts_.html_analysis.host);
+            fmt::print("HTML analysis port: {}\n", opts_.html_analysis.port);
+            fmt::print("Model checker host: {}\n", opts_.model_checker.host);
+            fmt::print("Model checker port: {}\n", opts_.model_checker.port);
         }
         // we need the following columns for the model prediction
         // --feat-asn --feat-similar-domain --feat-dnssec --feat-gtld --feat-src-link --feat-dns-updated

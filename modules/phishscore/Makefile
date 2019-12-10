@@ -22,6 +22,8 @@ service: build-debug
 	Debug/phishsvc --server ${THESIS_PHISHSCORE_PORT} \
 		--html-analysis-port ${THESIS_HTML_ANALYSIS_PORT} \
 		--model-checker-port ${THESIS_MODEL_CHECKER_PORT} \
+		--html-analysis-host ${THESIS_HTML_ANALYSIS_HOST} \
+		--model-checker-host ${THESIS_MODEL_CHECKER_HOST} \
 		--enable-model-checking \
 		--verbose
 
