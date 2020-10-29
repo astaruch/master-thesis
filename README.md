@@ -2,6 +2,10 @@
 
 [![Build Status](https://travis-ci.com/astaruch/master-thesis.svg?branch=master)](https://travis-ci.com/astaruch/master-thesis)
 
+## Text
+
+Text is available in file [4-text](thesis-text/4-text.pdf).
+
 ## Prerequisites
 
 For an easier setup & development, we are advising to use Docker. Build steps and all other information are stored in respective Dockerfile for each module.
