@@ -21,7 +21,7 @@
     "node-fetch": "^2.6.0",
     "pg": "^7.10.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.16",
+    "typeorm": "^0.2.25",
     "yargs": "^13.2.2"
   },
   "devDependencies": {
